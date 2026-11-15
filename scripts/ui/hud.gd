@@ -7,18 +7,19 @@ var selected: StaticBody2D
 @onready var message_label: Label = $Message/Text
 
 func _ready() -> void:
-	# Compact fixed-viewport HUD. The only interaction prompt lives in the world.
+	# Compact fixed-viewport HUD. The active interaction prompt lives in the world.
 	$TitlePlate.hide()
 	$ClockPlate.hide()
 	$Title.add_theme_font_size_override("font_size",8)
 	$Title.position = Vector2(12,10)
 	$Subtitle.position = Vector2(12,23)
 	$Clock.add_theme_font_size_override("font_size",8)
-	$Clock.offset_left = -66
+	$Clock.offset_left = -96
 	$Clock.offset_top = 10
+	$Clock.offset_right = -12
 	$Footer.offset_left = 8
 	$Footer.anchor_right = 0
-	$Footer.offset_right = 320
+	$Footer.offset_right = 260
 	$Footer.offset_top = -26
 	$Footer.offset_bottom = -7
 	$Objective.offset_left = 16
@@ -27,7 +28,7 @@ func _ready() -> void:
 	$Message.offset_top = -121
 	$Message.offset_bottom = -36
 	for label: Label in [$Title,$Subtitle,$Clock]:
-		label.add_theme_color_override("font_shadow_color",Color("152734"))
+		label.add_theme_color_override("font_shadow_color",Color("1a1410"))
 		label.add_theme_constant_override("shadow_offset_x",1)
 		label.add_theme_constant_override("shadow_offset_y",1)
 
@@ -70,12 +71,12 @@ func show_message(text: String, source: StaticBody2D = null) -> void:
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if source != null:
 		terminal = source
-	$Message/Source.text = "CAMPUS NOTICE" if terminal.notice_board else "INCOMING / UNKNOWN SIGNAL"
+	$Message/Source.text = "VILLAGE SIGNPOST" if terminal.notice_board else "STONE RUNE PEDESTAL"
 	panel.show()
 	player.set("movement_locked",true)
 	terminal.set_dialogue_open(true)
-	if text.begins_with("11:47"):
-		$Objective.text = "SIGNAL RECEIVED / 13 MINUTES REMAIN"
+	if text.begins_with("The bell has rung thirteen times"):
+		$Objective.text = "Investigate the thirteenth bell."
 	$Prompt.hide()
 
 func set_nearby(value: bool) -> void:

@@ -45,9 +45,8 @@ func _ready() -> void:
 		$Boundary.add_child(edge)
 	$HUD.player = $Actors/Player
 	$HUD.terminal = $Actors/Terminal
-	$HUD/Subtitle.text = "SJT / COMPRESSED EXTERIOR STUDY"
-	$HUD/Objective.text = "EXPLORE SJT / INVESTIGATE THE TERMINAL"
+	$HUD/Subtitle.text = "BELLHAVEN VILLAGE"
+	$HUD/Objective.text = "Investigate the thirteenth bell."
 	$Actors/Player/Camera2D.framing = Vector2(0,-96)
 	$Actors/Player/Camera2D.snap_to_target()
 	$Landscape.queue_redraw()
-

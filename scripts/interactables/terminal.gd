@@ -1,9 +1,9 @@
 extends StaticBody2D
 signal message_requested(text: String)
 signal proximity_changed(nearby: bool)
-@export_multiline var message: String = "11:47 PM — You have 13 minutes."
+@export_multiline var message: String = "The bell has rung thirteen times. Something beneath the village is awakening."
 @export var interaction_priority: int = 10
-@export var prompt_text: String = "[E] READ TERMINAL"
+@export var prompt_text: String = "[E] INSPECT RUNE PEDESTAL"
 @export var notice_board: bool = false
 var selected: bool = false
 var nearby_player: CharacterBody2D
@@ -12,8 +12,8 @@ var dialogue_open: bool = false
 func _ready() -> void:
 	add_to_group("interactables")
 	$Indicator.text = prompt_text
-	$Indicator.offset_left = -48
-	$Indicator.offset_right = 48
+	$Indicator.offset_left = -84
+	$Indicator.offset_right = 84
 	$Indicator.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	$Range.body_entered.connect(_on_entered)
 	$Range.body_exited.connect(_on_exited)
@@ -45,17 +45,28 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	if notice_board:
-		draw_rect(Rect2(-10,-30,3,30),Color("526164"))
-		draw_rect(Rect2(8,-30,3,30),Color("526164"))
-		draw_rect(Rect2(-15,-37,30,23),Color("293f4a"))
-		draw_rect(Rect2(-13,-35,26,18),Color("b6aa88"))
-		for x in [-10,0,7]:
-			draw_rect(Rect2(x,-32,5,11),Color("ded7b8"))
+		# Medieval timber village signpost / decree board
+		draw_rect(Rect2(-10,-30,3,30),Color("4a3220"))
+		draw_rect(Rect2(8,-30,3,30),Color("4a3220"))
+		draw_rect(Rect2(-15,-37,30,23),Color("382516"))
+		draw_rect(Rect2(-13,-35,26,18),Color("d6c49e"))
+		for y in [-31,-27,-23]:
+			draw_line(Vector2(-10,y),Vector2(9,y),Color("5c4632"),1)
+		draw_rect(Rect2(-1,-34,2,2),Color("9e3d2b")) # Wax seal
 		return
-	draw_colored_polygon(PackedVector2Array([Vector2(-12,-3),Vector2(0,-9),Vector2(12,-3),Vector2(0,3)]), Color("1b3041"))
-	draw_rect(Rect2(-8,-27,16,25),Color("345264"))
-	draw_rect(Rect2(6,-27,3,25),Color("203446"))
-	draw_rect(Rect2(-6,-24,11,12),Color("75e9cf"))
-	draw_rect(Rect2(-4,-21,7,2),Color("235365"))
-	draw_rect(Rect2(-4,-17,4,1),Color("235365"))
-	draw_rect(Rect2(-4,-8,8,2),Color("b4c3bf"))
+	# Ancient Stone Rune Pedestal with tiered base, weathered obelisk, and glowing golden runes
+	draw_colored_polygon(PackedVector2Array([Vector2(-14,-3),Vector2(0,-10),Vector2(14,-3),Vector2(0,4)]), Color("363330"))
+	draw_colored_polygon(PackedVector2Array([Vector2(-11,-5),Vector2(0,-11),Vector2(11,-5),Vector2(0,1)]), Color("4a4642"))
+	# Stone pillar body & shaded right bevel
+	draw_rect(Rect2(-7,-29,13,26),Color("6e6862"))
+	draw_rect(Rect2(4,-29,4,26),Color("45413d"))
+	# Angled runic altar slab cap
+	draw_colored_polygon(PackedVector2Array([Vector2(-9,-29),Vector2(0,-34),Vector2(9,-29),Vector2(0,-24)]), Color("857e76"))
+	# Etched golden-amber glowing rune sigil on stone face
+	draw_rect(Rect2(-5,-25,9,13),Color("383430"))
+	draw_line(Vector2(-1,-23),Vector2(-1,-14),Color("ffca57"),1)
+	draw_line(Vector2(-3,-21),Vector2(1,-21),Color("ffca57"),1)
+	draw_line(Vector2(-3,-17),Vector2(1,-19),Color("ffe89e"),1)
+	draw_rect(Rect2(-2,-24,2,2),Color("ffe89e"))
+	# Subtle warm gold light dot at altar crown
+	draw_rect(Rect2(-1,-30,2,2),Color("ffca57"))

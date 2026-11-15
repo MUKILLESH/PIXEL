@@ -1,48 +1,42 @@
-# Phase 1.5 architecture
+# Phase 0 Architecture — ASHVALE: THE THIRTEENTH BELL
 
-The new startup region is `scenes/sjt_exterior.tscn`; the original courtyard structure below is preserved. SJT composes the same player, camera, HUD, terminal and tiles. Its reusable building splits rendering into facade bays plus a roof/flank, canopy and columns; `sjt_region.gd` owns the local layout. See [SJT implementation](SJT_IMPLEMENTATION.md).
+The startup region is `scenes/sjt_exterior.tscn` (**BellhavenVillage**), preserving the proven Phase 1.5 isometric rendering, movement, camera, Y-sorting, collision, and priority-interaction pipeline while converting every visual asset, label, and prop to medieval fantasy. `scenes/campus_prototype.tscn` also inherits the updated medieval tiles, cottages, trees, Aren character sprite, rune pedestal, and HUD.
 
-## Scene ownership
+## Scene Ownership
 
 ```text
-CampusPrototype (campus.gd: deterministic layout and wiring)
-├── Ground (TileMapLayer, external courtyard.tres)
-├── Shadows (ground-only cast shadows and visible border)
-├── Boundary (four solid diamond edges)
-├── Actors (Y sorting enabled)
-│   ├── Player (CharacterBody2D, foot collider, Camera2D)
-│   ├── Terminal (StaticBody2D, Area2D range, indicator)
-│   └── Buildings / trees (StaticBody2D, generated footprint and art)
-└── HUD (CanvasLayer, controls and dismissible message)
+BellhavenVillage (scripts/world/sjt_region.gd)
+├── Ground (TileMapLayer, res://assets/tiles/courtyard.tres)
+├── Landscape (scripts/world/sjt_landscape.gd: cobbles, lantern pools, shadows)
+├── Boundary (four solid diamond boundary segments)
+├── Actors (y_sort_enabled = true)
+│   ├── SJT (scenes/environment/sjt_building.tscn -> Cottage + Belfry + Blacksmith)
+│   ├── Player (scenes/characters/player.tscn -> Aren, foot collider, PixelCamera)
+│   ├── Terminal (scenes/environment/terminal.tscn -> Stone Rune Pedestal)
+│   ├── NoticeBoard (scenes/environment/terminal.tscn -> Village Signpost)
+│   └── Trees / Furnishings / Basin (Village Well) / Monument (Anvil Plinth)
+└── HUD (scenes/ui/hud.tscn -> Objective, Chime status, Message panel)
 ```
 
-`assets/` holds original generated tiles and reserved art/audio/font folders. `scenes/` contains composition and reusable scenes. `scripts/` contains behavior, `data/` reserves future definitions, `docs/` explains the design, and `tests/` owns validation.
+## Movement, Projection & Depth
 
-## Movement, projection, and depth
+- **Projection:** 2:1 isometric `TileSet` (`TILE_SHAPE_ISOMETRIC`, `TILE_LAYOUT_DIAMOND_DOWN`, `64×32` cells). Screen movement uses normalized `Input.get_vector` in `CharacterBody2D` (`MOTION_MODE_FLOATING`) at 100 px/s.
+- **Y-Sorting:** `Actors` sorts every child by its base/foot origin. The multi-bay northern village row (`sjt_building.gd`) renders each 16-unit bay at its own ground line so Aren passes cleanly in front of and behind adjacent structures and beneath the belfry porch canopy.
+- **Collisions:** Layer 1 holds solid building footprints, well/anvil/furnishing footprints, tree trunks, and diamond boundary edges; Layer 2 holds Aren's `CircleShape2D` foot collider (radius 6).
 
-Ground uses a 2:1 isometric TileSet with diamond-down layout and 64 × 32 cells. Screen coordinates are ordinary 2D pixels; WASD is not rotated into grid axes. `Input.get_vector` caps diagonal magnitude at one. The floating CharacterBody2D moves only during physics ticks using `move_and_slide`. Speed is exported in pixels/second, default 100.
+## Camera & Presentation
 
-The player origin is at the feet. Building origins sit at their front footprint tips; tree and terminal origins sit at their bases. Every actor shares one Y-sorted parent and default Z index. Ground is drawn first outside this sorting group. Roofs and canopies rise above the sorting anchor. This simple whole-object sorting is suitable for the prototype's separated props; future large or intersecting buildings may need split facades/roof pieces.
-
-Physics layer 1 is world solids; layer 2 is the player. The player checks layer 1. The terminal Area2D checks layer 2 and accepts only members of `player`. Building polygons match their isometric ground footprint; trees block their trunks rather than their entire canopy. Four segments prevent leaving the map.
-
-## Camera and presentation
-
-Camera2D belongs to the reusable player at zoom 1 and framing (0, -64), but its top-level transform is independent. `pixel_camera.gd` updates after player physics movement, eases a floating-point focus exponentially, and rounds only the final display position. Built-in fractional smoothing is disabled. `snap_to_target()` resets follow state on teleport. Nearest filtering and integer viewport scaling retain crisp artwork. The ground now extends to 49 × 49 cells, covering every camera corner at the original playable diamond's extremes. A visible stone edge follows the preserved boundary colliders.
-
-The player uses native-pixel drawing, eight facings and four walking poses driven by real movement. Props use local drawing primitives; cast shadows occupy a separate layer below all actors. The tile generator uses Godot Image and ResourceSaver only; the saved TileSet embeds its six-variant image. The font generator similarly embeds original 5×7 glyph data in a FontFile resource, avoiding first-import dependencies. Source PNG and BMFont outputs are retained. The shared HUD theme uses native 8px or integer 16px text.
+- `scripts/characters/pixel_camera.gd` detaches (`top_level = true`), runs after player physics (`process_physics_priority = 10`), exponentially eases toward `target + framing`, and rounds only the final display coordinate to integer pixels.
+- All pixel art uses `default_texture_filter = 0` and integer viewport scaling (`640×360` -> `1280×720`).
+- UI uses the original 5×7 bitmap font (`assets/fonts/after_hours.tres`) via `assets/fonts/pixel_theme.tres`.
 
 ## Interaction
 
-The reusable terminal owns its range, prompt, exported message, and dialogue-open guard. A non-repeating E press emits `message_requested`; the world connects this to the HUD. Proximity changes update the HUD prompt. The HUD locks player movement while reading, hides prompts, updates the objective, and consumes E/Escape before the terminal can reopen. No autoload or dialogue framework is needed for this single interaction.
+- All `StaticBody2D` interactables in group `"interactables"` track player proximity via `Area2D` (`Range`).
+- `scripts/ui/hud.gd` evaluates overlapping interactables each frame by `(priority, -distance, node_path)` so at most one world prompt (`[E] INSPECT RUNE PEDESTAL` or `[E] READ VILLAGE POST`) is shown at a time.
+- Opening a message locks `player.movement_locked`, hides world prompts, and consumes `interact` / `dismiss` (`E` / `ESC`) cleanly to close.
 
-## Later phases (not implemented)
+## Future Phases (See `docs/GAME_DESIGN.md`)
 
-- Campus regions: turn each region into a scene with the same ground/actor structure.
-- NPCs: add reusable actors under the region's sorting parent.
-- Dialogue and quests: keep definitions under `data/`; replace the terminal's one-message handler when required.
-- Inventory and save/load: introduce explicit state and a save schema when gameplay needs them.
-- Day/night: introduce a clock that drives presentation; the present 11:47 PM label is static.
-- ECHO: design alternate region content and state transitions in a later phase.
-
-No external campus sources were accessed. Official references in the original brief remain future research inputs, subject to the user's asset-use approval.
+- **Phase 1:** Bellhaven interiors, NPCs (Master Caelen, Mira, Sister Elara), multi-line dialogue data under `data/`.
+- **Phase 2–4:** Briarwood Forest, Floodmill Wetlands, Ironwatch Keep, Dawnspire Mountain, minigames, and save/load.

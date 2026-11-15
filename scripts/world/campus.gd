@@ -9,8 +9,8 @@ func _ready() -> void:
 			var path: bool = absi(x) <= 1 or absi(y) <= 1 or (absi(x) <= 3 and absi(y) <= 3)
 			var variant: int = posmod(x * 17 + y * 31, 3)
 			ground.set_cell(Vector2i(x,y),0,Vector2i(3 + variant if path else variant,0))
-	add_prop(Vector2(-190,-30),1,"SCIENCE ANNEX")
-	add_prop(Vector2(210,-30),1,"READING ROOM")
+	add_prop(Vector2(-190,-30),1,"CARTOGRAPHER'S HALL")
+	add_prop(Vector2(210,-30),1,"BLACKSMITH FORGE")
 	for point: Vector2 in [Vector2(-300,35),Vector2(-195,100),Vector2(-100,-170),Vector2(100,-180),Vector2(295,40),Vector2(190,140),Vector2(-70,230),Vector2(90,245)]:
 		add_prop(point,0,"")
 	# A closed diamond boundary follows the outer tile edges.

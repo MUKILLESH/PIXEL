@@ -111,7 +111,7 @@ func exercise() -> bool:
 	Input.parse_input_event(repeat_key)
 	await frames(3)
 	check(hud.get_node("Message").visible,"Keyboard repeat does not dismiss or retrigger")
-	check(hud.get_node("Message/Text").text == "11:47 PM — You have 13 minutes.","Exact introductory message")
+	check(hud.get_node("Message/Text").text == "The bell has rung thirteen times. Something beneath the village is awakening.","Exact introductory message")
 	Input.action_press("move_down")
 	stopped = player.position
 	await frames(8)

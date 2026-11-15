@@ -1,3 +1,3 @@
-# Future game data
+# Future Game Data
 
-Reserved for dialogue, quest, item, and region definitions. Phase 1 does not implement these systems.
+Reserved for Ashvale dialogue trees, quest definitions, region metadata, and puzzle data in Phases 1–4.

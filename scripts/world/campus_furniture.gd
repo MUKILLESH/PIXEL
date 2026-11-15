@@ -1,6 +1,6 @@
 extends StaticBody2D
-## Decorative campus furnishings; their exact forms and positions are not surveyed.
-@export_enum("Bench", "Streetlight", "Planter", "Bin") var kind: int = 0
+## Medieval village furnishings: oak bench, wrought-iron lantern, stone herb trough, iron-bound barrel.
+@export_enum("Bench", "Lantern", "Planter", "Barrel") var kind: int = 0
 
 func _ready() -> void:
 	var collider := CollisionPolygon2D.new()
@@ -11,31 +11,41 @@ func _ready() -> void:
 func _draw() -> void:
 	match kind:
 		0:
+			# Rustic oak village bench with dark iron straps
 			for x in [-14,12]:
-				draw_rect(Rect2(x,-10,3,12),Color("283e48"))
+				draw_rect(Rect2(x,-10,3,12),Color("282b30"))
 			for i in range(3):
-				draw_line(Vector2(-21,-9+i*2),Vector2(16,9+i*2-9),Color("b5986c"),2)
+				draw_line(Vector2(-21,-9+i*2),Vector2(16,9+i*2-9),Color("6e492d"),2)
 			for i in range(3):
-				draw_line(Vector2(-19,-22+i*3),Vector2(18,-4+i*3),Color("9c805c"),2)
+				draw_line(Vector2(-19,-22+i*3),Vector2(18,-4+i*3),Color("593a23"),2)
 			for x in [-19,17]:
-				draw_line(Vector2(x,-20+(x+19)*0.5),Vector2(x,-3+(x+19)*0.2),Color("3b5158"),2)
+				draw_line(Vector2(x,-20+(x+19)*0.5),Vector2(x,-3+(x+19)*0.2),Color("3d291a"),2)
 		1:
-			draw_rect(Rect2(-4,-3,8,4),Color("6b7e7e"))
-			draw_rect(Rect2(-2,-62,3,60),Color("344e5a"))
-			draw_line(Vector2(0,-62),Vector2(12,-68),Color("75908e"),2)
-			draw_colored_polygon(PackedVector2Array([Vector2(7,-67),Vector2(17,-72),Vector2(23,-69),Vector2(13,-64)]),Color("d5cba3"))
-			draw_line(Vector2(12,-64),Vector2(22,-69),Color("ffe4a2"),2)
+			# Wrought-iron medieval hanging lantern post with warm golden flame
+			draw_rect(Rect2(-4,-3,8,4),Color("59534c"))
+			draw_rect(Rect2(-2,-64,3,62),Color("24272e"))
+			draw_line(Vector2(0,-63),Vector2(13,-63),Color("3b404a"),2)
+			draw_line(Vector2(1,-56),Vector2(8,-63),Color("2d3138"),1)
+			draw_rect(Rect2(12,-63,1,3),Color("4c525e"))
+			draw_colored_polygon(PackedVector2Array([Vector2(8,-57),Vector2(12,-61),Vector2(17,-57)]),Color("1f2229"))
+			draw_rect(Rect2(10,-57,5,6),Color("ffbe4f"))
+			draw_rect(Rect2(11,-56,3,4),Color("fff0b8"))
+			draw_rect(Rect2(10,-51,5,1),Color("1f2229"))
+			draw_rect(Rect2(12,-50,1,2),Color("2d3138"))
 		2:
-			draw_colored_polygon(PackedVector2Array([Vector2(-19,-6),Vector2(-9,-11),Vector2(19,3),Vector2(9,8)]),Color("7d8271"))
+			# Stone herb trough with night-green herbs and marigold blooms
+			draw_colored_polygon(PackedVector2Array([Vector2(-19,-6),Vector2(-9,-11),Vector2(19,3),Vector2(9,8)]),Color("666057"))
 			for i in range(5):
 				var p := Vector2(-14+i*6,-8+i*3)
-				draw_rect(Rect2(p-Vector2(0,5),Vector2(9,7)),Color("49684e"))
-				draw_rect(Rect2(p-Vector2(-2,7),Vector2(5,4)),Color("739067"))
-				draw_rect(Rect2(p-Vector2(-3,6),Vector2(2,2)),Color("d6c19b"))
+				draw_rect(Rect2(p-Vector2(0,5),Vector2(9,7)),Color("2d4a36"))
+				draw_rect(Rect2(p-Vector2(-2,7),Vector2(5,4)),Color("466b4c"))
+				draw_rect(Rect2(p-Vector2(-3,6),Vector2(2,2)),Color("e6a94e"))
 		3:
-			draw_rect(Rect2(-5,-15,10,15),Color("41665d"))
-			draw_rect(Rect2(-6,-17,12,4),Color("789082"))
-			draw_rect(Rect2(-3,-14,6,3),Color("253e46"))
+			# Iron-bound oak barrel
+			draw_rect(Rect2(-5,-15,10,15),Color("6b4429"))
+			draw_rect(Rect2(-6,-13,12,2),Color("2d3138"))
+			draw_rect(Rect2(-6,-6,12,2),Color("2d3138"))
+			draw_rect(Rect2(-4,-16,8,2),Color("4f311c"))
 
 func ground_shadow() -> PackedVector2Array:
 	var width: int = 20 if kind in [0,2] else 5

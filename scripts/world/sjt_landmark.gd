@@ -1,5 +1,5 @@
 extends StaticBody2D
-@export_enum("Basin", "Monument") var kind: int = 0
+@export_enum("Village Well", "Anvil Plinth") var kind: int = 0
 
 func _ready() -> void:
 	var collision := CollisionShape2D.new()
@@ -11,17 +11,26 @@ func _ready() -> void:
 
 func _draw() -> void:
 	if kind == 0:
-		# Original curved silhouette inspired by the photographed shallow feature.
-		var rim := PackedVector2Array([Vector2(-34,-4),Vector2(-28,-12),Vector2(-12,-16),Vector2(2,-10),Vector2(16,-12),Vector2(32,-5),Vector2(34,1),Vector2(21,5),Vector2(4,0),Vector2(-10,5),Vector2(-27,3)])
-		draw_colored_polygon(rim,Color("c0bda2"))
-		var water := rim.duplicate()
-		for i in range(water.size()):
-			water[i] = (water[i] * Vector2(0.85,0.65)).round() + Vector2(0,-2)
-		draw_colored_polygon(water,Color("4b7b80"))
-		draw_line(Vector2(-23,-6),Vector2(-10,-9),Color("91b2ab"),1)
-		draw_line(Vector2(15,-5),Vector2(24,-2),Color("91b2ab"),1)
+		# Raised mossy cobblestone village well / cistern
+		var outer := PackedVector2Array([Vector2(-32,-7),Vector2(-24,-15),Vector2(0,-19),Vector2(24,-15),Vector2(32,-7),Vector2(32,1),Vector2(22,5),Vector2(0,7),Vector2(-22,5),Vector2(-32,1)])
+		draw_colored_polygon(outer,Color("4a453f"))
+		var wall := PackedVector2Array([Vector2(-30,-4),Vector2(0,2),Vector2(30,-4),Vector2(30,1),Vector2(21,5),Vector2(0,6),Vector2(-21,5),Vector2(-30,1)])
+		draw_colored_polygon(wall,Color("3c3834"))
+		var coping := PackedVector2Array([Vector2(-31,-8),Vector2(-22,-15),Vector2(0,-18),Vector2(22,-15),Vector2(31,-8),Vector2(22,-2),Vector2(0,1),Vector2(-22,-2)])
+		draw_colored_polygon(coping,Color("7a7268"))
+		draw_polyline(coping,Color("948b80"),1)
+		var water := PackedVector2Array([Vector2(-22,-8),Vector2(-15,-13),Vector2(0,-15),Vector2(15,-13),Vector2(22,-8),Vector2(15,-4),Vector2(0,-2),Vector2(-15,-4)])
+		draw_colored_polygon(water,Color("264452"))
+		draw_line(Vector2(-14,-9),Vector2(-4,-11),Color("638a94"),1)
+		draw_line(Vector2(6,-6),Vector2(15,-7),Color("638a94"),1)
+		draw_rect(Rect2(-24,-2,6,3),Color("375740"))
+		draw_rect(Rect2(16,0,5,3),Color("375740"))
 	else:
-		draw_colored_polygon(PackedVector2Array([Vector2(-11,-4),Vector2(0,-10),Vector2(12,-4),Vector2(0,2)]),Color("a39f82"))
-		# Abstract twin upward plates: inscription and exact sculpture are unresolved.
-		draw_colored_polygon(PackedVector2Array([Vector2(-6,-5),Vector2(-3,-32),Vector2(4,-29),Vector2(1,-4)]),Color("b5a578"))
-		draw_colored_polygon(PackedVector2Array([Vector2(1,-4),Vector2(7,-28),Vector2(11,-24),Vector2(7,-2)]),Color("d0ba86"))
+		# Stone pedestal & Blacksmith's iron anvil
+		draw_colored_polygon(PackedVector2Array([Vector2(-11,-4),Vector2(0,-10),Vector2(12,-4),Vector2(0,2)]),Color("6e6862"))
+		draw_rect(Rect2(-6,-15,12,11),Color("524c46"))
+		draw_rect(Rect2(-5,-14,5,9),Color("6b655e"))
+		# Forged iron anvil top & horn
+		draw_colored_polygon(PackedVector2Array([Vector2(-10,-22),Vector2(6,-22),Vector2(9,-19),Vector2(4,-17),Vector2(4,-14),Vector2(-6,-14),Vector2(-6,-19)]),Color("2e323b"))
+		draw_line(Vector2(-9,-22),Vector2(6,-22),Color("646b78"),2)
+		draw_rect(Rect2(-2,-20,4,2),Color("e07a38"))

@@ -1,9 +1,12 @@
 extends SceneTree
-## Six original 64x32 tiles; deterministic texture, no downloaded art.
+## Six original 64x32 medieval isometric tiles (night meadow grass and weathered cobblestones).
 func _initialize() -> void:
 	var image := Image.create(384,32,false,Image.FORMAT_RGBA8)
 	image.fill(Color.TRANSPARENT)
-	var colors: Array[Color] = [Color("344f47"),Color("38554a"),Color("314d46"),Color("788088"),Color("727b84"),Color("7d858a")]
+	var colors: Array[Color] = [
+		Color("283d32"),Color("2c4336"),Color("25392e"),
+		Color("5e5852"),Color("665f58"),Color("57514b")
+	]
 	for tile in range(6):
 		for y in range(32):
 			for x in range(64):
@@ -13,20 +16,31 @@ func _initialize() -> void:
 				var color: Color = colors[tile]
 				var grain: int = posmod((x*374761393+y*668265263+tile*1274126177) ^ ((x+3)*(y+7)*127),997)
 				if tile < 3:
-					if grain < 18:
-						color = Color("4a6552")
-					elif grain > 981:
-						color = Color("29453f")
+					# Night-lit meadow grass with moss & clover speckles
+					if grain < 24:
+						color = Color("3d5a45")
+					elif grain < 38 and (x + y) % 3 == 0:
+						color = Color("4a684e")
+					elif grain > 970:
+						color = Color("1d2e25")
 				else:
+					# Weathered cobblestone paving with subtle mortar seams & highlights
+					var iso_u: int = int((x + y * 2) / 14)
+					var iso_v: int = int((x - y * 2 + 64) / 14)
+					var seam_u: bool = posmod(x + y * 2, 14) == 0
+					var seam_v: bool = posmod(x - y * 2 + 64, 14) == 0
 					if distance > 0.96:
-						color = Color("56666e")
-					elif distance > 0.91 and y < 16:
-						color = color.lightened(0.09)
-					elif grain < 4:
-						color = color.lightened(0.035)
-					# Occasional inset stone seams without a heavy grid on grass.
-					if tile == 4 and absf(x-32.0) < 0.7:
-						color = Color("64727a")
+						color = Color("433e39")
+					elif seam_u or seam_v:
+						color = Color("433e39")
+					elif posmod(x + y * 2, 14) == 1 and posmod(iso_u + iso_v + tile, 2) == 0:
+						color = Color("786f65")
+					elif grain < 18:
+						color = Color("786f65")
+					elif grain > 978:
+						color = Color("4b453f")
+					elif tile == 4 and absf(x-32.0) < 0.7:
+						color = Color("433e39")
 				image.set_pixel(tile*64+x,y,color)
 	image.save_png("res://assets/tiles/courtyard.png")
 	var tiles := TileSet.new()

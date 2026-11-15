@@ -1,53 +1,44 @@
-# VIT: After Hours — Phase 1.5
+# ASHVALE: THE THIRTEENTH BELL — Phase 0
 
-**Latest SJT zone polish:** one priority-selected world prompt, a smaller persistent HUD, higher-contrast player artwork, and decorative benches, lights, planting and a walkable seating loop. [Changes, reference accuracy and validation](docs/SJT_ZONE_POLISH.md).
+**Phase 0 Medieval Fantasy Prototype (Bellhaven Village)**
 
-**Current startup: SJT exterior.** F5 now opens the photograph-informed, compressed SJT region. Open `scenes/sjt_exterior.tscn` for F6. The original courtyard remains available at `scenes/campus_prototype.tscn`; all Phase 1.5 systems are preserved. See [asset plan and missing references](docs/SJT_ASSET_PLAN.md) and [SJT implementation/validation](docs/SJT_IMPLEMENTATION.md). SJT uses original procedural art, not redistributed photographs.
-
-A small, playable Godot 4.7.2 Standard / GDScript foundation. This fictional college courtyard is a placeholder study, **not an accurate VIT campus map**. No external assets, packages, or dependencies were downloaded.
+An isometric 2.5D pixel-art adventure built in **Godot 4.7.2 Standard (GDScript)** with original procedural pixel-art assets and a warm nocturnal village atmosphere. See the authoritative [Game Design Document](docs/GAME_DESIGN.md) for the full narrative arc, five regions, characters, minigame concepts, and development phases.
 
 ## Play
 
 1. Launch `Godot_v4.7.2-stable_win64.exe` from this folder.
-2. Import `project.godot` and open the project.
-3. Press **F5**, or open `scenes/campus_prototype.tscn` and press **F6**.
-4. Use **WASD** to walk. Approach the cyan terminal just above/right of spawn; **E** reads it. **E** or **Escape** dismisses the message.
+2. Open `project.godot` and press **F5** (starts in Bellhaven Village Square, `scenes/sjt_exterior.tscn`).
+3. Use **WASD** to explore the village square, cottage, blacksmith workshop, belfry porch, lanterns, and well.
+4. Approach the glowing **Stone Rune Pedestal** near the belfry square and press **E** to read the opening message. Press **E** or **Escape** to close it.
 
-From PowerShell in `D:\MUKI PROJECT\VIT_After_Hours`:
+From PowerShell:
 
 ```powershell
 & './Godot_v4.7.2-stable_win64_console.exe' --path .
 ```
 
-The game uses Compatibility rendering, 640 × 360 internal resolution, a 1280 × 720 initial window, nearest filtering, and integer viewport scaling. Black margins at some window sizes are intentional. Physics and the frame cap target 60 Hz/FPS.
+The game runs at 640×360 internal resolution, 1280×720 initial window, Compatibility rendering, nearest-neighbor filtering, integer viewport scaling, and 60 Hz physics.
 
-## Included
+## Phase 0 Included Features
 
-- 2,401 isometric 64 × 32 tiles: the original courtyard plus a scenery apron that covers the camera at every boundary.
-- Reusable player and terminal scenes, two buildings, eight trees, and solid map edges.
-- Normalized screen-relative movement, eight-way facing, four walking poses, foot collisions, Y sorting, and a smooth pixel-snapped follow camera.
-- One introductory message; no quests, inventory, NPCs, saving, clock progression, or ECHO systems yet.
-
-The map and props are assembled when the scene runs. The editor's static 2D view shows the player and terminal; run F6 to inspect the complete courtyard. Tune `speed` on the player or edit positions in `scripts/world/campus.gd`.
+- **2:1 Isometric World:** 64×32 medieval night-meadow grass and weathered cobblestone tiles (`assets/tiles/courtyard.tres`) with a full scenery apron covering every camera boundary.
+- **Bellhaven Village Square:** Timber-and-plaster Cottage, central **Bellhaven Belfry** (stone bell tower with visible hanging bronze bell and timber porch canopy), **Blacksmith Workshop** with glowing forge embers, stone village well, iron anvil plinth, oak benches, wrought-iron street lanterns, herb planters, barrels, and medieval trees.
+- **Protagonist (Aren):** Apprentice mapmaker in forest-green tunic, russet cloak, boots, and leather scroll satchel with 8-way facing, 4-frame walk cycle, foot collisions, Y-sorting, and a pixel-snapped follow camera.
+- **Opening Interaction:** Priority-selected `[E] INSPECT RUNE PEDESTAL` prompt opening the message: *"The bell has rung thirteen times. Something beneath the village is awakening."* plus a nearby village signpost.
+- **Minimal Medieval HUD:** Displays game title, current location (`BELLHAVEN VILLAGE`), chime indicator (`13TH CHIME`), and current objective (`Investigate the thirteenth bell.`).
 
 ## Validate
 
 ```powershell
 & './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --import
 & './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://tests/validate.gd
+& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://tests/validate_sjt.gd
+& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://tests/validate_zone.gd
 & './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --quit-after 300
 ```
 
-Optional graphical captures: `--path . --script res://tests/capture.gd`. This writes `tests/courtyard_preview.png` and `tests/terminal_preview.png` and exits. Regenerate original ground artwork using `--headless --path . --script res://scripts/tools/generate_tiles.gd`, then reimport.
+Regenerate procedural tiles or bitmap font with:
+- `--headless --path . --script res://scripts/tools/generate_tiles.gd`
+- `--headless --path . --script res://scripts/tools/generate_font.gd`
 
-See [architecture](docs/ARCHITECTURE.md), [validation](docs/VALIDATION.md), and [file summary](docs/FILES.md).
-
-## Phase 1.5 polish
-
-The collision layout and controls are preserved. Grass and paving have six variants; trees have layered canopies, and buildings have framed doors, windows, roof details, steps, and ground shadows. A visible stone edge marks the playable boundary.
-
-The student has a 39-pixel silhouette with a backpack, ID card, arm swing, foot motion, and a stationary ground shadow. The camera eases at 60 Hz and snaps its final displayed position to whole pixels. One-pixel stepping is intentional for crisp rendering.
-
-The HUD uses an original local bitmap font at native/integer sizes, shared margins, objective text, nearby prompts, and a guarded dialogue panel. Resize letterboxing outside the game viewport is intentional; there are no empty black areas inside the courtyard viewport.
-
-See [Phase 1.5 results](docs/PHASE_1_5.md). No dependencies or external assets were added. The capture script also produces boundary, character-pose, and resized-UI evidence.
+See [Game Design Document](docs/GAME_DESIGN.md), [Architecture](docs/ARCHITECTURE.md), [Validation](docs/VALIDATION.md), and [Files](docs/FILES.md).

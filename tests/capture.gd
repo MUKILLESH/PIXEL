@@ -15,7 +15,7 @@ func capture() -> void:
 	player.get_node("Camera2D").snap_to_target()
 	await physics_frame
 	await physics_frame
-	world.get_node("HUD").show_message("11:47 PM — You have 13 minutes.")
+	world.get_node("HUD").show_message("The bell has rung thirteen times. Something beneath the village is awakening.")
 	await process_frame
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png("res://tests/terminal_preview.png")
