@@ -7,6 +7,7 @@ export_presets.cfg
 *.tmp
 .mono/
 node_modules/
+Godot*.exe
 
 # OS files
 Thumbs.db
