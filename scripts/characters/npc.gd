@@ -107,6 +107,29 @@ func _draw() -> void:
 			patch(-5 + side, -35 + bob, 2, 5, "752d1b")
 			patch(-2 + side, -34 + bob, 1, 1, "242b38")
 			patch(1 + side, -34 + bob, 1, 1, "242b38")
+		"lyra":
+			# Lyra: traveling historian in teal-and-ochre coat, weathered cloak, headband, brass astrolabe & field journal
+			patch(-5, -27 + bob, 10, 17, "161924")
+			patch(-4, -12, 3, 10, "3d281a")
+			patch(1, -12, 3, 10, "3d281a")
+			patch(-5, -26 + bob, 10, 16, "2d5e58")
+			patch(-3, -25 + bob, 6, 15, "438c7f")
+			patch(-5, -16 + bob, 10, 2, "c9974c")
+			# Brass scroll satchel & astrolabe charm on right hip
+			patch(4, -22 + bob, 3, 7, "6e472b")
+			patch(4, -24 + bob, 3, 2, "e2d0a3")
+			patch(5, -17 + bob, 2, 2, "e6b85c")
+			# Open field journal in left hand
+			patch(-7, -18 + bob, 4, 4, "e8dcc0")
+			patch(-6, -17 + bob, 2, 2, "5c4632")
+			# Head, warm copper hair & teal explorer headband
+			patch(-4 + side, -37 + bob, 8, 9, "e8b590")
+			patch(-5 + side, -39 + bob, 10, 4, "8a472a")
+			patch(-5 + side, -36 + bob, 10, 2, "438c7f")
+			patch(-5 + side, -34 + bob, 2, 6, "753920")
+			patch(3 + side, -34 + bob, 2, 5, "753920")
+			patch(-2 + side, -33 + bob, 1, 1, "242b38")
+			patch(1 + side, -33 + bob, 1, 1, "242b38")
 		_:
 			# Sister Elara: cowled chronicler in sapphire robes, silver stole, open parchment tome
 			patch(-5, -27 + bob, 10, 17, "161924")

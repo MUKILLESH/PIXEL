@@ -10,6 +10,7 @@ signal proximity_changed(nearby: bool)
 
 var puzzle_solved: bool = false
 var gate_unlocked: bool = false
+var ready_to_travel: bool = false
 var letter_highlighted: bool = false
 var selected: bool = false
 var nearby_player: CharacterBody2D

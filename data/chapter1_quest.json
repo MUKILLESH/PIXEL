@@ -1,0 +1,129 @@
+{
+  "quest_id": "chapter1_whispers_of_briarwood",
+  "title": "Chapter 1: Whispers of Briarwood",
+  "bridge_solution": ["LEFT BEAM", "RIGHT PLANK", "ROPE LASHING"],
+  "mirror_solution": ["DAWN", "ZENITH", "DUSK"],
+  "objectives": [
+    {
+      "id": "enter_briarwood",
+      "text": "Follow the lantern trail into Briarwood Forest."
+    },
+    {
+      "id": "meet_lyra",
+      "text": "Meet Historian Lyra at the Forest Edge campsite."
+    },
+    {
+      "id": "investigate_bridge",
+      "text": "Investigate the broken bridge at the stream."
+    },
+    {
+      "id": "find_repair_materials",
+      "text": "Gather bridge materials at the worksite (0/3)."
+    },
+    {
+      "id": "repair_bridge",
+      "text": "Repair the old bridge across the stream."
+    },
+    {
+      "id": "discover_inscriptions",
+      "text": "Read the three ancient forest inscriptions (0/3)."
+    },
+    {
+      "id": "solve_mirror_puzzle",
+      "text": "Align the three mirrors in Mirror Grove."
+    },
+    {
+      "id": "activate_first_beacon",
+      "text": "Activate the First Ancient Beacon at the shrine."
+    },
+    {
+      "id": "experience_elena_recording",
+      "text": "Listen to Elena's echo at the First Beacon."
+    },
+    {
+      "id": "complete_chapter1",
+      "text": "Speak with Lyra at the shrine to chart Floodmill."
+    }
+  ],
+  "npcs": {
+    "lyra": {
+      "speaker": "HISTORIAN LYRA",
+      "before_entry": [
+        "Hold on, traveler—check the Forest Edge trail waystone first so you get your bearings in this mist."
+      ],
+      "meet_lyra": [
+        "LYRA: \"You came from Bellhaven, didn't you?\"   AREN: \"How could you know?\"",
+        "LYRA: \"Because the forest has been whispering that name since the thirteenth toll.\"",
+        "I'm Lyra—a traveling historian. Sister Elara tends Bellhaven's temple ledgers, while I walk the wilds chasing places every modern map conveniently forgot.",
+        "Your mother Elena camped by this very hearth months ago. Her trail leads north across the stream, except the Old Bridge is down. Let's inspect the crossing together."
+      ],
+      "bridge_search": [
+        "Once we've seen the collapsed span, check the abandoned carpenter's worksite east of Whispering Fork. We'll need two sound oak planks, a coil of hemp rope, and whatever plan the builder left behind."
+      ],
+      "bridge_ready": [
+        "Two planks and a rope coil—classic timber engineering. Follow the worksite ledger in order: LEFT BEAM, then RIGHT PLANK, then ROPE LASHING."
+      ],
+      "north_exploration": [
+        "Notice these sunken foundations, Aren? Nobody in Bellhaven remembers a village named Oakhaven, yet its paving stones match Elena's oldest sketches.",
+        "To lower the shrine's light barrier in Mirror Grove, read all three ancient stone inscriptions nearby—West, Center, and East—for the mirror angles."
+      ],
+      "mirror_ready": [
+        "All three carved verses match Elena's field notes! Step up to the Mirror Grove dais and align WEST to DAWN, CENTER to ZENITH, and EAST to DUSK."
+      ],
+      "beacon_ready": [
+        "The mirror light broke the barrier! Approach the First Ancient Beacon at the northern sanctuary and wake its core."
+      ],
+      "echo_ready": [
+        "Look at the crystal—it's humming with stored memory! Touch the First Ancient Beacon again to hear what Elena left behind."
+      ],
+      "finale": [
+        "Did you hear her voice, Aren? \"There are truths the bell was built to silence.\" Whatever the Great Bell hides, it erased whole towns like this one.",
+        "And look inside the beacon plinth—Elena etched a brass hydro-compass bearing pointing southeast toward Floodmill Wetlands.",
+        "Two beacons remain, mapmaker. Ready your satchel when we march for the Drowned Village—I wouldn't miss the next chapter for all the ink in Ashvale."
+      ],
+      "completed": [
+        "The First Ancient Beacon shines steady over Briarwood. Whenever Chapter 2 begins, that southeast gate opens toward Floodmill Wetlands."
+      ]
+    }
+  },
+  "story_events": {
+    "forest_entry": [
+      "Cool pine resin replaces Bellhaven's coal smoke as lantern-lit roots curve beneath an emerald canopy.",
+      "Ahead by a flickering trailhead campfire waits a historian poring over weathered brass charts—and footprints older than the village."
+    ],
+    "broken_bridge_inspect": [
+      "The Old Bridge's center span has dropped into the rushing turquoise stream, snapping its western beams.",
+      "Across the Whispering Fork signpost, timber stacks mark an abandoned carpenter's worksite east of here—likely holding the oak planks, rope, and repair ledger we need."
+    ],
+    "worksite_clue": [
+      "CARPENTER'S LEDGER: \"Span repair order—Step 1: Set the sturdy LEFT BEAM. Step 2: Lay the RIGHT PLANK deck. Step 3: Bind fast with ROPE LASHING.\"",
+      "The inked diagram confirms every piece is still lying nearby among the timber stacks."
+    ],
+    "inscription_west": [
+      "WEATHERED MONOLITH (WEST): \"Before the Great Bell rang in Ashvale, Oakhaven kept dawn watch by beacon fire—till one solstice scrubbed our roofs from every parchment.\"",
+      "CARVED KEYSTONE NOTE: \"First glass catches morning light—turn the WEST MIRROR toward DAWN.\""
+    ],
+    "inscription_center": [
+      "MOSSY ARCHSTONE (CENTER): \"Travelers forget the names of sisters and bridges after curfew; only etched stone remembers what the storm-bell demands in payment.\"",
+      "CARVED KEYSTONE NOTE: \"Noon ray rises straight overhead—set the CENTER MIRROR toward ZENITH.\""
+    ],
+    "inscription_east": [
+      "SHATTERED FOUNTAIN STELE (EAST): \"Elena's chalk sits beside ancient runes: 'Three beacons share one dawn. Do not trust the twelfth chime alone.'\"",
+      "CARVED KEYSTONE NOTE: \"Last glass reflects twilight gold—angle the EAST MIRROR toward DUSK.\""
+    ],
+    "beacon_activation": [
+      "Golden-cyan fire climbs the spiral stone pillar as the First Ancient Beacon locks into resonance with the Mirror Grove rays.",
+      "Deep within the crystal heart, a translucent golden ripple shimmers—awaiting Aren's touch to speak Elena's stored memory."
+    ],
+    "elena_recording": [
+      "ELENA'S ECHO: \"If you found this, Aren, then the first beacon still remembers.\"",
+      "AREN: \"Mother?\"",
+      "ELENA'S ECHO: \"There are truths the bell was built to silence. Find the others.\"",
+      "The luminous memory dissolves into warm sparks, leaving a hydro-compass bearing pointing southeast toward Floodmill. Speak with Lyra by the shrine."
+    ],
+    "ruined_camp_note": [
+      "RUINED SURVEY CAMP: An overturned inkwell, two tin mugs, and a torn vellum strip stamped with both Elena's compass and Lyra's archive seal.",
+      "LYRA'S MARGINALIA: \"Oakhaven vanished the same winter Bellhaven hung the Great Bell. Someone wanted the beacons forgotten.\""
+    ]
+  }
+}

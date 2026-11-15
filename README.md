@@ -1,53 +1,64 @@
-# ASHVALE: THE THIRTEENTH BELL — Phase 1 Story Prologue
+# ASHVALE: THE THIRTEENTH BELL
 
-**Playable Story Prologue: "The Thirteenth Toll" (Bellhaven Village)**
+An isometric 2.5D pixel-art mystery adventure built in **Godot 4.7.2 Standard** (`GDScript`).
 
-An isometric 2.5D pixel-art fantasy adventure built in **Godot 4.7.2 Standard (GDScript)**. See the canonical [Game Design Document](docs/GAME_DESIGN.md) for the full kingdom narrative across five regions, six chapters, companions, and long-term roadmap.
+After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time, apprentice mapmaker **Aren** uncovers a rune cipher leading to his missing mother **Elena** and steps into **Briarwood Forest** alongside traveling historian **Lyra** to awaken the First Ancient Beacon.
 
-## Story Premise
+## Controls
 
-In the kingdom of **Ashvale**, the enchanted Great Bell normally tolls twelve times to hold back the supernatural Veilstorm—quietly consuming villagers' memories in return. One night it strikes **thirteen times**. **Aren**, a young apprentice mapmaker in **Bellhaven Village** whose mother **Elena** vanished alongside historian **Lyra** while mapping three lost Ancient Beacons, must uncover why the pact is cracking and open the road toward **Briarwood Forest**.
+- **Move:** `WASD` / `Arrow Keys`
+- **Interact / Advance Dialogue / Confirm Puzzle:** `E`, `Enter`, or `Space`
+- **Dismiss / Cancel UI:** `Esc`
+- **Field Satchel (Inventory & Clues):** `I` or `Tab`
+- **Title / System Menu (New Game, Continue, Manual Save, Satchel):** `M` or `F10`
+- **Quick Save Progress:** `F5`
+- **In Minigames (`RunePuzzle`, `BridgeRepair`, `MirrorPuzzle`):** `W/S` or `Up/Down` selects rows, `A/D` or `Left/Right` cycles values, `E`/`Enter` verifies, `Esc` closes cleanly, or click UI buttons directly
 
-## Play & Manual Playtest Walkthrough
+## Playable Progression
 
-1. Launch the project in **Godot 4.7.2** (`F5`, opens `scenes/sjt_exterior.tscn`) or run from PowerShell:
+### Prologue — The Thirteenth Toll (`scenes/sjt_exterior.tscn`)
+1. Inspect the humming **Stone Rune Pedestal** in Bellhaven Square.
+2. Speak with **Master Caelen**, **Mira**, and **Sister Elara** (`0/3 -> 3/3`) to uncover the `MOON`, `SUN`, `STAR` clues.
+3. Recover **Mother's Letter** from Caelen's locked survey chest beside the cottage.
+4. Solve the 3-ring **Rune-Alignment Minigame** (`MOON`, `SUN`, `STAR`).
+5. Awaken the southwest **Briarwood Waystone** to complete the prologue (`PROLOGUE COMPLETE — THE THIRTEENTH TOLL`), then press `E` twice at the awakened gate to enter Briarwood Forest.
+
+### Chapter 1 — Whispers of Briarwood (`scenes/briarwood_forest.tscn`)
+1. Inspect the **Briarwood Trail Waystone** at the **Forest Edge** (`enter_briarwood`).
+2. Meet **Historian Lyra** beside her campfire (`meet_lyra`).
+3. Investigate the collapsed **Old Bridge** northwest of **Whispering Fork** (`investigate_bridge`).
+4. Read the carpenter's ledger and gather **3 repair materials** (`plank_1`, `plank_2`, `rope_coil`) from the **Carpenter's Worksite** (`find_repair_materials`).
+5. Solve **Minigame A (`BridgeRepair`)** in order: `LEFT BEAM`, `RIGHT PLANK`, `ROPE LASHING` (`repair_bridge`), reopening the physical crossing over the stream.
+6. Read the **3 ancient Oakhaven inscriptions** (`west`, `center`, `east` -> `DAWN`, `ZENITH`, `DUSK`) north of the bridge (`discover_inscriptions`). *(Optional discovery: search the eastern **Ruined Camp** survey chest.)*
+7. Solve **Minigame B (`MirrorPuzzle`)** at **Mirror Grove**: `DAWN`, `ZENITH`, `DUSK` (`solve_mirror_puzzle`).
+8. Activate the **First Ancient Beacon** at the northern shrine (`activate_first_beacon`).
+9. Experience **Elena's Memory Echo** (`experience_elena_recording`).
+10. Speak with **Lyra** at the Beacon Shrine to chart **Floodmill Wetlands**, displaying `CHAPTER 1 COMPLETE — WHISPERS OF BRIARWOOD` and unlocking the **Floodmill Trail Gate** (`complete_chapter1`).
+
+## Save System & Resume Flow
+
+- Progress is stored atomically at `user://ashvale_save.json` with `.tmp` staging and `.bak` backup rotation (`SAVE_VERSION := 1`).
+- Saved state includes the active region scene (`res://scenes/sjt_exterior.tscn` or `res://scenes/briarwood_forest.tscn`), Aren's exact position and facing direction, completed objectives, inventory/clues, bridge & mirror states, beacon activation, and NPC positions.
+- Corrupted primary saves or mismatched schemas are rejected cleanly and automatically fall back to `user://ashvale_save.json.bak` when valid.
+
+## Running & Validation
 
 ```powershell
-& './Godot_v4.7.2-stable_win64_console.exe' --path .
+# Launch playable startup scene
+.\Godot_v4.7.2-stable_win64_console.exe
+
+# Run automated validation suites
+.\Godot_v4.7.2-stable_win64_console.exe --headless --import
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_sjt.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_zone.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase1.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase2.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase2_5.gd
+
+# Generate screenshot captures
+.\Godot_v4.7.2-stable_win64_console.exe -s res://tests/capture_sjt.gd
+.\Godot_v4.7.2-stable_win64_console.exe -s res://tests/capture_briarwood.gd
 ```
 
-2. **Controls:**
-   - **Move:** `WASD` or Arrow Keys
-   - **Interact / Advance Dialogue:** `E`
-   - **Close Dialogue / Puzzle:** `ESC` (safely backs out without losing state or locking movement)
-   - **Rune Pedestal Puzzle:** `W`/`S` (or `Up`/`Down` / click ring button) to select ring, `A`/`D` (or `Left`/`Right` / `<` `>`) to rotate symbol, `E`/`Enter` (or `[ ALIGN RUNES ]`) to test alignment, `ESC` (or `[ CLOSE ]`) to exit.
-   - See [Validation](docs/VALIDATION.md) for automated test coverage and the remaining manual playtest checklist before Phase 2.
-
-3. **Prologue Progression (Objectives 1–6):**
-   - **Objective 1 (`investigate_bell`):** Walk to the glowing **Stone Rune Pedestal** on the eastern cobbles and press `E` to inspect the omen of the thirteenth chime.
-   - **Objective 2 (`speak_npcs`):** Speak with all three villagers (**Master Caelen** near the belfry square, **Mira** outside the blacksmith hearth, and **Sister Elara** near the village well). Talking before inspecting the pedestal or repeating the same villager will not bypass the `0/3 -> 3/3` counter; each villager gives one ring clue and Caelen hands over the survey chest key.
-   - **Objective 3 (`find_mothers_letter`):** Inspect Elena's highlighted **Sealed Survey Chest** beside the cottage door to read Mother's letter.
-   - **Objective 4 (`solve_rune_puzzle`):** Return to the **Stone Rune Pedestal**, open the 3-ring alignment cipher, and set **OUTER RING: `MOON`**, **MIDDLE RING: `SUN`**, **INNER RING: `STAR`**.
-   - **Objective 5 (`discover_briarwood_path`):** Follow the golden-cyan beacon ray southwest to the awakened **Briarwood Waystone** gate.
-   - **Objective 6 (`trigger_prologue_completion`):** Read the closing revelation at the waystone and dismiss **`PROLOGUE COMPLETE — THE THIRTEENTH TOLL`** (`E` or `ESC`) to unlock **Briarwood Forest** for **Chapter 1: Whispers of Briarwood**, then freely explore Bellhaven to hear updated NPC dialogue.
-
-## Validate & Capture
-
-```powershell
-& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --import
-& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://tests/validate.gd
-& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://tests/validate_sjt.gd
-& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://tests/validate_zone.gd
-& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://tests/validate_phase1.gd
-& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --quit-after 300
-```
-
-Render verification screenshots (`tests/*.png`):
-- `& './Godot_v4.7.2-stable_win64_console.exe' --path . --script res://tests/capture_sjt.gd`
-- `& './Godot_v4.7.2-stable_win64_console.exe' --path . --script res://tests/capture.gd`
-
-Regenerate procedural tiles or bitmap font:
-- `& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://scripts/tools/generate_tiles.gd`
-- `& './Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script res://scripts/tools/generate_font.gd`
-
-See [Game Design Document](docs/GAME_DESIGN.md), [Architecture](docs/ARCHITECTURE.md), [Validation](docs/VALIDATION.md), and [Files](docs/FILES.md).
+See [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/FILES.md](docs/FILES.md), and [docs/VALIDATION.md](docs/VALIDATION.md) for architecture, file inventory, and manual QA steps.

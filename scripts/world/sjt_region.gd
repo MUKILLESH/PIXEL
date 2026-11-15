@@ -96,6 +96,12 @@ func _ready() -> void:
 	$HUD/Subtitle.text = "BELLHAVEN VILLAGE"
 	$Actors/Player/Camera2D.framing = Vector2(0, -96)
 	$Actors/Player/Camera2D.snap_to_target()
+	if QuestManagerScript.pending_load_path != "":
+		var load_p: String = QuestManagerScript.pending_load_path
+		QuestManagerScript.pending_load_path = ""
+		apply_saved_state(load_p)
+	else:
+		_sync_world_from_quest()
 	$Landscape.queue_redraw()
 
 func _on_objective_completed(objective_id: String) -> void:
@@ -119,3 +125,62 @@ func _on_objective_completed(objective_id: String) -> void:
 			$Landscape.queue_redraw()
 		"trigger_prologue_completion":
 			briarwood_gate.refresh_prompt("[E] INSPECT BRIARWOOD WAYSTONE")
+
+func _sync_world_from_quest() -> void:
+	if quest_manager == null:
+		return
+	if mothers_letter != null:
+		mothers_letter.letter_highlighted = (quest_manager.get_current_objective_id() == "find_mothers_letter")
+		mothers_letter.refresh_prompt("[E] READ MOTHER'S LETTER" if quest_manager.can_open_mothers_letter() else "[E] INSPECT SEALED CHEST")
+		mothers_letter.queue_redraw()
+	var term := get_node_or_null("Actors/Terminal") as StaticBody2D
+	if term != null:
+		term.puzzle_solved = quest_manager.puzzle_solved
+		if quest_manager.puzzle_solved:
+			term.refresh_prompt("[E] EXAMINE GLOWING PEDESTAL")
+		elif quest_manager.can_open_rune_puzzle():
+			term.refresh_prompt("[E] ALIGN RUNE PEDESTAL")
+		else:
+			term.refresh_prompt("[E] INSPECT RUNE PEDESTAL")
+		term.queue_redraw()
+	var rune_ui := get_node_or_null("HUD/RunePuzzle")
+	if rune_ui != null:
+		rune_ui.set("solved", quest_manager.puzzle_solved)
+	if briarwood_gate != null:
+		briarwood_gate.gate_unlocked = quest_manager.puzzle_solved
+		briarwood_gate.ready_to_travel = false
+		if quest_manager.prologue_completed:
+			briarwood_gate.refresh_prompt("[E] INSPECT BRIARWOOD WAYSTONE")
+		elif quest_manager.puzzle_solved:
+			briarwood_gate.refresh_prompt("[E] APPROACH BRIARWOOD WAYSTONE")
+		else:
+			briarwood_gate.refresh_prompt("[E] INSPECT BRIARWOOD WAYSTONE")
+		briarwood_gate.queue_redraw()
+	$Landscape.pedestal_awakened = quest_manager.puzzle_solved
+	$Landscape.queue_redraw()
+
+func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
+	if quest_manager == null:
+		return false
+	if quest_manager.load_from_file(path):
+		if quest_manager.has_saved_player_pose:
+			$Actors/Player.position = quest_manager.saved_player_position
+			$Actors/Player.facing = quest_manager.saved_player_facing
+			$Actors/Player/Camera2D.snap_to_target()
+		_sync_world_from_quest()
+		return true
+	return false
+
+func reset_new_game() -> void:
+	if quest_manager != null:
+		quest_manager.reload_quest("res://data/prologue_quest.json")
+	$Actors/Player.position = Vector2(10, 44)
+	$Actors/Player.facing = 2
+	$Actors/Player.movement_locked = false
+	$Actors/Player/Camera2D.snap_to_target()
+	_sync_world_from_quest()
+
+func travel_to_briarwood() -> void:
+	if quest_manager != null and quest_manager.briarwood_unlocked and is_inside_tree():
+		QuestManagerScript.carry_prologue_completed = true
+		get_tree().change_scene_to_file("res://scenes/briarwood_forest.tscn")
