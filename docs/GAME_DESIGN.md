@@ -4,7 +4,7 @@
 > **Perspective:** Isometric 2.5D Pixel Art (640×360 native viewport, 2:1 diamond projection, integer scaling)  
 > **Genre:** Medieval Fantasy Adventure, Exploration, Mystery, Story-Driven Puzzles  
 > **Core Themes:** Memory, Sacrifice, Truth, and Hope  
-> **Status:** Canonical Design Reference (Phase 1 — Playable Prologue Active)
+> **Status:** Canonical Design Reference (Phase 3 — Playable Prologue, Chapter 1 & Chapter 2 Active)
 
 ---
 
@@ -27,19 +27,19 @@ Ashvale spans **five interconnected regions**, traversed in strict chronological
    - **Key Sites:** Bellhaven Square, Cartographer's Cottage & Sealed Survey Chest, Blacksmith Workshop, Bellhaven Belfry, Stone Well, Anvil Plinth, and the Briarwood Waystone Gate.
    - **Role:** 15–20 minute playable story prologue establishing the thirteenth chime, Aren's mother Elena's trail, the Rune-Alignment cipher, and the awakening of the Briarwood road.
 
-2. **Briarwood Forest (Chapter 1)**
-   - **Atmosphere:** Mist-shrouded old-growth woods choked with silver-barked briars, fallen survey markers, and mossy lantern shrines.
-   - **Role:** Reunion with companion historian **Lyra**, waystone alignment, memory echoes of Elena's expedition, and trail toward the **First Ancient Beacon**.
+2. **Briarwood Forest (Chapter 1 — Playable in Phase 2/2.5)**
+   - **Atmosphere:** Mist-shrouded old-growth woods choked with silver-barked briars, fallen survey markers, Carpenter's Worksite, Mirror Grove, and mossy lantern shrines.
+   - **Role:** Reunion with companion historian **Lyra**, bridge reconstruction (`BridgeRepair`), solar mirror alignment (`MirrorPuzzle`), and awakening the **First Ancient Beacon**.
 
-3. **Floodmill Wetlands (Chapter 2)**
-   - **Atmosphere:** Sunken watermills, reed-choked canals, half-submerged ruins known as the Drowned Village, and pale fog over dark water.
-   - **Role:** Canal sluice and water-level routing puzzles culminating in igniting the **First Ancient Beacon** (or Second Beacon convergence—see Chapter flow below).
+3. **Floodmill Wetlands / The Drowned Village (Chapter 2 — Playable in Phase 3)**
+   - **Atmosphere:** Abandoned half-submerged medieval village, Miller's Cottage, Ruined Homestead, Old Watermill, Canal Lockhouse & Sluice Canal, cutaway Forgotten Archive library, and Second Beacon Sanctuary.
+   - **Role:** Watermill repair (`WatermillRepair`), canal sluice control (`SluicePuzzle`), archive ledger reconstruction (`LedgerPuzzle`), uncovering the erased thirty-six hearths, awakening the **Second Ancient Beacon**, and unlocking the **Ironwatch Keep** mountain gate.
 
-4. **Ironwatch Keep (Chapter 3)**
+4. **Ironwatch Keep (Chapter 3 — Planned)**
    - **Atmosphere:** Basalt fortress guarding the mountain pass, lit by iron braziers and patrolled by Wardens sworn to protect the Great Bell's secret.
-   - **Role:** Confrontation with **Commander Vane** and the truth of *The Keeper's Lie*, forge locks, and the **Second Ancient Beacon**.
+   - **Role:** Confrontation with **Commander Vane**, forged chronicle truths (*The Keeper's Lie*), and the trail toward **Dawnspire Mountain**.
 
-5. **Dawnspire Mountain & The Summit Sanctum (Chapter 4 & Final Chapter)**
+5. **Dawnspire Mountain & The Summit Sanctum (Chapter 4 & Final Chapter — Planned)**
    - **Atmosphere:** Wind-carved alpine switchbacks, frost-rimmed obelisks overlooking the churning Veilstorm, and the colossal Great Bell belfry.
    - **Role:** Ascent to Dawnspire, kindling the **Third Ancient Beacon**, discovering Elena's final sacrifice, and ending the Bell's curse.
 
@@ -82,14 +82,14 @@ Progression follows a **strict chronological order**. Players explore freely wit
 5. **Discover the Path to Briarwood:** Aren approaches the parting silver-briared **Briarwood Waystone**, discovering the first Ancient Beacon lies within Briarwood Forest where Elena and Lyra searched.
 6. **Prologue Completion Sequence:** Connecting the beacon's light to his mother's final footsteps, Aren commits to leaving Bellhaven at dawn. Displays **"PROLOGUE COMPLETE — THE THIRTEENTH TOLL"** and unlocks Briarwood for Phase 2.
 
-### Chapter 1: *Whispers of Briarwood* (Briarwood Forest)
-- Aren crosses into misty Briarwood, meets **Lyra**, aligns fallen trail shrines using Elena's field journal, and uncovers the forest's hidden Beacon ante-chamber.
+### Chapter 1: *Whispers of Briarwood* (Briarwood Forest — Phase 2/2.5 Playable)
+- Aren crosses into misty Briarwood, meets **Lyra**, repairs the collapsed **Old Bridge** (`LEFT BEAM`, `RIGHT PLANK`, `ROPE LASHING`), aligns the **Mirror Grove** (`DAWN`, `ZENITH`, `DUSK`) using three forest inscriptions, ignites the **First Ancient Beacon**, and hears Elena's first memory echo pointing to Floodmill.
 
-### Chapter 2: *The Drowned Village* (Floodmill Wetlands)
-- Navigating sunken canals and forgotten homesteads, Aren and Lyra solve water-lock puzzles to reveal the submerged temple housing the **First Ancient Beacon** and restore its flame, returning long-lost childhood memories to Bellhaven.
+### Chapter 2: *The Drowned Village* (Floodmill Wetlands — Phase 3 Playable)
+- Entering abandoned Floodmill, Aren and Lyra inspect the chiseled Census Stone, repair the **Old Watermill** (`IRON DRIVE GEAR`, `BRONZE PINION`, `OAK COUPLING BELT`), drain the **Archive Causeway** via the **Canal Sluice Console** (`DIVERT`, `DRAIN`, `OPEN`), gather three surviving fragments inside the cutaway **Forgotten Archive**, reconstruct the **Master Village Ledger** (`THIRTY-SIX HEARTHS`, `MEMORY OFFERING`, `IRONWATCH SEAL`) proving Floodmill's thirty-six families were erased as a memory offering, rekindle the **Second Ancient Beacon**, witness Elena's second echo, and unlock the eastern pass toward **Ironwatch Keep**.
 
 ### Chapter 3: *The Keeper's Lie* (Ironwatch Keep)
-- Reaching the mountain fortress, Aren and Lyra confront **Commander Vane** and expose forged chronologies proving the Bell was never meant to be permanent. Solving Ironwatch's great foundry locks rekindles the **Second Ancient Beacon**.
+- Reaching the mountain fortress, Aren and Lyra confront **Commander Vane** and expose forged chronologies proving the Bell was never meant to be permanent.
 
 ### Chapter 4: *The Road to Dawnspire* (Alpine Ascent)
 - As the Veilstorm closes in and the 13th chime tolls faster, Aren and Lyra climb the shattered pilgrim switchbacks, piecing together Elena's final camp and map fragments.
@@ -103,25 +103,27 @@ Progression follows a **strict chronological order**. Players explore freely wit
 
 1. **Concentric Rune Alignment (Prologue — Implemented in Phase 1):**  
    Rotate three concentric carved stone rings (`Outer`, `Middle`, `Inner`) against a fixed zenith marker until the three symbols match clues discovered from villagers and Elena's letter (`MOON`, `SUN`, `STAR`). Supports mouse clicks and keyboard (`W/S` ring selection, `A/D` rotation, `E/Enter` confirm, `ESC` exit).
-2. **Waystone Triangulation & Canal Sluices (Chapters 1–2):**  
-   Mapline tracing and water-gate routing puzzles.
-3. **Bell Resonance & Forge Counterweights (Chapters 3–5):**  
+2. **Old Bridge Repair & Mirror Grove Alignment (Chapter 1 — Implemented in Phase 2):**  
+   Sequential structural timber/rope assembly (`BridgeRepair`: `LEFT BEAM`, `RIGHT PLANK`, `ROPE LASHING`) and three-mirror solar beam triangulation (`MirrorPuzzle`: `DAWN`, `ZENITH`, `DUSK`).
+3. **Watermill Gearbox, Canal Sluice Routing & Ledger Reconstruction (Chapter 2 — Implemented in Phase 3):**  
+   `WatermillRepair` (`IRON DRIVE GEAR`, `BRONZE PINION`, `OAK COUPLING BELT`), `SluicePuzzle` (`DIVERT`, `DRAIN`, `OPEN` lowering water depth to `0` cubits), and `LedgerPuzzle` (`THIRTY-SIX HEARTHS`, `MEMORY OFFERING`, `IRONWATCH SEAL`).
+4. **Bell Resonance & Forge Counterweights (Chapters 3–5):**  
    Harmonic chime-ripple sequences and brazier-beam alignment.
 
 ---
 
 ## 6. Quest & Progression Rules
 
-- **Strict Ordering:** Prologue objectives (1 through 6) advance only sequentially via unique quest IDs; out-of-order interactions show diegetic locked feedback without bypassing progression.
-- **No Repeat Farming / Exploits:** Unique story flags gate every NPC count (`talked_npcs` tracked per `npc_id`), letter pickup, and puzzle completion (`puzzle_solved` prevents re-triggering rewards).
-- **Stage-Aware World & Dialogue:** Talking to Bellhaven NPCs updates dynamically as quest stages advance, ensuring players never become soft-locked if they revisit clues.
+- **Strict Ordering:** Prologue, Chapter 1, and Chapter 2 objectives advance only sequentially via unique quest IDs; out-of-order interactions show diegetic locked feedback without bypassing progression.
+- **No Repeat Farming / Exploits:** Unique story flags gate every NPC count (`talked_npcs`), item/part pickup (`materials_collected`, `mill_parts_collected`), archive records (`archive_clues_found`), optional discoveries (`optional_discoveries`), and puzzle/chapter completion flags.
+- **Stage-Aware World & Dialogue:** Talking to Bellhaven NPCs and traveling historian Lyra updates dynamically across every story milestone, ensuring players never become soft-locked if they revisit clues.
 
 ---
 
 ## 7. Development Phases
 
 - **Phase 0 (Completed):** Isometric pixel-art foundation in Bellhaven Village, Aren controller & sprite, pixel-snapped camera, collisions, and basic HUD.
-- **Phase 1 (Current Milestone — Playable Prologue):** Canonical story revision, reusable NPC & Dialogue System (`Master Caelen`, `Mira`, `Sister Elara`), data-driven `QuestManager` with 6 ordered objectives, **Rune-Alignment Minigame**, **Mother's Letter**, **Briarwood Waystone Gate**, environmental night lighting/idle animations, and `"PROLOGUE COMPLETE — THE THIRTEENTH TOLL"` ending sequence.
-- **Phase 2:** Briarwood Forest & Floodmill Wetlands, companion Lyra following/dialogue, Chapter 1 & Chapter 2 quests.
-- **Phase 3:** Ironwatch Keep, Commander Vane narrative arc, and Second Ancient Beacon.
-- **Phase 4:** Dawnspire Mountain ascent, Third Beacon, Final Chapter cutscene, save/load persistence, and audio mix.
+- **Phase 1 (Completed):** Playable Prologue in Bellhaven Village (`data/prologue_quest.json`), NPC & dialogue system, Rune Puzzle, Mother's Letter, and Briarwood Waystone.
+- **Phase 2 & 2.5 (Completed):** Briarwood Forest (`scenes/briarwood_forest.tscn`), Historian Lyra companion progression, `BridgeRepair` & `MirrorPuzzle`, First Ancient Beacon, Field Satchel (`InventoryPanel`), `TitleMenu`, cross-region save/resume (`SAVE_VERSION = 1`), and `.bak` recovery.
+- **Phase 3 (Completed):** Floodmill Wetlands / The Drowned Village (`scenes/floodmill_village.tscn`), 5 isometric buildings including rotating Old Watermill and cutaway Forgotten Archive Hall, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`, Second Ancient Beacon, `SAVE_VERSION = 2` with `v1` compatibility, and Ironwatch Keep gate unlock.
+- **Future Phases (Chapters 3–5):** Ironwatch Keep, Commander Vane narrative arc, Dawnspire Mountain ascent, Third Ancient Beacon, Final Chapter cutscene, and full audio mix.

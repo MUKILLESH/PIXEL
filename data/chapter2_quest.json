@@ -1,0 +1,183 @@
+{
+  "quest_id": "chapter2_drowned_village",
+  "title": "Chapter 2: The Drowned Village",
+  "watermill_solution": ["IRON DRIVE GEAR", "BRONZE PINION", "OAK COUPLING BELT"],
+  "sluice_solution": ["DIVERT", "DRAIN", "OPEN"],
+  "ledger_solution": ["THIRTY-SIX HEARTHS", "MEMORY OFFERING", "IRONWATCH SEAL"],
+  "objectives": [
+    {
+      "id": "enter_floodmill",
+      "text": "Follow the sunken causeway into Floodmill."
+    },
+    {
+      "id": "speak_lyra_arrival",
+      "text": "Speak with Lyra overlooking the drowned village."
+    },
+    {
+      "id": "explore_ruined_village",
+      "text": "Inspect the Floodmill census stone in the village square."
+    },
+    {
+      "id": "discover_watermill",
+      "text": "Examine the broken watermill on the east bank."
+    },
+    {
+      "id": "find_watermill_parts",
+      "text": "Find the watermill repair components (0/3)."
+    },
+    {
+      "id": "restore_watermill",
+      "text": "Restore the watermill mechanism."
+    },
+    {
+      "id": "investigate_sluice_gates",
+      "text": "Investigate the canal sluice-gate console."
+    },
+    {
+      "id": "redirect_water_flow",
+      "text": "Redirect sluice channels to drain the archive path."
+    },
+    {
+      "id": "enter_forgotten_archive",
+      "text": "Cross the drained causeway and enter the Forgotten Archive."
+    },
+    {
+      "id": "reconstruct_village_ledger",
+      "text": "Gather 3 damaged records and reconstruct the ledger (0/3)."
+    },
+    {
+      "id": "discover_villagers_truth",
+      "text": "Read the restored ledger to uncover the villagers' fate."
+    },
+    {
+      "id": "restore_second_beacon",
+      "text": "Restore the Second Ancient Beacon at the sanctuary."
+    },
+    {
+      "id": "witness_elena_message",
+      "text": "Listen to Elena's recorded message at the Second Beacon."
+    },
+    {
+      "id": "complete_chapter2",
+      "text": "Speak with Lyra at the sanctuary to unlock Ironwatch Keep."
+    }
+  ],
+  "npcs": {
+    "lyra": {
+      "speaker": "HISTORIAN LYRA",
+      "before_entry": [
+        "Hold a moment, Aren—inspect the sunken entrance arch first to orient Elena's hydro-compass."
+      ],
+      "arrival": [
+        "LYRA: \"Look down at the rooftops sticking through the reeds, Aren. No storm drowned this basin—someone lowered the flood-weirs decades ago and scrubbed the parish off every road map.\"",
+        "AREN: \"There's a census plinth still standing in the lower square.\"",
+        "LYRA: \"Let's walk through the deserted lanes and inspect that census stone together. I want to see how many hearths the kingdom pretended never existed.\""
+      ],
+      "explore_village": [
+        "Walk into the mossy square north-east of here and examine the carved Floodmill Census Stone. Take in the deserted cottages too—even their doorplates were chiseled blank."
+      ],
+      "watermill_search": [
+        "No names left on any lintel, and look east—the Old Watermill's wheel hangs snapped in its raceway. Go inspect the broken watermill mechanism first so we know which gears are missing."
+      ],
+      "watermill_parts": [
+        "Check the millwright's maintenance diagram beside the east wall, then recover all three components: the Iron Drive Gear, Bronze Pinion, and Oak Coupling Belt."
+      ],
+      "watermill_ready": [
+        "We have all three parts! Follow the millwright's diagram at the broken watermill: Seat the IRON DRIVE GEAR, mesh the BRONZE PINION, and loop the OAK COUPLING BELT."
+      ],
+      "sluice_search": [
+        "Hear that rumble? The millwheel is turning the pump shaft again! Head north to the Canal Sluice Console and inspect how the floodwaters seal off the western archive causeway."
+      ],
+      "sluice_ready": [
+        "Check the canal depth gauge on the south bank, then set the three sluice gates: WEST WEIR to DIVERT, CENTER LOCK to DRAIN, and EAST SPILLWAY to OPEN."
+      ],
+      "archive_search": [
+        "The floodwaters dropped off the stone steps! Walk north across the drained causeway into the Forgotten Archive building beyond the canal."
+      ],
+      "archive_clues": [
+        "Three water-stained archive records survived on these shelves and desks. Gather all three fragments before reconstructing the Master Village Ledger at the center table."
+      ],
+      "ledger_ready": [
+        "Three fragments from three different desks—they fit right into the missing columns of the ledger! Bind the truth at the central ledger table: THIRTY-SIX HEARTHS, MEMORY OFFERING, and IRONWATCH SEAL."
+      ],
+      "truth_reveal": [
+        "Wait—the wax binding opened cleanly. Examine the restored Master Ledger on the center table to read the full truth behind Floodmill's disappearance."
+      ],
+      "beacon_ready": [
+        "LYRA: \"Thirty-six families didn't flee, Aren. Their names were bound into the Great Bell's ward—we have to rekindle the Second Ancient Beacon north-east of here before stone forgets too.\""
+      ],
+      "echo_ready": [
+        "Look at the crystal atop the Second Beacon—another memory ripple from Elena is waking! Touch the beacon core again to hear her message."
+      ],
+      "finale": [
+        "LYRA: \"If Ironwatch Keep holds the evacuation edicts, then someone living still profits from hiding that ledger.\"",
+        "AREN: \"Mother stayed on this trail to prove the beacons could replace the bell's price. Let's take the eastern pass to Ironwatch Keep.\"",
+        "LYRA: \"Stay close, mapmaker. Whatever awaits behind those basalt gates, we face Chapter 3 together.\""
+      ],
+      "completed": [
+        "The Second Ancient Beacon burns steady above the marshes, and the eastern road to Ironwatch Keep stands unlocked ahead."
+      ]
+    }
+  },
+  "story_events": {
+    "floodmill_entry": [
+      "Cold marsh mist curls over sunken flagstones as Briarwood's pines give way to flooded timber roofs and silent willow boughs.",
+      "Ahead by the broken causeway lantern stands Lyra, comparing Elena's brass compass against a settlement missing from every royal atlas."
+    ],
+    "village_monument": [
+      "FLOODMILL CENSUS STONE: \"Parish of Floodmill—Wait...\" Every carved family name beneath the heading has been ground flat with a cold chisel, leaving only blank stone hollows.",
+      "Beside the ruined east bank rises the silhouette of the Old Watermill, its timber wheel jammed above a choked millstream."
+    ],
+    "homestead_locket_note": [
+      "WEAVER'S HOMESTEAD LOCKET: A tarnished silver locket pinned under a mossy floorboard holds two tiny painted portraits—with both names scraped out of the silver band.",
+      "AREN: \"Someone took time to scratch away even a child's keepsake after the village fell silent.\""
+    ],
+    "watermill_inspect": [
+      "BROKEN WATERMILL: The main axle housing stands stripped of its drive gear, intermediate pinion, and coupling belt. Until the millwheel drives the canal pump, the northern sluice console has no pressure.",
+      "Three salvageable millwright components lie scattered near the village cart, south millpond barrels, and central square fence."
+    ],
+    "mill_diagram_clue": [
+      "MILLWRIGHT MAINTENANCE DIAGRAM: \"Main Wheel Coupling—Slot 1 Drive Axle: IRON DRIVE GEAR. Slot 2 Center Mesh: BRONZE PINION. Slot 3 Sluice Shaft: OAK COUPLING BELT.\"",
+      "A handwritten margin note reads: \"Never force a warped cog onto the main axle—the sluice pump relies on bronze-to-iron cadence.\""
+    ],
+    "sluice_inspect": [
+      "CANAL SLUICE CONSOLE: Heavy iron handwheels control three brick weirs across the Floodmill canal. Right now the center lock backs floodwater deep over the Forgotten Archive causeway.",
+      "Read the stone Canal Depth Gauge just west of here, then align the West Weir, Center Lock, and East Spillway to lower the archive road to 0 cubits."
+    ],
+    "canal_gauge_clue": [
+      "BRASS CANAL DEPTH GAUGE: \"Flood Protocol for Archive Access—1. Set WEST WEIR to DIVERT silt water. 2. Set CENTER LOCK to DRAIN the stone steps. 3. Throw EAST SPILLWAY OPEN into the mill tailrace.\"",
+      "Beneath the brass plate, scratch marks confirm the Archive path drains completely only under DIVERT - DRAIN - OPEN."
+    ],
+    "archive_entry": [
+      "THE FORGOTTEN ARCHIVE: Heavy stone columns support a damp upper library gallery where oak bookcases sag over candlelit reading tables.",
+      "Across the desks lie three surviving parchment fragments torn from Floodmill's last official ledger. Collect all three records before reconstructing the Master Ledger."
+    ],
+    "record_census": [
+      "TORN PARISH ROLL (RECORD 1/3): \"By autumn of the hundredth year of the Great Bell, thirty-six hearths burned cleanly in Floodmill before the thirteenth toll.\"",
+      "ENTRY TAG: Pair 'Entry I: The Census' with THIRTY-SIX HEARTHS."
+    ],
+    "record_tribute": [
+      "ASH-STAINED DECREE (RECORD 2/3): \"Under quiet Bellhaven writ, Floodmill's parish names were struck from register and speech as a collective MEMORY OFFERING to mend the northern fracture.\"",
+      "ENTRY TAG: Pair 'Entry II: The Edict' with MEMORY OFFERING."
+    ],
+    "record_transfer": [
+      "LOCKBOX RECEIPT (RECORD 3/3): \"Original signed evacuation charters sealed and carried northeast up the valley road under the IRONWATCH SEAL.\"",
+      "ENTRY TAG: Pair 'Entry III: The Vault' with IRONWATCH SEAL."
+    ],
+    "villagers_truth": [
+      "RESTORED VILLAGE LEDGER: As the final column locks into place, ink ghosts flare briefly across the parchment—names of millers, weavers, and children erased in a single winter so the rest of Ashvale would keep forgetting.",
+      "ELENA'S FIELD MARGINALIA: \"Floodmill did not empty from flood or famine. The Second Beacon north of this archive holds my recorded proof.\""
+    ],
+    "second_beacon_activation": [
+      "Brilliant amber-cyan light erupts up the mossy sanctuary monolith as the Second Ancient Beacon answers Briarwood's flame across the darkened valley.",
+      "Within the humming lantern prism, another preserved imprint of Elena's voice flickers to life."
+    ],
+    "elena_recording_ch2": [
+      "ELENA'S ECHO: \"They did not vanish because the world forgot them.\"",
+      "ELENA'S ECHO: \"They vanished because someone made the world forget.\"",
+      "AREN: \"Then the bell isn't saving us.\"",
+      "LYRA: \"It may be saving some of us. We need to know who paid the price.\"",
+      "Elena's echo points northeast toward the basalt keep guarding the mountain road—the truth behind who ordered the sacrifice lies inside Ironwatch Keep. Speak with Lyra by the sanctuary."
+    ]
+  }
+}

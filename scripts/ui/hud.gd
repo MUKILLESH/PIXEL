@@ -13,6 +13,9 @@ var on_dialogue_complete: Callable = Callable()
 
 const BridgeRepairScript = preload("res://scripts/ui/bridge_repair.gd")
 const MirrorPuzzleScript = preload("res://scripts/ui/mirror_puzzle.gd")
+const WatermillRepairScript = preload("res://scripts/ui/watermill_repair.gd")
+const SluicePuzzleScript = preload("res://scripts/ui/sluice_puzzle.gd")
+const LedgerPuzzleScript = preload("res://scripts/ui/ledger_puzzle.gd")
 const InventoryPanelScript = preload("res://scripts/ui/inventory_panel.gd")
 const TitleMenuScript = preload("res://scripts/ui/title_menu.gd")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
@@ -24,6 +27,9 @@ const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
 @onready var prologue_banner: Panel = $PrologueComplete
 var bridge_repair: Panel
 var mirror_puzzle: Panel
+var watermill_repair: Panel
+var sluice_puzzle: Panel
+var ledger_puzzle: Panel
 var inventory_panel: Panel
 var title_menu: Panel
 var save_path: String = "user://ashvale_save.json"
@@ -66,6 +72,22 @@ func _ready() -> void:
 	add_child(mirror_puzzle)
 	mirror_puzzle.mirror_solved_signal.connect(_on_mirror_solved)
 	mirror_puzzle.mirror_closed_signal.connect(_on_modal_closed)
+	watermill_repair = WatermillRepairScript.new()
+	watermill_repair.name = "WatermillRepair"
+	add_child(watermill_repair)
+	watermill_repair.watermill_repaired_signal.connect(_on_watermill_repaired)
+	watermill_repair.watermill_closed_signal.connect(_on_modal_closed)
+	sluice_puzzle = SluicePuzzleScript.new()
+	sluice_puzzle.name = "SluicePuzzle"
+	add_child(sluice_puzzle)
+	sluice_puzzle.sluice_solved_signal.connect(_on_sluice_solved)
+	sluice_puzzle.sluice_closed_signal.connect(_on_modal_closed)
+	sluice_puzzle.sluice_states_changed.connect(_on_sluice_states_changed)
+	ledger_puzzle = LedgerPuzzleScript.new()
+	ledger_puzzle.name = "LedgerPuzzle"
+	add_child(ledger_puzzle)
+	ledger_puzzle.ledger_solved_signal.connect(_on_ledger_solved)
+	ledger_puzzle.ledger_closed_signal.connect(_on_modal_closed)
 	inventory_panel = InventoryPanelScript.new()
 	inventory_panel.name = "InventoryPanel"
 	add_child(inventory_panel)
@@ -89,7 +111,7 @@ func _on_objective_changed(_objective_id: String, objective_text: String) -> voi
 	$Objective.text = objective_text
 
 func _is_modal_open() -> bool:
-	return panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
+	return panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
 
 func _process(_delta: float) -> void:
 	_update_selection()
@@ -154,17 +176,26 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 		var lines: Array[String] = quest_manager.get_npc_dialogue(npc_id)
 		var cb: Callable = Callable()
 		if npc_id == "lyra":
-			var ch1_stage: String = quest_manager.get_current_objective_id()
-			if ch1_stage == "meet_lyra":
-				cb = func(): quest_manager.complete_objective("meet_lyra")
-			elif ch1_stage == "complete_chapter1":
-				cb = func(): _finish_chapter1()
+			var stage_id: String = quest_manager.get_current_objective_id()
+			if quest_manager.quest_id == "chapter2_drowned_village":
+				if stage_id == "speak_lyra_arrival":
+					cb = func(): quest_manager.complete_objective("speak_lyra_arrival")
+				elif stage_id == "complete_chapter2":
+					cb = func(): _finish_chapter2()
+			else:
+				if stage_id == "meet_lyra":
+					cb = func(): quest_manager.complete_objective("meet_lyra")
+				elif stage_id == "complete_chapter1":
+					cb = func(): _finish_chapter1()
 		else:
 			cb = func(): quest_manager.record_npc_talked(npc_id)
 		show_dialogue(source.speaker_name, lines, source, cb)
 		return
 	if source.has_method("get_briarwood_kind"):
 		_handle_briarwood_interaction(source)
+		return
+	if source.has_method("get_floodmill_kind"):
+		_handle_floodmill_interaction(source)
 		return
 	var role: int = int(source.get("role")) if "role" in source else 0
 	if role == 2:
@@ -327,9 +358,123 @@ func _handle_briarwood_interaction(source: StaticBody2D) -> void:
 			)
 		"floodmill_gate":
 			if quest_manager.floodmill_unlocked:
-				show_dialogue(title, ["The southeast marsh gate stands unlocked, awaiting Chapter 2: The Drowned Village."], source)
+				if source.get("ready_to_travel") == true and get_parent().has_method("travel_to_floodmill"):
+					show_dialogue(title, ["Following Elena's compass bearing down the mist-choked steps toward Floodmill Wetlands..."], source, func(): get_parent().travel_to_floodmill())
+				else:
+					show_dialogue(title, ["The southeast marsh gate stands unlocked, awaiting Chapter 2: The Drowned Village."], source, func():
+						source.set("ready_to_travel", true)
+						if source.has_method("refresh_prompt"):
+							source.refresh_prompt("[E] ENTER FLOODMILL WETLANDS")
+					)
 			else:
 				show_dialogue(title, ["Dense marsh mist blocks the southeast road toward Floodmill. Complete your search at the First Beacon Shrine first."], source)
+
+func _handle_floodmill_interaction(source: StaticBody2D) -> void:
+	var kind: String = source.get_floodmill_kind()
+	var obj_id: String = quest_manager.get_current_objective_id()
+	var title: String = source.speaker_name if source.speaker_name != "" else "FLOODMILL"
+	match kind:
+		"entrance_arch":
+			if obj_id == "enter_floodmill":
+				show_dialogue(title, quest_manager.get_story_lines("floodmill_entry"), source, func(): quest_manager.complete_objective("enter_floodmill"))
+			else:
+				show_dialogue(title, ["Briarwood Forest climbs uphill behind the mist. Ahead lie Floodmill's drowned streets and the Old Watermill."], source)
+		"village_plaque":
+			if obj_id in ["enter_floodmill", "speak_lyra_arrival"]:
+				show_dialogue(title, ["A chiseled census monolith rises from the flooded cobbles. Speak with Lyra at the entrance path first."], source)
+			elif obj_id == "explore_ruined_village":
+				show_dialogue(title, quest_manager.get_story_lines("village_monument"), source, func(): quest_manager.complete_objective("explore_ruined_village"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("village_monument"), source)
+		"optional_lore":
+			var disc_id: String = String(source.get("item_id"))
+			show_dialogue(title, quest_manager.get_story_lines("homestead_locket_note"), source, func():
+				quest_manager.record_optional_discovery(disc_id)
+				source.set("collected", true)
+				source.queue_redraw()
+			)
+		"watermill_mechanism":
+			if obj_id in ["enter_floodmill", "speak_lyra_arrival", "explore_ruined_village"]:
+				show_dialogue(title, ["The Old Watermill's huge timber wheel stands jammed in silt. Inspect the square's Census Stone first."], source)
+			elif obj_id == "discover_watermill":
+				show_dialogue(title, quest_manager.get_story_lines("watermill_inspect"), source, func(): quest_manager.complete_objective("discover_watermill"))
+			elif obj_id == "find_watermill_parts":
+				show_dialogue(title, ["The stripped drive shaft needs three parts (%d/3): Iron Drive Gear, Bronze Pinion, and Oak Coupling Belt." % quest_manager.mill_parts_collected.size()], source)
+			elif quest_manager.can_open_watermill_repair():
+				open_watermill_repair(source)
+			else:
+				show_dialogue(title, ["The restored waterwheel turns steadily in its raceway, feeding pressure to the northern Sluice Console."], source)
+		"mill_diagram":
+			show_dialogue(title, quest_manager.get_story_lines("mill_diagram_clue"), source)
+		"mill_part":
+			if source.get("collected") == true:
+				show_dialogue(title, ["You already recovered this watermill component."], source)
+			elif not quest_manager.can_collect_mill_parts():
+				show_dialogue(title, ["Salvageable millwright hardware lies in the moss. Examine the broken Watermill mechanism first so you know what fits."], source)
+			else:
+				var part_id: String = String(source.get("item_id"))
+				show_dialogue(title, [source.message], source, func():
+					if quest_manager.record_mill_part_collected(part_id):
+						source.set("collected", true)
+						source.queue_redraw()
+				)
+		"sluice_console":
+			if not quest_manager.watermill_repaired:
+				show_dialogue(title, ["No hydraulic pressure reaches the canal sluice wheels yet. Repair the Old Watermill on the east bank first."], source)
+			elif obj_id == "investigate_sluice_gates":
+				show_dialogue(title, quest_manager.get_story_lines("sluice_inspect"), source, func(): quest_manager.complete_objective("investigate_sluice_gates"))
+			elif quest_manager.can_open_sluice_puzzle():
+				open_sluice_puzzle(source)
+			else:
+				show_dialogue(title, ["All three sluices hold DIVERT, DRAIN, and OPEN cleanly, keeping the Forgotten Archive causeway dry."], source)
+		"canal_clue":
+			show_dialogue(title, quest_manager.get_story_lines("canal_gauge_clue"), source)
+		"archive_entrance":
+			if not quest_manager.sluice_solved:
+				show_dialogue(title, ["Churning floodwater covers the Archive steps. Lower the canal level at the Sluice Console first."], source)
+			elif obj_id == "enter_forgotten_archive":
+				show_dialogue(title, quest_manager.get_story_lines("archive_entry"), source, func(): quest_manager.complete_objective("enter_forgotten_archive"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("archive_entry"), source)
+		"archive_record":
+			var clue_id: String = String(source.get("item_id"))
+			var lines: Array[String] = quest_manager.get_story_lines(clue_id)
+			if not quest_manager.is_objective_completed("enter_forgotten_archive"):
+				show_dialogue(title, ["Water-warped library shelves line the Forgotten Archive. Step past the Archive entrance threshold first."], source)
+			elif obj_id == "reconstruct_village_ledger" and not quest_manager.archive_clues_found.has(clue_id):
+				show_dialogue(title, lines, source, func():
+					if quest_manager.record_archive_clue_found(clue_id):
+						source.set("collected", true)
+						source.queue_redraw()
+				)
+			else:
+				show_dialogue(title, lines, source)
+		"ledger_table":
+			if not quest_manager.is_objective_completed("enter_forgotten_archive"):
+				show_dialogue(title, ["A brass-clasped ledger sits open upon the library table. Enter the Forgotten Archive first."], source)
+			elif obj_id == "reconstruct_village_ledger":
+				if quest_manager.archive_clues_found.size() < 3:
+					show_dialogue(title, ["Three columns are torn from the Master Ledger (%d/3 gathered). Inspect all three surviving Archive records around this room first." % quest_manager.archive_clues_found.size()], source)
+				else:
+					open_ledger_puzzle(source)
+			elif obj_id == "discover_villagers_truth":
+				show_dialogue("RESTORED VILLAGE LEDGER", quest_manager.get_story_lines("villagers_truth"), source, func(): quest_manager.complete_objective("discover_villagers_truth"))
+			else:
+				show_dialogue("RESTORED VILLAGE LEDGER", quest_manager.get_story_lines("villagers_truth"), source)
+		"second_beacon":
+			if not quest_manager.villagers_truth_discovered:
+				show_dialogue(title, ["A quiet blue seal rests over the Second Ancient Beacon. Reconstruct the Forgotten Archive ledger and learn the villagers' fate first."], source)
+			elif obj_id == "restore_second_beacon":
+				show_dialogue(title, quest_manager.get_story_lines("second_beacon_activation"), source, func(): quest_manager.complete_objective("restore_second_beacon"))
+			elif obj_id == "witness_elena_message":
+				show_dialogue(title, quest_manager.get_story_lines("elena_recording_ch2"), source, func(): quest_manager.complete_objective("witness_elena_message"))
+			else:
+				show_dialogue(title, ["The Second Ancient Beacon burns bright above the marshes, lighting the northern mountain road to Ironwatch Keep."], source)
+		"ironwatch_gate":
+			if quest_manager.ironwatch_unlocked:
+				show_dialogue(title, ["The eastern mountain pass stands unlocked, awaiting Chapter 3: Ironwatch Keep."], source)
+			else:
+				show_dialogue(title, ["Heavy iron portcullis bars seal the pass toward Ironwatch Keep. Restore Floodmill's Second Beacon first."], source)
 
 func open_rune_puzzle(source: StaticBody2D) -> void:
 	if rune_puzzle == null or rune_puzzle.solved:
@@ -345,6 +490,37 @@ func open_mirror_puzzle(source: StaticBody2D) -> void:
 	if mirror_puzzle == null or mirror_puzzle.solved:
 		return
 	_open_modal_panel(mirror_puzzle, source)
+
+func open_watermill_repair(source: StaticBody2D) -> void:
+	if watermill_repair == null or watermill_repair.repaired:
+		return
+	_open_modal_panel(watermill_repair, source)
+
+func open_sluice_puzzle(source: StaticBody2D) -> void:
+	if sluice_puzzle == null or sluice_puzzle.solved:
+		return
+	terminal = source
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	var saved_gates: Array = quest_manager.sluice_gate_states if quest_manager != null else []
+	sluice_puzzle.open_puzzle(saved_gates)
+	_update_selection()
+
+func open_ledger_puzzle(source: StaticBody2D) -> void:
+	if ledger_puzzle == null or ledger_puzzle.solved:
+		return
+	terminal = source
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	var clues_ok: bool = quest_manager != null and quest_manager.archive_clues_found.size() >= 3
+	ledger_puzzle.open_puzzle(clues_ok)
+	_update_selection()
 
 func _open_modal_panel(modal_panel: Panel, source: StaticBody2D) -> void:
 	terminal = source
@@ -378,6 +554,36 @@ func _on_mirror_solved() -> void:
 	else:
 		_on_modal_closed()
 
+func _on_watermill_repaired() -> void:
+	if quest_manager != null:
+		quest_manager.complete_objective("restore_watermill")
+		show_dialogue("OLD WATERMILL", ["Iron drive gear, bronze pinion, and oak coupling belt lock cleanly! The great waterwheel turns and sends pressure north to the Sluice Console."], terminal)
+	else:
+		_on_modal_closed()
+
+func _on_sluice_states_changed(states: Array[int]) -> void:
+	if quest_manager != null:
+		quest_manager.sluice_gate_states = states.duplicate()
+	var parent := get_parent()
+	if parent != null and parent.name == "FloodmillVillage" and parent.has_node("Landscape"):
+		parent.get_node("Landscape").sluice_gate_states = states.duplicate()
+		parent.get_node("Landscape").queue_redraw()
+
+func _on_sluice_solved() -> void:
+	if quest_manager != null:
+		quest_manager.sluice_gate_states.assign([2, 1, 3])
+		quest_manager.complete_objective("redirect_water_flow")
+		show_dialogue("CANAL SLUICE CONSOLE", ["Weirs divert, center lock drains, and east spillway vents cleanly! The floodwaters recede from the limestone steps into the Forgotten Archive."], terminal)
+	else:
+		_on_modal_closed()
+
+func _on_ledger_solved() -> void:
+	if quest_manager != null:
+		quest_manager.complete_objective("reconstruct_village_ledger")
+		show_dialogue("FORGOTTEN ARCHIVE", ["With all three fragments fitted together, the faded parish ledger lies open upon the oak table—examine it closely to read the villagers' fate."], terminal)
+	else:
+		_on_modal_closed()
+
 func _on_rune_puzzle_closed() -> void:
 	_on_modal_closed()
 
@@ -408,6 +614,21 @@ func _finish_chapter1() -> void:
 		$PrologueComplete/BannerTitle.text = "CHAPTER 1 COMPLETE — WHISPERS OF BRIARWOOD"
 		$PrologueComplete/Summary.text = "The First Ancient Beacon stands restored. Elena's echo and Lyra's compass point southeast toward Floodmill Wetlands.\n\nCHAPTER 2 UNLOCKED: THE DROWNED VILLAGE"
 		$PrologueComplete/ContinueHint.text = "[E] / [ESC] CONTINUE EXPLORING BRIARWOOD"
+		prologue_banner.show()
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	_update_selection()
+
+func _finish_chapter2() -> void:
+	if quest_manager != null:
+		quest_manager.complete_objective("complete_chapter2")
+	if prologue_banner != null:
+		$PrologueComplete/BannerTitle.text = "CHAPTER 2 COMPLETE — THE DROWNED VILLAGE"
+		$PrologueComplete/Summary.text = "The Second Ancient Beacon burns above Floodmill. The truth of thirty-six forgotten hearths points northeast toward Ironwatch Keep.\n\nCHAPTER 3 UNLOCKED: THE KEEPER'S LIE"
+		$PrologueComplete/ContinueHint.text = "[E] / [ESC] CONTINUE EXPLORING FLOODMILL"
 		prologue_banner.show()
 	if player != null:
 		player.set("movement_locked", true)
@@ -489,9 +710,10 @@ func continue_game(custom_path: String = "") -> bool:
 		title_menu.hide()
 	var target_region: String = String(summary.get("region_scene", "res://scenes/sjt_exterior.tscn"))
 	var parent := get_parent()
-	var same_briarwood: bool = target_region.ends_with("briarwood_forest.tscn") and parent != null and parent.has_method("travel_to_bellhaven")
+	var same_briarwood: bool = target_region.ends_with("briarwood_forest.tscn") and parent != null and parent.name == "BriarwoodForest"
 	var same_bellhaven: bool = target_region.ends_with("sjt_exterior.tscn") and parent != null and parent.has_method("reset_new_game")
-	if same_briarwood or same_bellhaven:
+	var same_floodmill: bool = target_region.ends_with("floodmill_village.tscn") and parent != null and parent.name == "FloodmillVillage"
+	if same_briarwood or same_bellhaven or same_floodmill:
 		var loaded: bool = parent.apply_saved_state(target_path)
 		if loaded and player != null:
 			player.set("movement_locked", false)

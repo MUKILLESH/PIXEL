@@ -21,6 +21,7 @@ var inspected: bool = false
 var repaired: bool = false
 var activated: bool = false
 var unlocked: bool = false
+var ready_to_travel: bool = false
 
 var indicator: Label
 var range_area: Area2D

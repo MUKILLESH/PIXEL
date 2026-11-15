@@ -1,15 +1,17 @@
 extends Node
-## Data-driven chronological quest tracker supporting Prologue, Chapter 1, and atomic saves.
+## Data-driven chronological quest tracker supporting Prologue, Chapter 1, Chapter 2, and atomic saves.
 
 signal objective_changed(objective_id: String, objective_text: String)
 signal objective_completed(objective_id: String)
 signal quest_completed(quest_id: String)
 
 const QUEST_DATA_PATH := "res://data/prologue_quest.json"
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2
 
 static var pending_load_path: String = ""
 static var carry_prologue_completed: bool = false
+static var carry_chapter1_completed: bool = false
+static var carry_optional_discoveries: Dictionary = {}
 
 @export var quest_data_path: String = QUEST_DATA_PATH
 
@@ -38,6 +40,19 @@ var beacon_activated: bool = false
 var elena_echo_heard: bool = false
 var chapter1_completed: bool = false
 var floodmill_unlocked: bool = false
+
+# Phase 3 (Chapter 2: The Drowned Village) state
+var mill_parts_collected: Dictionary = {}
+var watermill_repaired: bool = false
+var sluice_gate_states: Array[int] = [0, 0, 0]
+var sluice_solved: bool = false
+var archive_clues_found: Dictionary = {}
+var ledger_reconstructed: bool = false
+var villagers_truth_discovered: bool = false
+var second_beacon_activated: bool = false
+var chapter2_elena_echo_heard: bool = false
+var chapter2_completed: bool = false
+var ironwatch_unlocked: bool = false
 
 # Saved region & player pose
 var saved_region_scene: String = ""
@@ -83,6 +98,17 @@ func reload_quest(path: String) -> void:
 	elena_echo_heard = false
 	chapter1_completed = false
 	floodmill_unlocked = false
+	mill_parts_collected.clear()
+	watermill_repaired = false
+	sluice_gate_states = [0, 0, 0]
+	sluice_solved = false
+	archive_clues_found.clear()
+	ledger_reconstructed = false
+	villagers_truth_discovered = false
+	second_beacon_activated = false
+	chapter2_elena_echo_heard = false
+	chapter2_completed = false
+	ironwatch_unlocked = false
 	saved_region_scene = ""
 	saved_player_position = Vector2.ZERO
 	saved_player_facing = 2
@@ -96,6 +122,16 @@ func get_current_objective_id() -> String:
 	return "completed"
 
 func get_current_objective_text() -> String:
+	if quest_id == "chapter2_drowned_village":
+		if chapter2_completed or current_index >= objectives.size():
+			return "Chapter 2 Complete - Ironwatch Keep Unlocked."
+		var ch2_id: String = get_current_objective_id()
+		if ch2_id == "find_watermill_parts":
+			return "Find the watermill repair components (%d/3)." % mill_parts_collected.size()
+		if ch2_id == "reconstruct_village_ledger":
+			return "Gather 3 damaged records and reconstruct the ledger (%d/3)." % archive_clues_found.size()
+		return String(objectives[current_index].get("text", ""))
+
 	if quest_id == "chapter1_whispers_of_briarwood":
 		if chapter1_completed or current_index >= objectives.size():
 			return "Chapter 1 Complete - Floodmill Unlocked."
@@ -119,6 +155,8 @@ func is_objective_completed(id: String) -> bool:
 func is_quest_completed(id: String = "prologue_thirteenth_toll") -> bool:
 	if id != quest_id:
 		return false
+	if quest_id == "chapter2_drowned_village":
+		return chapter2_completed
 	if quest_id == "chapter1_whispers_of_briarwood":
 		return chapter1_completed
 	return prologue_completed
@@ -138,8 +176,20 @@ func can_open_bridge_repair() -> bool:
 func can_open_mirror_puzzle() -> bool:
 	return get_current_objective_id() == "solve_mirror_puzzle" and not mirror_puzzle_solved
 
+func can_collect_mill_parts() -> bool:
+	return get_current_objective_id() == "find_watermill_parts"
+
+func can_open_watermill_repair() -> bool:
+	return get_current_objective_id() == "restore_watermill" and not watermill_repaired and mill_parts_collected.size() >= 3
+
+func can_open_sluice_puzzle() -> bool:
+	return get_current_objective_id() == "redirect_water_flow" and not sluice_solved and watermill_repaired
+
+func can_open_ledger_puzzle() -> bool:
+	return get_current_objective_id() == "reconstruct_village_ledger" and not ledger_reconstructed and archive_clues_found.size() >= 3
+
 func complete_objective(id: String) -> bool:
-	var active_quest_done: bool = chapter1_completed if quest_id == "chapter1_whispers_of_briarwood" else prologue_completed
+	var active_quest_done: bool = chapter2_completed if quest_id == "chapter2_drowned_village" else (chapter1_completed if quest_id == "chapter1_whispers_of_briarwood" else prologue_completed)
 	if active_quest_done or get_current_objective_id() != id or completed_objectives.has(id):
 		return false
 	completed_objectives[id] = true
@@ -158,10 +208,25 @@ func complete_objective(id: String) -> bool:
 			beacon_activated = true
 		"experience_elena_recording":
 			elena_echo_heard = true
+		"restore_watermill":
+			watermill_repaired = true
+		"redirect_water_flow":
+			sluice_solved = true
+		"reconstruct_village_ledger":
+			ledger_reconstructed = true
+		"discover_villagers_truth":
+			villagers_truth_discovered = true
+		"restore_second_beacon":
+			second_beacon_activated = true
+		"witness_elena_message":
+			chapter2_elena_echo_heard = true
 	current_index += 1
 	var reached_end: bool = (current_index >= objectives.size())
 	if reached_end:
-		if quest_id == "chapter1_whispers_of_briarwood":
+		if quest_id == "chapter2_drowned_village":
+			chapter2_completed = true
+			ironwatch_unlocked = true
+		elif quest_id == "chapter1_whispers_of_briarwood":
 			chapter1_completed = true
 			floodmill_unlocked = true
 		else:
@@ -212,11 +277,64 @@ func record_optional_discovery(disc_id: String) -> bool:
 	optional_discoveries[disc_id] = true
 	return true
 
+func record_mill_part_collected(part_id: String) -> bool:
+	if get_current_objective_id() != "find_watermill_parts":
+		return false
+	if mill_parts_collected.has(part_id):
+		return false
+	mill_parts_collected[part_id] = true
+	if mill_parts_collected.size() >= 3:
+		return complete_objective("find_watermill_parts")
+	objective_changed.emit("find_watermill_parts", get_current_objective_text())
+	return true
+
+func record_archive_clue_found(clue_id: String) -> bool:
+	if get_current_objective_id() != "reconstruct_village_ledger" or ledger_reconstructed:
+		return false
+	if archive_clues_found.has(clue_id):
+		return false
+	archive_clues_found[clue_id] = true
+	objective_changed.emit("reconstruct_village_ledger", get_current_objective_text())
+	return true
+
 func get_npc_dialogue(npc_id: String) -> Array[String]:
 	var npcs: Dictionary = data.get("npcs", {})
 	var entry: Dictionary = npcs.get(npc_id, {})
 	var stage_key := "investigation"
-	if npc_id == "lyra" or quest_id == "chapter1_whispers_of_briarwood":
+	if quest_id == "chapter2_drowned_village":
+		var ch2_obj: String = get_current_objective_id()
+		match ch2_obj:
+			"enter_floodmill":
+				stage_key = "before_entry"
+			"speak_lyra_arrival":
+				stage_key = "arrival"
+			"explore_ruined_village":
+				stage_key = "explore_village"
+			"discover_watermill":
+				stage_key = "watermill_search"
+			"find_watermill_parts":
+				stage_key = "watermill_parts"
+			"restore_watermill":
+				stage_key = "watermill_ready"
+			"investigate_sluice_gates":
+				stage_key = "sluice_search"
+			"redirect_water_flow":
+				stage_key = "sluice_ready"
+			"enter_forgotten_archive":
+				stage_key = "archive_search"
+			"reconstruct_village_ledger":
+				stage_key = "ledger_ready" if archive_clues_found.size() >= 3 else "archive_clues"
+			"discover_villagers_truth":
+				stage_key = "truth_reveal"
+			"restore_second_beacon":
+				stage_key = "beacon_ready"
+			"witness_elena_message":
+				stage_key = "echo_ready"
+			"complete_chapter2":
+				stage_key = "finale"
+			_:
+				stage_key = "completed"
+	elif npc_id == "lyra" or quest_id == "chapter1_whispers_of_briarwood":
 		var obj_id: String = get_current_objective_id()
 		match obj_id:
 			"enter_briarwood":
@@ -266,7 +384,11 @@ func get_rune_solution() -> Array[String]:
 	return solution
 
 func capture_state() -> Dictionary:
-	var region_scene: String = "res://scenes/briarwood_forest.tscn" if quest_id == "chapter1_whispers_of_briarwood" else "res://scenes/sjt_exterior.tscn"
+	var region_scene: String = "res://scenes/sjt_exterior.tscn"
+	if quest_id == "chapter2_drowned_village":
+		region_scene = "res://scenes/floodmill_village.tscn"
+	elif quest_id == "chapter1_whispers_of_briarwood":
+		region_scene = "res://scenes/briarwood_forest.tscn"
 	var parent_node := get_parent()
 	if parent_node != null:
 		if parent_node.scene_file_path != "":
@@ -303,6 +425,17 @@ func capture_state() -> Dictionary:
 		"elena_echo_heard": elena_echo_heard,
 		"chapter1_completed": chapter1_completed,
 		"floodmill_unlocked": floodmill_unlocked,
+		"mill_parts_collected": mill_parts_collected.duplicate(),
+		"watermill_repaired": watermill_repaired,
+		"sluice_gate_states": sluice_gate_states.duplicate(),
+		"sluice_solved": sluice_solved,
+		"archive_clues_found": archive_clues_found.duplicate(),
+		"ledger_reconstructed": ledger_reconstructed,
+		"villagers_truth_discovered": villagers_truth_discovered,
+		"second_beacon_activated": second_beacon_activated,
+		"chapter2_elena_echo_heard": chapter2_elena_echo_heard,
+		"chapter2_completed": chapter2_completed,
+		"ironwatch_unlocked": ironwatch_unlocked,
 	}
 
 func apply_state(state: Dictionary) -> bool:
@@ -339,6 +472,26 @@ func apply_state(state: Dictionary) -> bool:
 	elena_echo_heard = bool(state.get("elena_echo_heard", false))
 	chapter1_completed = bool(state.get("chapter1_completed", false))
 	floodmill_unlocked = bool(state.get("floodmill_unlocked", false))
+
+	# Phase 3 fields (safely defaulted when migrating v1 saves)
+	var raw_parts: Variant = state.get("mill_parts_collected", {})
+	mill_parts_collected = raw_parts.duplicate() if raw_parts is Dictionary else {}
+	watermill_repaired = bool(state.get("watermill_repaired", false))
+	var raw_sluice: Variant = state.get("sluice_gate_states", [0, 0, 0])
+	sluice_gate_states = [0, 0, 0]
+	if raw_sluice is Array and raw_sluice.size() == 3:
+		for si in range(3):
+			sluice_gate_states[si] = clampi(int(raw_sluice[si]), 0, 3)
+	sluice_solved = bool(state.get("sluice_solved", false))
+	var raw_clues: Variant = state.get("archive_clues_found", {})
+	archive_clues_found = raw_clues.duplicate() if raw_clues is Dictionary else {}
+	ledger_reconstructed = bool(state.get("ledger_reconstructed", false))
+	villagers_truth_discovered = bool(state.get("villagers_truth_discovered", false))
+	second_beacon_activated = bool(state.get("second_beacon_activated", false))
+	chapter2_elena_echo_heard = bool(state.get("chapter2_elena_echo_heard", false))
+	chapter2_completed = bool(state.get("chapter2_completed", false))
+	ironwatch_unlocked = bool(state.get("ironwatch_unlocked", false))
+
 	saved_region_scene = String(state.get("region_scene", ""))
 	has_saved_player_pose = bool(state.get("has_player_pose", false))
 	saved_player_position = Vector2(float(state.get("player_x", 0.0)), float(state.get("player_y", 0.0)))

@@ -13,10 +13,10 @@ func _ready() -> void:
 	anchor_right = 0.5
 	anchor_top = 0.5
 	anchor_bottom = 0.5
-	offset_left = -220
-	offset_right = 220
-	offset_top = -126
-	offset_bottom = 126
+	offset_left = -228
+	offset_right = 228
+	offset_top = -134
+	offset_bottom = 134
 
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.06, 0.05, 0.08, 0.98)
@@ -35,11 +35,11 @@ func _ready() -> void:
 	title.add_theme_color_override("font_color", Color("f2deaa"))
 	add_child(title)
 
-	for i in range(8):
+	for i in range(10):
 		var lbl := Label.new()
 		lbl.name = "ItemRow%d" % i
-		lbl.position = Vector2(18, 38 + i * 20)
-		lbl.size = Vector2(404, 18)
+		lbl.position = Vector2(18, 34 + i * 16)
+		lbl.size = Vector2(420, 15)
 		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		lbl.add_theme_font_size_override("font_size", 8)
 		lbl.add_theme_color_override("font_color", Color("d6c7ad"))
@@ -48,8 +48,8 @@ func _ready() -> void:
 
 	footer_label = Label.new()
 	footer_label.name = "SummaryFooter"
-	footer_label.position = Vector2(18, 200)
-	footer_label.size = Vector2(280, 16)
+	footer_label.position = Vector2(18, 204)
+	footer_label.size = Vector2(300, 16)
 	footer_label.add_theme_font_size_override("font_size", 8)
 	footer_label.add_theme_color_override("font_color", Color("7dd8e8"))
 	add_child(footer_label)
@@ -57,7 +57,7 @@ func _ready() -> void:
 	var close_btn := Button.new()
 	close_btn.name = "CloseButton"
 	close_btn.text = "[ CLOSE SATCHEL ]"
-	close_btn.position = Vector2(302, 214)
+	close_btn.position = Vector2(316, 226)
 	close_btn.size = Vector2(122, 24)
 	close_btn.focus_mode = Control.FOCUS_NONE
 	close_btn.add_theme_font_size_override("font_size", 8)
@@ -77,6 +77,36 @@ func _build_items(qm: Node) -> Array[String]:
 	var items: Array[String] = []
 	if qm == null:
 		return items
+	if qm.quest_id == "chapter2_drowned_village":
+		if qm.prologue_completed or qm.chapter1_completed:
+			items.append("- BELLHAVEN TO BRIARWOOD: RUNE KEY, CIPHER AND FIRST BEACON RECORDED")
+		if qm.optional_discoveries.has("ruined_camp_relic"):
+			items.append("- ELENA'S BRASS SURVEY COMPASS [BRIARWOOD RELIC]")
+		if qm.mill_parts_collected.has("iron_drive_gear"):
+			items.append("- IRON DRIVE GEAR " + ("[FITTED IN MILL]" if qm.watermill_repaired else "[IN SATCHEL]"))
+		if qm.mill_parts_collected.has("bronze_pinion"):
+			items.append("- BRONZE PINION " + ("[FITTED IN MILL]" if qm.watermill_repaired else "[IN SATCHEL]"))
+		if qm.mill_parts_collected.has("oak_coupling_belt"):
+			items.append("- OAK COUPLING BELT " + ("[FITTED IN MILL]" if qm.watermill_repaired else "[IN SATCHEL]"))
+		if qm.sluice_solved:
+			items.append("- CANAL SLUICE PROTOCOL: WEST DIVERT, CENTER DRAIN, EAST OPEN")
+		if qm.archive_clues_found.size() > 0:
+			var cl: Array[String] = []
+			if qm.archive_clues_found.has("record_census"):
+				cl.append("I: THIRTY-SIX HEARTHS")
+			if qm.archive_clues_found.has("record_tribute"):
+				cl.append("II: MEMORY OFFERING")
+			if qm.archive_clues_found.has("record_transfer"):
+				cl.append("III: IRONWATCH SEAL")
+			items.append("- ARCHIVE RECORDS (%d/3): %s" % [qm.archive_clues_found.size(), ", ".join(cl)])
+		if qm.villagers_truth_discovered:
+			items.append("- BOUND FLOODMILL LEDGER: NAMES SEALED BY IRONWATCH EDICT")
+		if qm.optional_discoveries.has("homestead_locket"):
+			items.append("- WEAVER'S TARNISHED SILVER LOCKET [OPTIONAL RELIC]")
+		if qm.chapter2_elena_echo_heard:
+			items.append("- SECOND BEACON ECHO: SEEK TRUTH AT IRONWATCH KEEP")
+		return items
+
 	if qm.is_objective_completed("speak_npcs") or qm.prologue_completed or qm.quest_id == "chapter1_whispers_of_briarwood":
 		items.append("- MASTER CAELEN'S BRASS KEY [SURVEY CHEST KEY]")
 	if qm.letter_found or qm.prologue_completed or qm.quest_id == "chapter1_whispers_of_briarwood":

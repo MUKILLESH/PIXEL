@@ -266,6 +266,8 @@ func _sync_world_from_quest() -> void:
 
 	if floodmill_gate != null:
 		floodmill_gate.unlocked = quest_manager.floodmill_unlocked
+		floodmill_gate.ready_to_travel = false
+		floodmill_gate.refresh_prompt("[E] INSPECT FLOODMILL GATE")
 		floodmill_gate.queue_redraw()
 
 	# Predefined story locations for Historian Lyra
@@ -298,3 +300,10 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 func travel_to_bellhaven() -> void:
 	if is_inside_tree():
 		get_tree().change_scene_to_file("res://scenes/sjt_exterior.tscn")
+
+func travel_to_floodmill() -> void:
+	if quest_manager != null and quest_manager.floodmill_unlocked and is_inside_tree():
+		QuestManagerScript.carry_prologue_completed = true
+		QuestManagerScript.carry_chapter1_completed = true
+		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
+		get_tree().change_scene_to_file("res://scenes/floodmill_village.tscn")
