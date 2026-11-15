@@ -1,0 +1,21 @@
+{
+  "asset_family": "SJT compressed exterior",
+  "date": "2026-11-16",
+  "medium": "Original procedural Godot 2D pixel geometry, not raster photo derivatives",
+  "technical_frame": {"viewport": [640,360], "projection": "2:1 isometric", "filter": "nearest", "scale": 1},
+  "source": {
+    "kind": "assistant-authored GDScript geometry using user-provided visual references",
+    "reference_only": ["docs/references/sjt/front side.png", "docs/references/sjt/elevated angle.webp", "docs/references/sjt/side elevated view.webp", "docs/references/sjt/SJT elevated view.jpg", "docs/references/sjt/SJT front-side view.jpg", "docs/references/MAP/VIT Vellore Campus Map Infographic.png"],
+    "photo_rights": "Not established; reference-only, excluded from resource scan; no pixels copied into assets",
+    "runtime_dependencies_on_references": false
+  },
+  "assets": [
+    {"path": "scenes/environment/sjt_building.tscn", "role": "Reusable solid building, separately sorted facade bays, canopy roof and solid columns", "provenance": "Original procedural geometry", "technical_checks_passed": true},
+    {"path": "scripts/world/sjt_art.gd", "role": "Cream facade, window rhythm, grey portal, roof slats, braced flank, name band", "provenance": "Observed motifs with compressed and approximate dimensions", "technical_checks_passed": true},
+    {"path": "scripts/world/sjt_landscape.gd", "role": "Compressed red paths, roads, lawn, planting and shadows", "provenance": "Original layout preserving only supplied map-relative relationships", "technical_checks_passed": true},
+    {"path": "scripts/world/sjt_landmark.gd", "role": "Curved basin and abstract monument", "provenance": "Original silhouettes; not exact reproductions", "technical_checks_passed": true}
+  ],
+  "checks": {"sjt_behavior": "34 passed", "phase_1_5_regression": "63 passed", "compile": "18 scripts, 0 broken", "graphical": "Native-scale forecourt and entrance inspected; 960x540 overview inspected", "raster_asset_checks": "Not applicable to procedural scene geometry; engine render and collision checks used"},
+  "status": "Implemented compressed exterior; exact architecture and unseen elevations remain unverified"
+}
+

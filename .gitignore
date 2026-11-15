@@ -1,0 +1,13 @@
+# Godot 4+ specific ignores
+.godot/
+*.translation
+export_presets.cfg
+
+# Tool & temporary files
+*.tmp
+.mono/
+node_modules/
+
+# OS files
+Thumbs.db
+.DS_Store
