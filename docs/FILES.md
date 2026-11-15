@@ -1,24 +1,48 @@
-# Project Files — ASHVALE: THE THIRTEENTH BELL (Phase 0)
+# Active Files — ASHVALE: THE THIRTEENTH BELL (Phase 1)
 
-## Active Game Files
+## Project Configuration & Root Docs
+- `project.godot`: Godot 4.7.2 settings (`640x360`, Compatibility renderer, input map, bitmap theme)
+- `README.md`: Phase 1 overview, controls, manual playtest walkthrough, and commands
+- `docs/GAME_DESIGN.md`: Canonical narrative & design bible for Ashvale
+- `docs/ARCHITECTURE.md`: Phase 1 system architecture overview
+- `docs/VALIDATION.md`: Automated test suites, capture scripts, and playtest checklist
+- `docs/FILES.md`: Active file inventory
 
-- `project.godot`: Engine config, `ASHVALE: THE THIRTEENTH BELL` title, input actions, display scaling, and startup scene (`res://scenes/sjt_exterior.tscn`).
-- `scenes/sjt_exterior.tscn`: Main Bellhaven Village Square scene (`BellhavenVillage`).
-- `scenes/campus_prototype.tscn`: Secondary medieval courtyard scene using updated fantasy assets.
-- `scenes/characters/player.tscn`, `scripts/characters/player.gd`, `scripts/characters/pixel_camera.gd`: Aren protagonist controller, medieval outfit drawing, collider, and integer-snapped follow camera.
-- `scenes/environment/sjt_building.tscn`, `scripts/world/sjt_building.gd`, `scripts/world/sjt_art.gd`: Bellhaven northern village row (Cottage, Bellhaven Belfry Bell Tower, Blacksmith Workshop, timber porch canopy).
-- `scenes/environment/terminal.tscn`, `scripts/interactables/terminal.gd`: Stone Rune Pedestal (primary interaction) and Village Signpost (`notice_board = true`).
-- `scenes/ui/hud.tscn`, `scripts/ui/hud.gd`: Warm medieval HUD and dismissible message panel.
-- `scripts/world/sjt_region.gd`, `scripts/world/sjt_landscape.gd`, `scripts/world/sjt_landmark.gd`, `scripts/world/campus_furniture.gd`, `scripts/world/prop.gd`, `scripts/world/ground_details.gd`, `scripts/world/campus.gd`: Bellhaven props, cobblestones, lantern light pools, Village Well, Anvil Plinth, oak benches, lanterns, planters, barrels, and medieval trees/cottages.
-- `scripts/tools/generate_tiles.gd`, `assets/tiles/courtyard.png`, `assets/tiles/courtyard.tres`: Procedural 64×32 medieval grass & cobblestone isometric TileSet.
-- `scripts/tools/generate_font.gd`, `assets/fonts/after_hours.*`, `assets/fonts/pixel_theme.tres`: Procedural 5×7 bitmap font and medieval UI theme.
-- `tests/validate.gd`, `tests/validate_sjt.gd`, `tests/validate_zone.gd`, `tests/capture.gd`, `tests/capture_sjt.gd`: Headless behavioral test suites and graphical screenshot capture scripts.
+## Data
+- `data/prologue_quest.json`: Canonical objective definitions, `MOON`/`SUN`/`STAR` cipher, NPC stage dialogues, and story event scripts
 
-## Documentation
+## Scenes
+- `scenes/sjt_exterior.tscn`: Main playable Bellhaven Village Square scene
+- `scenes/campus_prototype.tscn`: Baseline isometric yard harness validated by `tests/validate.gd`
+- `scenes/characters/player.tscn`: Protagonist (`Aren`) scene with pixel camera
+- `scenes/characters/npc.tscn`: Reusable villager NPC scene
+- `scenes/environment/sjt_building.tscn`: Medieval Bellhaven Belfry, Cottage, and Blacksmith Workshop
+- `scenes/environment/terminal.tscn`: Multi-role story interactable scene (Pedestal, Signpost, Chest, Waystone)
+- `scenes/ui/hud.tscn`: HUD, multi-page dialogue panel, Rune Puzzle host, and Prologue Complete overlay
 
-- `docs/GAME_DESIGN.md`: Authoritative GDD (premise, 5 regions, characters, chapters, quests, minigames, progression, final ending, phases).
-- `docs/ARCHITECTURE.md`, `docs/VALIDATION.md`, `docs/FILES.md`, `README.md`, `assets/README.md`, `data/README.md`.
+## Scripts
+- `scripts/systems/quest_manager.gd`: Sequential 6-objective quest tracker and dialogue state provider
+- `scripts/characters/player.gd`: Movement, collision, facing, and Aren procedural pixel-art rendering
+- `scripts/characters/pixel_camera.gd`: Pixel-snapped follow camera
+- `scripts/characters/npc.gd`: Reusable NPC behavior, idle animation, and `caelen`/`mira`/`elara` art
+- `scripts/interactables/terminal.gd`: Multi-role interactable logic and reactive stone/chest/waystone art
+- `scripts/ui/hud.gd`: Priority interactable selection, paginated dialogue controller, puzzle & completion routing
+- `scripts/ui/rune_puzzle.gd`: Concentric 3-ring Rune-Alignment minigame UI & input controller
+- `scripts/world/sjt_region.gd`: Bellhaven ground tiles, props, NPCs, story interactables, and quest wiring
+- `scripts/world/sjt_landscape.gd`: Cobble roads, warm light pools, and awakened pedestal-to-Briarwood beacon beam
+- `scripts/world/sjt_building.gd`, `scripts/world/sjt_art.gd`: Timber-and-stone belfry buildings and porch Y-sorting
+- `scripts/world/sjt_landmark.gd`, `scripts/world/campus_furniture.gd`, `scripts/world/prop.gd`: Village well, anvil plinth, furnishings, and trees
+- `scripts/world/campus.gd`, `scripts/world/ground_details.gd`: Baseline yard helpers used by `scenes/campus_prototype.tscn`
+- `scripts/tools/generate_tiles.gd`, `scripts/tools/generate_font.gd`: Procedural tileset & bitmap font generators
 
-## Archived (Pre-Reboot)
+## Assets
+- `assets/tiles/courtyard.png`, `assets/tiles/courtyard.tres`: 64×32 isometric grass and cobblestone tiles
+- `assets/fonts/after_hours.png`, `after_hours.fnt`, `after_hours.tres`: 8px pixel bitmap font (80 glyphs)
+- `assets/fonts/pixel_theme.tres`: Default UI font theme
 
-- `archive/vit_after_hours/`: Archived VIT/SJT campus reference images (`MAP/`, `sjt/`), legacy docs (`SJT_*.md`, `PHASE_1_5.md`), and `sjt_manifest.json` (excluded from Godot scanning via `archive/.gdignore`).
+## Automated Tests & Captures
+- `tests/validate.gd`: Baseline isometric/collision/movement/UI checks
+- `tests/validate_sjt.gd`: Bellhaven facade sliding, canopy columns, landmarks, routes, and scenery coverage checks
+- `tests/validate_zone.gd`: Priority-based overlapping prompt selection, furnishings, seating loop, and HUD bounds checks
+- `tests/validate_phase1.gd`: Full Phase 1 sequential quest, anti-skip, multi-line dialogue, keyboard rune puzzle, waystone, banner, and NPC checks
+- `tests/capture_sjt.gd`, `tests/capture.gd`: Automated graphical screenshot renderers (`tests/*.png`)

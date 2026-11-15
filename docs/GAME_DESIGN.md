@@ -4,130 +4,124 @@
 > **Perspective:** Isometric 2.5D Pixel Art (640×360 native viewport, 2:1 diamond projection, integer scaling)  
 > **Genre:** Medieval Fantasy Adventure, Exploration, Mystery, Story-Driven Puzzles  
 > **Core Themes:** Memory, Sacrifice, Truth, and Hope  
-> **Status:** Authoritative Design Reference (Phase 0 Active)  
+> **Status:** Canonical Design Reference (Phase 1 — Playable Prologue Active)
 
 ---
 
 ## 1. Game Premise
 
-For three centuries, the medieval kingdom of **Ashvale** has been sheltered from a supernatural tempest—the **Veilstorm**—by the sacred **Great Bell** atop **Dawnspire Mountain**. Every evening at dusk, the Great Bell tolls **twelve times**, knitting a silver ward across the horizon.
+For three centuries, the medieval kingdom of **Ashvale** has been sheltered from an unnatural abyssal tempest—the **Veilstorm**—by the sacred **Great Bell** atop **Dawnspire Mountain**. Every evening at dusk, the Great Bell tolls **twelve times**, knitting a silver protective barrier above the valley.
 
-One night in **Bellhaven Village**, young apprentice mapmaker **Aren** hears the Great Bell toll a **thirteenth** time.
+Years ago, apprentice mapmaker **Aren**'s mother, **Elena**, vanished while charting forbidden landmarks and investigating the origins of the Great Bell. One storm-tossed night in **Bellhaven Village**, the Great Bell tolls a **thirteenth** time.
 
-An ancient Stone Rune Pedestal in the village square awakens with an ominous warning: something beneath the kingdom is stirring. As Aren investigates across Ashvale, he uncovers the kingdom's buried secret: the Great Bell's protective ward does not run on faith or wind—it sustains itself by slowly **consuming the memories** of Ashvale's people. With the thirteenth chime, the ancient pact is fracturing, citizens are forgetting names and faces faster than ever, and the Veilstorm presses closer against the valley walls.
-
-Aren must journey across five interconnected regions, rekindle **three Ancient Beacons** built before the Bell's pact, climb Dawnspire Mountain, and break the memory-consuming curse so Ashvale can face a true dawn without losing who they are.
+An ancient **Stone Rune Pedestal** in Bellhaven Square ignites with a warning that something beneath the kingdom is awakening. Through village records, Elena's hidden notes, and the research of **Lyra** (a historian and Elena's former expedition partner), Aren learns the kingdom's hidden cost: the Great Bell does not hold back the storm through mercy or magic alone—it feeds on the **memories** of Ashvale's people. Now the ward is fracturing. To uncover the truth behind his mother's disappearance and break the curse forever, Aren must journey across Ashvale with Lyra, rekindle **three Ancient Beacons** built before the Bell, and confront the kingdom's oldest lie.
 
 ---
 
 ## 2. World Regions
 
-The kingdom of Ashvale spans **five regions**, traversed in a fixed chronological order as the story unfolds:
+Ashvale spans **five interconnected regions**, traversed in strict chronological order:
 
-1. **Bellhaven Village (Phase 0 Starting Region)**
-   - **Atmosphere:** Lantern-lit cobblestone square, warm candlelit cottage windows, forge embers, and cool night air beneath the valley rim.
-   - **Landmarks:** Village Square, Cartographer's Cottage, Blacksmith Workshop, Modest Bell Tower (*Bellhaven Belfry*), Stone Well, and the Stone Rune Pedestal.
-   - **Role:** Starting hub, prologue mystery, and base of Aren's cartography notes.
+1. **Bellhaven Village (Prologue — Playable in Phase 1)**
+   - **Atmosphere:** Lantern-lit cobblestone square, half-timbered cottage, Bellhaven Belfry tower, glowing forge hearth, ancient Stone Rune Pedestal, and the silver-briared western path into Briarwood.
+   - **Key Sites:** Bellhaven Square, Cartographer's Cottage & Sealed Survey Chest, Blacksmith Workshop, Bellhaven Belfry, Stone Well, Anvil Plinth, and the Briarwood Waystone Gate.
+   - **Role:** 15–20 minute playable story prologue establishing the thirteenth chime, Aren's mother Elena's trail, the Rune-Alignment cipher, and the awakening of the Briarwood road.
 
-2. **Briarwood Forest**
-   - **Atmosphere:** Mist-shrouded old-growth woods choked with silver-barked briars, fallen mile-markers, and lantern shrines.
-   - **Landmarks:** Overgrown Surveyor's Trail, Hollow Sentinel Oak, Moss-Covered Boundary Gate.
-   - **Role:** First wilderness expedition where memory-echoes linger in inscribed trail stones.
+2. **Briarwood Forest (Chapter 1)**
+   - **Atmosphere:** Mist-shrouded old-growth woods choked with silver-barked briars, fallen survey markers, and mossy lantern shrines.
+   - **Role:** Reunion with companion historian **Lyra**, waystone alignment, memory echoes of Elena's expedition, and trail toward the **First Ancient Beacon**.
 
-3. **Floodmill Wetlands**
-   - **Atmosphere:** Sunken watermills, reed-choked canals, broken sluice bridges, and pale fog over dark water.
-   - **Landmarks:** Old Millhouse, Sluiceway Locks, and the Drowned Sanctum housing the **First Ancient Beacon**.
-   - **Role:** Environmental water-level and routing puzzles culminating in igniting Beacon I.
+3. **Floodmill Wetlands (Chapter 2)**
+   - **Atmosphere:** Sunken watermills, reed-choked canals, half-submerged ruins known as the Drowned Village, and pale fog over dark water.
+   - **Role:** Canal sluice and water-level routing puzzles culminating in igniting the **First Ancient Beacon** (or Second Beacon convergence—see Chapter flow below).
 
-4. **Ironwatch Keep**
-   - **Atmosphere:** Grim mountain-pass fortress carved into dark basalt, guarded by the Order of Bell-Wardens and lit by tall iron braziers.
-   - **Landmarks:** Outer Gatehouse, Great Foundry Hall, Bell-Warden Archive, and the Spire Courtyard housing the **Second Ancient Beacon**.
-   - **Role:** Political/moral confrontation over the Bell's true cost and mechanical forge puzzles for Beacon II.
+4. **Ironwatch Keep (Chapter 3)**
+   - **Atmosphere:** Basalt fortress guarding the mountain pass, lit by iron braziers and patrolled by Wardens sworn to protect the Great Bell's secret.
+   - **Role:** Confrontation with **Commander Vane** and the truth of *The Keeper's Lie*, forge locks, and the **Second Ancient Beacon**.
 
-5. **Dawnspire Mountain**
-   - **Atmosphere:** Wind-carved alpine switchbacks, frost-rimmed rune pillars, and towering stone belfry overlooking the swirling Veilstorm.
-   - **Landmarks:** Pilgrim Steps, Summit Sanctum (**Third Ancient Beacon**), and the **Great Bell Belfry**.
-   - **Role:** Final ascent, beacon convergence, and the decisive finale.
+5. **Dawnspire Mountain & The Summit Sanctum (Chapter 4 & Final Chapter)**
+   - **Atmosphere:** Wind-carved alpine switchbacks, frost-rimmed obelisks overlooking the churning Veilstorm, and the colossal Great Bell belfry.
+   - **Role:** Ascent to Dawnspire, kindling the **Third Ancient Beacon**, discovering Elena's final sacrifice, and ending the Bell's curse.
 
 ---
 
-## 3. Major Characters
+## 3. Canonical Characters
 
 - **Aren (Protagonist):**  
-  A young apprentice mapmaker in Bellhaven Village. Dressed in a forest-green tunic, traveler's cloak, and leather scroll satchel, he carries a brass compass and field journal. Observant and stubbornly hopeful, he sketches landmarks to hold onto details even as others forget them.
+  Young apprentice mapmaker living in Bellhaven Village. Dressed in a forest-green tunic, traveler's cloak, and leather scroll satchel, he relies on maps and field notes to remember what the Bell tries to take. Driven by the disappearance of his mother, **Elena**, years earlier.
 
-- **Master Caelen:**  
-  Bellhaven's elderly master cartographer and Aren's mentor. Decades of drawing Ashvale's borders have left gaps in his own recollection—his old maps remember places and names he can no longer speak aloud.
+- **Lyra (Primary Companion — Historian):**  
+  A dedicated scholar and field historian who assisted Elena on her final survey of the Beacons before Elena vanished at the threshold of Dawnspire. Ahead on the Briarwood trail during the Prologue (introduced through Sister Elara's records and Elena's letter), Lyra becomes Aren's primary companion from Chapter 1 through the Final Chapter.
 
-- **Mira the Blacksmith:**  
-  Bellhaven's blunt, warm-hearted ironworker. Her forge stays lit past curfew; she recognizes the strange alloy of shards shaken loose by the thirteenth chime and aids Aren with tools and forge-lore.
+- **Master Caelen (Village Bell Keeper):**  
+  Bellhaven's elderly bell keeper and former master mapmaker who raised Aren after Elena disappeared. He knows far more about the thirteenth chime and Elena's final expedition than he initially admits, and entrusts Aren with the brass key to Elena's sealed chest.
 
-- **Sister Elara:**  
-  Keeper of the Bellhaven Belfry and village chronicler. She tends the local chime records and notices the first discrepancies in the historical ledgers.
+- **Mira (Blacksmith):**  
+  Bellhaven's warm-hearted, outspoken blacksmith who keeps her forge burning late into the night. She welcomes Aren into daily village life, remarks on villagers forgetting familiar names, and recalls repairing the middle bronze ring on the square's Stone Rune Pedestal for Elena.
 
-- **Commander Vane:**  
-  Stoic Lord Warden of Ironwatch Keep. Bound by an inherited vow to keep the Great Bell ringing at any cost, believing humanity cannot survive the Veilstorm without the Bell's sacrifice.
+- **Sister Elara (Bellhaven Historian):**  
+  Custodian of Bellhaven's oldest ledgers and belfry archives. She recognizes the ancient pre-Bell Beacon glyphs waking on the Stone Rune Pedestal, connects them to Lyra's historical research, and helps Aren piece together the final cipher symbol.
+
+- **Elena (Aren's Missing Mother — Backstory Anchor):**  
+  Master cartographer who discovered that the three Ancient Beacons could shield Ashvale cleanly without erasing memories. Before vanishing, she hid her cipher notes in Bellhaven so Aren would follow only when the Thirteenth Toll forced the truth into the open.
+
+- **Commander Vane (Keeper of Ironwatch — Chapter 3):**  
+  Leader of Ironwatch Keep who concealed records of the Ancient Beacons out of terror that silencing the Great Bell would surrender Ashvale to the Veilstorm.
 
 ---
 
-## 4. Chronological Chapters & Main Quests
+## 4. Chronological Story & Chapters
 
-Story progression follows a **strict linear sequence** of five chapters:
+Progression follows a **strict chronological order**. Players explore freely within unlocked areas, but story milestones cannot be skipped.
 
-### Chapter I — *The Thirteenth Chime* (Bellhaven Village)
-- **Premise:** At nightfall, the Great Bell tolls thirteen times. The Stone Rune Pedestal in Bellhaven Square ignites with a warning.
-- **Main Quest:** *"Investigate the thirteenth bell."* -> Inspect the Stone Rune Pedestal, speak with Master Caelen and Mira, uncover an ancient sealed map fragment beneath the village belfry, and open the gate to Briarwood.
+### Prologue: *The Thirteenth Toll* (Bellhaven Village — Phase 1 Playable)
+1. **Investigate the Thirteenth Bell:** Aren hears the unnatural 13th chime and inspects the awakening Stone Rune Pedestal in Bellhaven Square.
+2. **Speak with Three Village NPCs:** Aren speaks with **Master Caelen**, **Mira**, and **Sister Elara**, uncovering clues about village memory loss, Elena's disappearance, historian **Lyra**, and three astronomical symbols (`MOON`, `SUN`, `STAR`).
+3. **Find Mother's Letter:** Using Master Caelen's key on the sealed survey chest beside the cottage, Aren reads **Elena's letter**, confirming the order of the three rings and learning she set out toward the Beacons with Lyra.
+4. **Solve the Rune Pedestal Puzzle:** At the Stone Rune Pedestal, Aren aligns the three concentric stone rings (`Outer = MOON`, `Middle = SUN`, `Inner = STAR`). The pedestal glows and projects a guiding light toward Briarwood.
+5. **Discover the Path to Briarwood:** Aren approaches the parting silver-briared **Briarwood Waystone**, discovering the first Ancient Beacon lies within Briarwood Forest where Elena and Lyra searched.
+6. **Prologue Completion Sequence:** Connecting the beacon's light to his mother's final footsteps, Aren commits to leaving Bellhaven at dawn. Displays **"PROLOGUE COMPLETE — THE THIRTEENTH TOLL"** and unlocks Briarwood for Phase 2.
 
-### Chapter II — *The Fading Trails* (Briarwood Forest)
-- **Premise:** Citizens begin forgetting roads beyond the village wall. Aren follows Caelen's oldest survey chart through mist-choked Briarwood.
-- **Main Quest:** Realign overgrown waystone markers using the Cartography Minigame to trace the forgotten road to the wetlands.
+### Chapter 1: *Whispers of Briarwood* (Briarwood Forest)
+- Aren crosses into misty Briarwood, meets **Lyra**, aligns fallen trail shrines using Elena's field journal, and uncovers the forest's hidden Beacon ante-chamber.
 
-### Chapter III — *The Drowned Beacon* (Floodmill Wetlands)
-- **Premise:** Aren discovers that the Kingdom once relied on three Ancient Beacons—not the Great Bell—to hold back the Veilstorm cleanly.
-- **Main Quest:** Restore the Floodmill sluices, uncover records of the Founders' split, and relight the **First Ancient Beacon**.
+### Chapter 2: *The Drowned Village* (Floodmill Wetlands)
+- Navigating sunken canals and forgotten homesteads, Aren and Lyra solve water-lock puzzles to reveal the submerged temple housing the **First Ancient Beacon** and restore its flame, returning long-lost childhood memories to Bellhaven.
 
-### Chapter IV — *The Warden's Burden* (Ironwatch Keep)
-- **Premise:** Commander Vane bars passage toward Dawnspire, fearing that breaking the Bell's pact will doom Ashvale.
-- **Main Quest:** Uncover the suppressed Warden Chronicle proving the Beacons can replace the Bell, solve the Great Foundry Forge Lock, persuade or bypass Vane, and ignite the **Second Ancient Beacon**.
+### Chapter 3: *The Keeper's Lie* (Ironwatch Keep)
+- Reaching the mountain fortress, Aren and Lyra confront **Commander Vane** and expose forged chronologies proving the Bell was never meant to be permanent. Solving Ironwatch's great foundry locks rekindles the **Second Ancient Beacon**.
 
-### Chapter V — *Dawn Without Forgetting* (Dawnspire Mountain)
-- **Premise:** The thirteenth bell tolls louder as the seal fractures and the Veilstorm gathers at the summit.
-- **Main Quest:** Ascend Dawnspire Mountain, kindle the **Third Ancient Beacon**, enter the Great Bell Belfry, and unmake the memory-binding pact.
+### Chapter 4: *The Road to Dawnspire* (Alpine Ascent)
+- As the Veilstorm closes in and the 13th chime tolls faster, Aren and Lyra climb the shattered pilgrim switchbacks, piecing together Elena's final camp and map fragments.
+
+### Final Chapter: *The Last Bell* (Dawnspire Mountain Summit)
+- Igniting the **Third Ancient Beacon** at the summit reveals Elena's final truth: she stayed behind in the Dawnspire Sanctum to hold the fracturing seal steady until someone worthy could align all three Beacons. Channeling the unified light of the Beacons alongside Lyra, Aren shatters the memory-stealing pact and dispels the Veilstorm cleanly. Lost memories flow back across every region, Elena's spirit finds peace as dawn breaks, and Ashvale wakes to a sunlit morning where no one has to forget again.
 
 ---
 
 ## 5. Minigame Concepts
 
-1. **Cartography & Rune Alignment:**  
-   Aren compares weathered parchment fragments against physical stone rune rings, rotating concentric rings and connecting landmark lines to unlock hidden trails and ciphered pedestals.
-2. **Bell Resonance Tuning:**  
-   In belfries and beacon chambers, Aren strikes pitched bronze tuning bells in exact harmonic order shown by visual chime ripples to dispel memory-locks.
-3. **Forge & Mechanism Locks:**  
-   Spatial isometric puzzles involving waterwheel sluice gates (Floodmill), bellows/counterweight chains (Ironwatch), and mirror-brazier beams to channel beacon fire.
+1. **Concentric Rune Alignment (Prologue — Implemented in Phase 1):**  
+   Rotate three concentric carved stone rings (`Outer`, `Middle`, `Inner`) against a fixed zenith marker until the three symbols match clues discovered from villagers and Elena's letter (`MOON`, `SUN`, `STAR`). Supports mouse clicks and keyboard (`W/S` ring selection, `A/D` rotation, `E/Enter` confirm, `ESC` exit).
+2. **Waystone Triangulation & Canal Sluices (Chapters 1–2):**  
+   Mapline tracing and water-gate routing puzzles.
+3. **Bell Resonance & Forge Counterweights (Chapters 3–5):**  
+   Harmonic chime-ripple sequences and brazier-beam alignment.
 
 ---
 
-## 6. Story Progression Rules
+## 6. Quest & Progression Rules
 
-- **Fixed Chronology:** Regions and chapters unlock strictly in order (I -> II -> III -> IV -> V); players can revisit earlier regions for lore, but story states never branch out of sequence.
-- **Non-Lethal Adventure:** No hack-and-slash combat or permadeath; obstacles are environmental, spatial, social, and puzzle-driven.
-- **Memory Anchors:** Restoring each Beacon returns a major lost memory to the kingdom, visibly warming the lighting and NPC dialogue in earlier regions.
-- **Controls Consistency:** Normalized 8-way WASD movement, `E` to interact/advance, `ESC` to dismiss/pause.
-
----
-
-## 7. Definite Final Ending
-
-Upon igniting all three Ancient Beacons, their golden triangulation beam strikes the belfry of **Dawnspire Mountain**. Inside the Great Bell sanctum, Aren confronts the lingering Echo of the First Founder—who forged the Bell out of fear that no mortal vigilance could last forever.
-
-Instead of silencing the sky in darkness, Aren channels the three Beacons' steady light to **unbind the memory-consuming ward**, shattering the Great Bell's curse without unleashing the storm. The Veilstorm breaks apart against the unified Beacons. Across Bellhaven, Briarwood, Floodmill, and Ironwatch, long-stolen memories rush back to the living—Master Caelen remembers his family's names, Mira recalls the songs of her youth—and for the first time in three centuries, **a true golden dawn rises over Ashvale**.
+- **Strict Ordering:** Prologue objectives (1 through 6) advance only sequentially via unique quest IDs; out-of-order interactions show diegetic locked feedback without bypassing progression.
+- **No Repeat Farming / Exploits:** Unique story flags gate every NPC count (`talked_npcs` tracked per `npc_id`), letter pickup, and puzzle completion (`puzzle_solved` prevents re-triggering rewards).
+- **Stage-Aware World & Dialogue:** Talking to Bellhaven NPCs updates dynamically as quest stages advance, ensuring players never become soft-locked if they revisit clues.
 
 ---
 
-## 8. Development Phases
+## 7. Development Phases
 
-- **Phase 0 (Current Milestone):** Rebooted project foundation in **Bellhaven Village at night**. Preserves isometric 2:1 ground rendering, 8-way movement/walk animations, pixel-snapped camera, Y-sorting, collisions, and interaction HUD. Replaces all legacy sci-fi/campus content with medieval village art, Aren's fantasy attire, and the Stone Rune Pedestal opening interaction.
-- **Phase 1:** Bellhaven interiors (Cartographer's Cottage & Blacksmith Workshop), NPC actors (Master Caelen, Mira, Sister Elara), and multi-line dialogue choices.
-- **Phase 2:** Briarwood Forest & Floodmill Wetlands scenes, Cartography & Rune Alignment minigame, and First Ancient Beacon restoration.
-- **Phase 3:** Ironwatch Keep scene, Bell Resonance Tuning & Forge Mechanism minigames, and Second Ancient Beacon restoration.
-- **Phase 4:** Dawnspire Mountain finale, Third Ancient Beacon, Great Bell ending cutscene, save/load system, and full audio mix.
+- **Phase 0 (Completed):** Isometric pixel-art foundation in Bellhaven Village, Aren controller & sprite, pixel-snapped camera, collisions, and basic HUD.
+- **Phase 1 (Current Milestone — Playable Prologue):** Canonical story revision, reusable NPC & Dialogue System (`Master Caelen`, `Mira`, `Sister Elara`), data-driven `QuestManager` with 6 ordered objectives, **Rune-Alignment Minigame**, **Mother's Letter**, **Briarwood Waystone Gate**, environmental night lighting/idle animations, and `"PROLOGUE COMPLETE — THE THIRTEENTH TOLL"` ending sequence.
+- **Phase 2:** Briarwood Forest & Floodmill Wetlands, companion Lyra following/dialogue, Chapter 1 & Chapter 2 quests.
+- **Phase 3:** Ironwatch Keep, Commander Vane narrative arc, and Second Ancient Beacon.
+- **Phase 4:** Dawnspire Mountain ascent, Third Beacon, Final Chapter cutscene, save/load persistence, and audio mix.

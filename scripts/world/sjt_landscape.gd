@@ -1,6 +1,8 @@
 extends Node2D
 const FONT = preload("res://assets/fonts/after_hours.tres")
 
+var pedestal_awakened: bool = false
+
 func _draw() -> void:
 	# Cobblestone medieval roads & Village Square leading up to Bellhaven Belfry
 	var approach := PackedVector2Array([Vector2(-290,230),Vector2(-155,160),Vector2(-75,105),Vector2(-10,25),Vector2(25,0),Vector2(75,28),Vector2(170,85),Vector2(320,150)])
@@ -22,9 +24,19 @@ func _draw() -> void:
 	poly([Vector2(-55,25),Vector2(25,-15),Vector2(90,18),Vector2(10,58)],Color("695e54"))
 	# Warm forge ember spill onto cobbles near Blacksmith bays
 	poly([Vector2(48,-52),Vector2(88,-72),Vector2(114,-56),Vector2(74,-36)],Color(0.95,0.48,0.16,0.16))
+	# Atmospheric warm lantern/candle pools at Cottage doorstep, Belfry steps, and Rune Pedestal
+	for spot: Array in [[Vector2(-82,24),26,Color(0.96,0.72,0.34,0.11)],[Vector2(30,2),28,Color(0.96,0.76,0.38,0.12)],[Vector2(120,55),24,Color(0.98,0.80,0.36,0.10)]]:
+		var pool := PackedVector2Array()
+		for i in range(12):
+			pool.append(spot[0] + Vector2(cos(i * TAU / 12) * spot[1], sin(i * TAU / 12) * spot[1] * 0.5).round())
+		draw_colored_polygon(pool, spot[2])
 	# Village Square central stone-curbed cistern apron and open green plaza
 	poly([Vector2(-24,149),Vector2(30,122),Vector2(84,149),Vector2(30,176)],Color("49433c"))
 	draw_polyline(PackedVector2Array([Vector2(-24,149),Vector2(30,122),Vector2(84,149),Vector2(30,176),Vector2(-24,149)]),Color("696057"),2)
+	if pedestal_awakened:
+		var beam := PackedVector2Array([Vector2(120,55),Vector2(75,28),Vector2(25,0),Vector2(-10,25),Vector2(-75,105),Vector2(-155,160),Vector2(-198,178)])
+		draw_polyline(beam,Color(0.38,0.85,0.92,0.22),10)
+		draw_polyline(beam,Color(0.70,0.96,0.98,0.62),2)
 	draw_string(FONT,Vector2(-18,194),"VILLAGE SQUARE",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("b8b294"))
 	draw_string(FONT,Vector2(-270,206),"TO BRIARWOOD",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("c7be9e"))
 	draw_string(FONT,Vector2(182,126),"TO IRONWATCH",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("c7be9e"))

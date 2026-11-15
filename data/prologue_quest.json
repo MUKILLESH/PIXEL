@@ -1,0 +1,100 @@
+{
+  "quest_id": "prologue_thirteenth_toll",
+  "title": "Prologue: The Thirteenth Toll",
+  "rune_solution": ["MOON", "SUN", "STAR"],
+  "objectives": [
+    {
+      "id": "investigate_bell",
+      "text": "Investigate the thirteenth bell."
+    },
+    {
+      "id": "speak_npcs",
+      "text": "Speak with the three villagers (0/3)."
+    },
+    {
+      "id": "find_mothers_letter",
+      "text": "Find Mother's letter by the cottage."
+    },
+    {
+      "id": "solve_rune_puzzle",
+      "text": "Align the three discs on the Rune Pedestal."
+    },
+    {
+      "id": "discover_briarwood_path",
+      "text": "Discover the awakened path to Briarwood."
+    },
+    {
+      "id": "trigger_prologue_completion",
+      "text": "Cross the Briarwood threshold to depart."
+    }
+  ],
+  "npcs": {
+    "caelen": {
+      "speaker": "MASTER CAELEN",
+      "before_pedestal": [
+        "Did you hear it, Aren? Twelve chimes bind the Veilstorm... yet tonight the belfry shuddered under a thirteenth toll.",
+        "Something stone-old just woke in the square. Inspect the Stone Rune Pedestal first, before the night mist thickens."
+      ],
+      "investigation": [
+        "Thirteen chimes... Three hundred years of twelve, and tonight the iron tongue struck one beat too many.",
+        "Look at our neighbors' eyes, Aren. Whenever the Great Bell shields Bellhaven, it drinks a piece of our memories in return.",
+        "Before your mother Elena vanished toward Dawnspire, she feared the ward was failing and locked her final chart inside the survey chest beside the cottage.",
+        "Take my brass key to the chest. Remember her first cipher clue too: the pedestal's OUTER RING is tuned to the MOON."
+      ],
+      "after_puzzle": [
+        "The golden beam points southwest into Briarwood Forest. Take your compass, Aren, and walk carefully past the old mile-markers.",
+        "Your mother believed Ashvale deserved a dawn where nobody has to forget. Find Lyra in the woods and uncover what Elena started."
+      ]
+    },
+    "mira": {
+      "speaker": "MIRA THE BLACKSMITH",
+      "before_pedestal": [
+        "Careful near the hearth, Aren! That thirteenth chime rattled every sword and horseshoe off my racks.",
+        "The Rune Pedestal by the eastern cobbles started humming right after the echo faded. Go take a look at it."
+      ],
+      "investigation": [
+        "Warm yourself by the forge, Aren. Village life stays quiet here—bake bread, mend plows, bank the fire—until curfew falls.",
+        "Only lately, neighbors keep forgetting old songs and names after twilight. Folks blame the mist, but your mother Elena suspected the Bell itself.",
+        "When Elena repaired the Stone Rune Pedestal years ago, I tempered its bronze axle for her. She swore the MIDDLE RING must point straight to the SUN."
+      ],
+      "after_puzzle": [
+        "Wait till the smithy hears that you woke the old stone! When that golden ray shot southwest, every ember in my furnace leaped.",
+        "Briarwood's trail has stood thorn-shut for years. Watch your step and give Historian Lyra my regards if she's still camped under the oaks."
+      ]
+    },
+    "elara": {
+      "speaker": "SISTER ELARA",
+      "before_pedestal": [
+        "Blessings upon you, young mapmaker. Have you seen the square's stone pedestal? Its sleeping glyphs caught fire at the thirteenth stroke.",
+        "Go inspect the Stone Rune Pedestal before my chronicle ink dries, then come speak with us."
+      ],
+      "investigation": [
+        "Those symbols on the pedestal predate the kingdom's founding—ancient Beacon script from before the Great Bell was ever hung.",
+        "Your mother Elena worked closely with the young historian Lyra to map three lost Ancient Beacons capable of holding back the Veilstorm without taking memories.",
+        "If the thirteenth bell means the pact is cracking, only the Ancient Beacons can spare Ashvale.",
+        "Our belfry ledger notes that the pedestal's INNER RING belongs to the Dawnspire STAR. Check Elena's letter by the cottage before aligning the stones."
+      ],
+      "after_puzzle": [
+        "I have only ever seen Beacon script illuminated in dusty manuscripts! You brought Bellhaven's oldest ward back to life.",
+        "Follow the southwest lantern path to Briarwood Waystone. Lyra's survey notes place the First Ancient Beacon deep in those mist-bound woods."
+      ]
+    }
+  },
+  "story_events": {
+    "mothers_letter": [
+      "\"My dear Aren—if the Great Bell ever tolls thirteen times, know that Caelen and I kept silent only to keep you safe.\"",
+      "\"The historian Lyra and I traced three Ancient Beacons built before the Bell's curse. I set off toward Briarwood to verify the first beacon's hearth.\"",
+      "\"Align the pedestal discs from outer edge to heart: MOON for the watch, SUN for the forge, STAR for Dawnspire. Follow the light west to find us.\""
+    ],
+    "beacon_revelation": [
+      "Golden-cyan light surges through the carved obelisk, casting a shimmering surveyor's ray southwest across the Bellhaven cobbles.",
+      "Memories etched into the stone flicker clear: three Ancient Beacons once shielded Ashvale in harmony, until the Great Bell trapped the valley in amnesia.",
+      "The first of the three Ancient Beacons sleeps deep inside Briarwood Forest—the very region your mother Elena and Lyra entered before she vanished."
+    ],
+    "briarwood_ending": [
+      "The silver-barked briars uncoil from the weathered stone gate, revealing an old cartographer's brass compass mark pressed neatly into the moss.",
+      "Aren recognizes his mother's hand-stamped seal—and beside it, fresh chalk notation from Historian Lyra pointing toward the forest interior.",
+      "Taking a steady breath, Aren fastens his scroll satchel and steps toward the misty eaves of Briarwood to uncover the First Beacon and bring Elena home."
+    ]
+  }
+}
