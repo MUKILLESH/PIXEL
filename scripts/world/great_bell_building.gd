@@ -2,6 +2,8 @@ extends StaticBody2D
 ## Procedural 2.5D pixel-art sanctum architecture for Chapter 5 (Great Bell Sanctum):
 ## sanctum_arch, great_bell_monolith, warden_stele, and dawn_memorial.
 
+const Art = preload("res://scripts/world/great_bell_art.gd")
+
 @export var kind: String = "sanctum_arch"
 
 var binding_severed: bool = false
@@ -43,90 +45,93 @@ func _draw() -> void:
 			_draw_dawn_memorial()
 
 func _draw_sanctum_arch() -> void:
-	draw_rect(Rect2(-46, -48, 16, 48), Color("364056"))
-	draw_rect(Rect2(-44, -46, 5, 44), Color("4c5975"))
-	draw_rect(Rect2(30, -48, 16, 48), Color("293142"))
-	draw_rect(Rect2(41, -46, 5, 44), Color("1e2433"))
-	draw_rect(Rect2(-50, -56, 100, 12), Color("485570"))
-	draw_rect(Rect2(-48, -58, 96, 3), Color("677899"))
-	draw_rect(Rect2(-24, -52, 48, 4), Color("d9a94e"))
-	draw_rect(Rect2(-4, -55, 8, 6), Color("8be6f0"))
+	var dawn := storm_resolved
+	var trim: String = Art.GOLD[2] if dawn else Art.GOLD[1]
+	# Twin fluted Gothic piers centered on the (-38, -4) and (+38, -4) collision plinths
+	Art.pillar(self, Vector2(-38, 2), 14, 46, dawn)
+	Art.pillar(self, Vector2(38, 2), 14, 46, dawn)
+	# Compact overhead Gothic architrave spanning x = -48..+48 (clears GreatBellBinding at HeartArch!)
+	Art.px(self, -48, -54, 96, 10, Color(Art.STONE[3]))
+	Art.px(self, -46, -56, 92, 3, Color(Art.STONE[6]))
+	Art.px(self, -48, -44, 96, 2, Color(Art.STONE[1]))
+	Art.px(self, -44, -50, 88, 2, Color(trim))
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-28, -54), Vector2(0, -63), Vector2(28, -54)
+	]), Color(Art.STONE[4]))
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-20, -54), Vector2(0, -60), Vector2(20, -54)
+	]), Color(Art.STONE[2]))
+	for gi in range(-3, 4):
+		if gi == 0:
+			continue
+		Art.glyph(self, float(gi) * 9.0 - 1.0, -48.0, gi + 4, Color(trim))
+	Art.px(self, -5, -56, 10, 9, Color(Art.STONE[5]))
+	Art.px(self, -4, -55, 8, 7, Color(Art.GOLD[3] if dawn else Art.CYAN[2]))
+	Art.px(self, -2, -53, 4, 4, Color(Art.GOLD[4] if dawn else Art.CYAN[4]))
+	for sx in [-1.0, 1.0]:
+		draw_colored_polygon(PackedVector2Array([
+			Vector2(29.0 * sx, -44.0), Vector2(29.0 * sx, -35.0), Vector2(21.0 * sx, -44.0)
+		]), Color(Art.STONE[4]))
 
 func _draw_great_bell_monolith() -> void:
-	# Monumental obsidian-and-bronze belfry frame supporting the Great Bell
-	draw_rect(Rect2(-34, -80, 10, 62), Color("293142"))
-	draw_rect(Rect2(24, -80, 10, 62), Color("212838"))
-	draw_rect(Rect2(-32, -78, 3, 58), Color("475470"))
-	draw_rect(Rect2(24, -78, 3, 58), Color("3a455e"))
-	# Massive timber-and-bronze overhead yoke beam & crest
-	draw_rect(Rect2(-38, -86, 76, 10), Color("3b3026"))
-	draw_rect(Rect2(-36, -88, 72, 3), Color("6b543b"))
-	draw_rect(Rect2(-12, -94, 24, 6), Color("d9a94e") if storm_resolved else Color("6e6254"))
-	draw_rect(Rect2(-38, -86, 8, 10), Color("a67c3c"))
-	draw_rect(Rect2(30, -86, 8, 10), Color("a67c3c"))
-	# Heavy suspension bronze shaft
-	draw_rect(Rect2(-5, -78, 10, 14), Color("594836"))
-
-	# Colossal hammered-bronze Great Bell dome & flared rim
-	var dark_bronze: Color = Color("8c6629") if storm_resolved else Color("3d332c")
-	var mid_bronze: Color = Color("b88b3d") if storm_resolved else Color("54463b")
-	var high_bronze: Color = Color("e3b95c") if storm_resolved else Color("756250")
-	var core_glow: Color = Color("ffe68a") if storm_resolved else Color("6b564a")
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(-16, -66), Vector2(16, -66), Vector2(28, -22), Vector2(-28, -22)
-	]), dark_bronze)
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(-12, -64), Vector2(10, -64), Vector2(20, -24), Vector2(-20, -24)
-	]), mid_bronze)
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(-9, -62), Vector2(-1, -62), Vector2(-3, -26), Vector2(-14, -26)
-	]), high_bronze)
-	# Engraved horizontal rune waist bands
-	draw_rect(Rect2(-22, -46, 44, 3), Color("70d4e0") if network_stabilized or storm_resolved else Color("6e558a"))
-	draw_rect(Rect2(-25, -34, 50, 2), Color("fae08c") if storm_resolved else Color("453732"))
-	# Flared lower lip & bronze tongue clapper
-	draw_rect(Rect2(-32, -23, 64, 7), high_bronze)
-	draw_rect(Rect2(-32, -19, 64, 3), dark_bronze)
-	draw_rect(Rect2(-5, -16, 10, 7), core_glow)
-	draw_rect(Rect2(-3, -15, 6, 4), Color("ffffff") if storm_resolved else Color("332924"))
-
-	# Monumental energy aura vs dark binding chains
-	if network_stabilized or storm_resolved:
-		draw_line(Vector2(0, -140), Vector2(0, -94), Color(0.98, 0.90, 0.56, 0.35), 8.0)
-		draw_arc(Vector2(0, -44), 36.0, 0.0, TAU, 32, Color(0.98, 0.88, 0.52, 0.58), 2.0)
-		draw_arc(Vector2(0, -44), 46.0, 0.0, TAU, 36, Color(0.55, 0.90, 0.98, 0.42), 1.5)
-	if not binding_severed:
-		for pair in [
-			[Vector2(-18, -56), Vector2(-34, -10)],
-			[Vector2(18, -56), Vector2(34, -10)],
-			[Vector2(-26, -32), Vector2(-22, -4)],
-			[Vector2(26, -32), Vector2(22, -4)],
-		]:
-			draw_line(pair[0], pair[1], Color("20162e"), 3.5)
-			draw_line(pair[0], pair[1], Color("8058ad"), 1.2)
-			draw_circle(pair[1], 3.0, Color("a478db"))
+	# Compact carved Harmonic Anchor Capstan over collision plinth (30, -104), 22x12.
+	# Monumental suspended Great Bell renders right above in Landscape so ConduitFloodmill at (30, -154) remains 100% clear.
+	var dawn := storm_resolved
+	var pal: Array = Art.BRONZE if (binding_severed or dawn) else Art.BRONZE_DIM
+	var core_c: Color = Color(Art.GOLD[3]) if binding_severed else (Color(Art.CYAN[3]) if network_stabilized else Color(Art.AMETHYST[4]))
+	# Base shadow & stepped obsidian plinth
+	Art.ellipse(self, Vector2(0, 1), 16.0, 7.0, Color(0, 0, 0, 0.35))
+	Art.px(self, -13, -10, 26, 12, Color(Art.STONE[2]))
+	Art.px(self, -12, -9, 24, 9, Color(Art.STONE[4]))
+	Art.px(self, -13, -10, 26, 1, Color(Art.STONE[6]))
+	Art.px(self, -10, -22, 20, 12, Color(Art.STONE[3]))
+	Art.px(self, -10, -22, 20, 2, Color(pal[5]))
+	Art.px(self, -8, -19, 16, 7, Color(pal[2]))
+	# Twin bronze chain-mooring lugs matching CHAIN_ANCHORS at (-10, -4) and (+10, -4) relative to (30, -104)
+	for lx in [-11, 8]:
+		Art.px(self, lx, -14, 3, 7, Color(pal[4]))
+		Art.px(self, lx, -14, 1, 7, Color(pal[7]))
+		Art.px(self, lx + 1, -12, 1, 2, Color(Art.STONE[0]))
+	# Center harmonic conduit node & rune inlay
+	Art.px(self, -3, -26, 6, 4, Color(pal[4]))
+	Art.px(self, -2, -25, 4, 3, core_c)
+	Art.px(self, -1, -24, 2, 1, Color("ffffff"))
+	Art.px(self, -2, -16, 4, 5, core_c)
+	Art.glyph(self, -5.0, -7.0, 2, Color(Art.GOLD[2] if dawn else Art.CYAN[2]))
+	Art.glyph(self, 3.0, -7.0, 5, Color(Art.GOLD[2] if dawn else Art.CYAN[2]))
 
 func _draw_warden_stele() -> void:
-	draw_rect(Rect2(-11, -30, 22, 30), Color("364054"))
-	draw_rect(Rect2(-8, -26, 16, 20), Color("4e5c78"))
-	draw_line(Vector2(-5, -22), Vector2(5, -22), Color("d9a94e"), 1.0)
-	draw_line(Vector2(-5, -17), Vector2(5, -17), Color("8be6f0"), 1.0)
-	draw_line(Vector2(-5, -12), Vector2(5, -12), Color("d9a94e"), 1.0)
+	var dawn := storm_resolved
+	# Contact shadow & stepped limestone-obsidian base
+	Art.ellipse(self, Vector2(0, 1), 15.0, 6.0, Color(0, 0, 0, 0.35))
+	Art.px(self, -12, -8, 24, 9, Color(Art.STONE[2]))
+	Art.px(self, -11, -9, 22, 2, Color(Art.STONE[6]))
+	# Carved monolith body
+	Art.px(self, -9, -40, 18, 32, Color(Art.STONE[4]))
+	Art.px(self, -9, -40, 4, 32, Color(Art.STONE[5]))
+	Art.px(self, 6, -40, 3, 32, Color(Art.STONE[2]))
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-10, -40), Vector2(0, -47), Vector2(10, -40)
+	]), Color(Art.STONE[5]))
+	# Gold crest & incised chronicle lines
+	Art.px(self, -2, -43, 4, 3, Color(Art.GOLD[3] if dawn else Art.GOLD[1]))
+	for ry in [-35, -31, -27, -23, -19, -15]:
+		Art.inscription(self, -6, ry, 12, absi(ry), Color(Art.GOLD[2] if ry == -27 else Art.STONE[1]), Color(Art.CYAN[2] if ry == -31 else Art.STONE[6]))
 
 func _draw_dawn_memorial() -> void:
-	# Stepped limestone base
-	draw_rect(Rect2(-15, -6, 30, 6), Color("6e675c"))
-	draw_rect(Rect2(-10, -32, 20, 26), Color("a69b88"))
-	draw_rect(Rect2(5, -32, 5, 26), Color("7d7466"))
+	Art.ellipse(self, Vector2(0, 1), 18.0, 7.0, Color(0, 0, 0, 0.30))
+	Art.px(self, -15, -6, 30, 6, Color(Art.LIME[2]))
+	Art.px(self, -15, -6, 30, 1, Color(Art.LIME[5]))
+	Art.px(self, -10, -34, 20, 28, Color(Art.LIME[4]))
+	Art.px(self, -10, -34, 4, 28, Color(Art.LIME[5]))
+	Art.px(self, 5, -34, 5, 28, Color(Art.LIME[3]))
 	draw_colored_polygon(PackedVector2Array([
-		Vector2(-12, -32), Vector2(0, -40), Vector2(12, -32)
-	]), Color("c4b8a1"))
-	# Engraved golden memorial lines
-	for ry in [-25, -21, -17, -13]:
-		draw_line(Vector2(-6, ry), Vector2(4, ry), Color("594c38"), 1.0)
-	draw_rect(Rect2(-2, -31, 4, 3), Color("f2ca6b"))
-	# Elena's weathered leather journal placed gently beside the base in epilogue
+		Vector2(-12, -34), Vector2(0, -43), Vector2(12, -34)
+	]), Color(Art.LIME[5]))
+	for ry in [-26, -22, -18, -14]:
+		Art.inscription(self, -7, ry, 13, absi(ry) + 3, Color("594c38"), Color(Art.GOLD[2]))
+	Art.px(self, -2, -32, 4, 3, Color(Art.GOLD[3]))
 	if elena_journal_placed:
-		draw_rect(Rect2(7, -8, 9, 6), Color("5c351e"))
-		draw_rect(Rect2(8, -7, 7, 4), Color("7d492a"))
-		draw_rect(Rect2(10, -7, 3, 2), Color("e6b85c"))
+		Art.px(self, 7, -8, 9, 6, Color("5c351e"))
+		Art.px(self, 8, -7, 7, 4, Color("7d492a"))
+		Art.px(self, 10, -7, 3, 2, Color(Art.GOLD[3]))
