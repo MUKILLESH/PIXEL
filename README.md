@@ -2,7 +2,7 @@
 
 An isometric 2.5D pixel-art mystery adventure built in **Godot 4.7.2 Standard** (`GDScript`).
 
-After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time, apprentice mapmaker **Aren** uncovers a rune cipher leading to his missing mother **Elena**, journeys through **Briarwood Forest** alongside traveling historian **Lyra** to awaken the First Ancient Beacon, and enters **Floodmill: The Drowned Village** to restore the Second Ancient Beacon and uncover what happened to the thirty-six forgotten hearths.
+After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time, apprentice mapmaker **Aren** uncovers a rune cipher leading to his missing mother **Elena**, journeys through **Briarwood Forest** alongside traveling historian **Lyra** to awaken the First Ancient Beacon, enters **Floodmill: The Drowned Village** to restore the Second Ancient Beacon, and breaches **Ironwatch Keep** to uncover the Bell Wardens' lie, restore the Third Ancient Beacon, and open the road to **Dawnspire**.
 
 ## Controls
 
@@ -12,7 +12,7 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 - **Field Satchel (Inventory & Clues):** `I` or `Tab`
 - **Title / System Menu (New Game, Continue, Manual Save, Satchel):** `M` or `F10`
 - **Quick Save Progress:** `F5`
-- **In Minigames (`RunePuzzle`, `BridgeRepair`, `MirrorPuzzle`, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`):** `W/S` or `Up/Down` selects rows, `A/D` or `Left/Right` cycles values, `E`/`Enter` verifies, `Esc` closes cleanly, or click UI buttons directly
+- **In Minigames (`RunePuzzle`, `BridgeRepair`, `MirrorPuzzle`, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`, `CrestPuzzle`):** `W/S` or `Up/Down` selects rows, `A/D` or `Left/Right` cycles values, `E`/`Enter` verifies, `Esc` closes cleanly, or click UI buttons directly
 
 ## Playable Progression
 
@@ -44,12 +44,21 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 6. Cross the drained causeway into the cutaway **Forgotten Archive** (`enter_forgotten_archive`), collect all **3 surviving records** (`record_census`, `record_tribute`, `record_transfer`), and solve **Minigame C (`LedgerPuzzle`)**: `THIRTY-SIX HEARTHS`, `MEMORY OFFERING`, `IRONWATCH SEAL` (`reconstruct_village_ledger`).
 7. Examine the bound Master Ledger to uncover what happened to Floodmill's thirty-six hearths (`discover_villagers_truth`).
 8. Restore the **Second Ancient Beacon** at the northeast sanctuary (`restore_second_beacon`) and listen to **Elena's Memory Recording** (`witness_elena_message`).
-9. Speak with **Lyra** by the Second Beacon (`complete_chapter2`) to display `CHAPTER 2 COMPLETE — THE DROWNED VILLAGE` and unlock the **Ironwatch Keep Gate** teaser (`Chapter 3`).
+9. Speak with **Lyra** by the Second Beacon (`complete_chapter2`) to display `CHAPTER 2 COMPLETE — THE DROWNED VILLAGE` and unlock the **Ironwatch Keep Gate** (`unlock_ironwatch_path` / press `E` twice to enter Ironwatch Keep).
+
+### Chapter 3 — The Keeper's Lie (`scenes/ironwatch_keep.tscn`)
+1. Inspect the **Ironwatch Keep Threshold** (`enter_ironwatch`) and the **Courtyard Statue Circle** (`investigate_courtyard`).
+2. Enter the cutaway **Fortress Archives** to read the **First Catastrophe Ledger** (`discover_warden_records`) revealing the initial sacrifice of thirty-six volunteers.
+3. Search the **Abandoned Barracks** duty roster (`explore_barracks`) to uncover how later Keepers concealed the Ancient Beacons. *(Optional keepsake: recover the **Warden's Tarnished Locket**.)*
+4. Discover all **3 Watch Crest clues** across the Archives lectern, Barracks armory plaque, and Hall of Crests stele (`find_crest_clues`).
+5. Solve **Hall of Crests (`CrestPuzzle`)**: `SILVER BELL`, `SUNDERED SHIELD`, `CROWNED FLAME` (`solve_crest_puzzle`) to lift the Shadowed Passage portcullis.
+6. Cross the **Shadowed Passage** past patrolling **Shadow Sentinels** using glowing **Ward Alcoves** (non-destructive checkpoint recovery upon detection), then harmonize the **North Ward Lantern** (`navigate_shadowed_passage`) and enter the **Warden's Chamber** (`reach_wardens_chamber`).
+7. Confront the **Last Bell Warden** (`confront_last_warden`), read **Elena's Harmonic Lattice Folio** (`discover_elena_research`), ignite the **Third Ancient Beacon** connecting all three Beacons (`restore_third_beacon`), and unseal the **Dawnspire Citadel Gate** (`unlock_dawnspire_road` / `complete_chapter3`) to display `CHAPTER 3 COMPLETE — THE KEEPER'S LIE`.
 
 ## Save System & Resume Flow
 
-- Progress is stored atomically at `user://ashvale_save.json` with `.tmp` staging and `.bak` backup rotation (`SAVE_VERSION := 2`, backwards compatible with Phase 2 `version == 1` saves).
-- Saved state includes the active region scene (`sjt_exterior.tscn`, `briarwood_forest.tscn`, or `floodmill_village.tscn`), Aren's exact position and facing direction, completed objectives, inventory/clues, bridge/mirror/watermill/sluice/ledger states, beacon activations, and NPC positions.
+- Progress is stored atomically at `user://ashvale_save.json` with `.tmp` staging and `.bak` backup rotation (`SAVE_VERSION := 3`, backwards compatible with Phase 2 `version == 1` and Phase 3 `version == 2` saves).
+- Saved state includes the active region scene (`sjt_exterior.tscn`, `briarwood_forest.tscn`, `floodmill_village.tscn`, or `ironwatch_keep.tscn`), Aren's exact position and facing direction, completed objectives, inventory/clues, bridge/mirror/watermill/sluice/ledger/crest/stealth checkpoint states, beacon activations, and NPC positions.
 - Corrupted primary saves or mismatched schemas are rejected cleanly and automatically fall back to `user://ashvale_save.json.bak` when valid.
 
 ## Running & Validation
@@ -67,11 +76,13 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase2.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase2_5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase3.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase4.gd
 
 # Generate screenshot captures
-.\Godot_v4.7.2-stable_win64_console.exe -s res://tests/capture_sjt.gd
-.\Godot_v4.7.2-stable_win64_console.exe -s res://tests/capture_briarwood.gd
-.\Godot_v4.7.2-stable_win64_console.exe -s res://tests/capture_floodmill.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_sjt.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_briarwood.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_floodmill.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_ironwatch.gd
 ```
 
 See [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/FILES.md](docs/FILES.md), and [docs/VALIDATION.md](docs/VALIDATION.md) for architecture, file inventory, and manual QA steps.

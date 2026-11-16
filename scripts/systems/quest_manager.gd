@@ -1,16 +1,19 @@
 extends Node
-## Data-driven chronological quest tracker supporting Prologue, Chapter 1, Chapter 2, and atomic saves.
+## Data-driven chronological quest tracker supporting Prologue, Chapter 1, Chapter 2, Chapter 3, and atomic saves.
 
 signal objective_changed(objective_id: String, objective_text: String)
 signal objective_completed(objective_id: String)
 signal quest_completed(quest_id: String)
 
 const QUEST_DATA_PATH := "res://data/prologue_quest.json"
-const SAVE_VERSION := 2
+const CHAPTER3_DATA_PATH := "res://data/chapter3_quest.json"
+const SAVE_VERSION := 3
+const CREST_SYMBOLS: Array[String] = ["IRON SWORD", "SILVER BELL", "SUNDERED SHIELD", "CROWNED FLAME"]
 
 static var pending_load_path: String = ""
 static var carry_prologue_completed: bool = false
 static var carry_chapter1_completed: bool = false
+static var carry_chapter2_completed: bool = false
 static var carry_optional_discoveries: Dictionary = {}
 
 @export var quest_data_path: String = QUEST_DATA_PATH
@@ -54,6 +57,24 @@ var chapter2_elena_echo_heard: bool = false
 var chapter2_completed: bool = false
 var ironwatch_unlocked: bool = false
 
+# Phase 4 (Chapter 3: The Keeper's Lie) state
+var crest_solution: Array[String] = ["SILVER BELL", "SUNDERED SHIELD", "CROWNED FLAME"]
+var warden_records_found: bool = false
+var barracks_explored: bool = false
+var barracks_keepsake_found: bool = false
+var crest_clues_found: Dictionary = {}
+var crest_pillar_states: Array[int] = [0, 0, 0]
+var crest_puzzle_solved: bool = false
+var stealth_checkpoint_id: String = "checkpoint_0"
+var stealth_checkpoint_pos: Vector2 = Vector2(-150, -32)
+var stealth_detections_count: int = 0
+var shadow_passage_cleared: bool = false
+var warden_confronted: bool = false
+var elena_research_found: bool = false
+var third_beacon_activated: bool = false
+var dawnspire_unlocked: bool = false
+var chapter3_completed: bool = false
+
 # Saved region & player pose
 var saved_region_scene: String = ""
 var saved_player_position: Vector2 = Vector2.ZERO
@@ -79,6 +100,11 @@ func load_quest_data(path: String = "") -> void:
 	quest_id = String(data.get("quest_id", quest_id))
 	quest_title = String(data.get("title", quest_title))
 	objectives = data.get("objectives", [])
+	var raw_crest_sol: Variant = data.get("crest_solution", ["SILVER BELL", "SUNDERED SHIELD", "CROWNED FLAME"])
+	if raw_crest_sol is Array and raw_crest_sol.size() == 3:
+		crest_solution = []
+		for cs in raw_crest_sol:
+			crest_solution.append(String(cs))
 
 func reload_quest(path: String) -> void:
 	current_index = 0
@@ -109,11 +135,41 @@ func reload_quest(path: String) -> void:
 	chapter2_elena_echo_heard = false
 	chapter2_completed = false
 	ironwatch_unlocked = false
+	warden_records_found = false
+	barracks_explored = false
+	barracks_keepsake_found = false
+	crest_clues_found.clear()
+	crest_pillar_states = [0, 0, 0]
+	crest_puzzle_solved = false
+	stealth_checkpoint_id = "checkpoint_0"
+	stealth_checkpoint_pos = Vector2(-150, -32)
+	stealth_detections_count = 0
+	shadow_passage_cleared = false
+	warden_confronted = false
+	elena_research_found = false
+	third_beacon_activated = false
+	dawnspire_unlocked = false
+	chapter3_completed = false
 	saved_region_scene = ""
 	saved_player_position = Vector2.ZERO
 	saved_player_facing = 2
 	has_saved_player_pose = false
 	load_quest_data(path)
+	objective_changed.emit(get_current_objective_id(), get_current_objective_text())
+
+func start_chapter3() -> void:
+	carry_prologue_completed = true
+	carry_chapter1_completed = true
+	carry_chapter2_completed = true
+	reload_quest(CHAPTER3_DATA_PATH)
+	prologue_completed = true
+	briarwood_unlocked = true
+	chapter1_completed = true
+	floodmill_unlocked = true
+	beacon_activated = true
+	chapter2_completed = true
+	ironwatch_unlocked = true
+	second_beacon_activated = true
 	objective_changed.emit(get_current_objective_id(), get_current_objective_text())
 
 func get_current_objective_id() -> String:
@@ -122,6 +178,14 @@ func get_current_objective_id() -> String:
 	return "completed"
 
 func get_current_objective_text() -> String:
+	if quest_id == "chapter3_keepers_lie":
+		if chapter3_completed or current_index >= objectives.size():
+			return "Chapter 3 Complete - Dawnspire Road Unlocked."
+		var ch3_id: String = get_current_objective_id()
+		if ch3_id == "find_crest_clues":
+			return "Find the three historical crest clues (%d/3)." % crest_clues_found.size()
+		return String(objectives[current_index].get("text", ""))
+
 	if quest_id == "chapter2_drowned_village":
 		if chapter2_completed or current_index >= objectives.size():
 			return "Chapter 2 Complete - Ironwatch Keep Unlocked."
@@ -155,6 +219,8 @@ func is_objective_completed(id: String) -> bool:
 func is_quest_completed(id: String = "prologue_thirteenth_toll") -> bool:
 	if id != quest_id:
 		return false
+	if quest_id == "chapter3_keepers_lie":
+		return chapter3_completed
 	if quest_id == "chapter2_drowned_village":
 		return chapter2_completed
 	if quest_id == "chapter1_whispers_of_briarwood":
@@ -188,8 +254,50 @@ func can_open_sluice_puzzle() -> bool:
 func can_open_ledger_puzzle() -> bool:
 	return get_current_objective_id() == "reconstruct_village_ledger" and not ledger_reconstructed and archive_clues_found.size() >= 3
 
+func can_inspect_courtyard() -> bool:
+	return get_current_objective_id() == "investigate_courtyard"
+
+func can_read_warden_records() -> bool:
+	return get_current_objective_id() == "discover_warden_records" and not warden_records_found
+
+func can_explore_barracks() -> bool:
+	return get_current_objective_id() == "explore_barracks" and not barracks_explored
+
+func can_collect_crest_clues() -> bool:
+	return get_current_objective_id() == "find_crest_clues"
+
+func can_open_crest_puzzle() -> bool:
+	return get_current_objective_id() == "solve_crest_puzzle" and not crest_puzzle_solved and crest_clues_found.size() >= 3
+
+func check_crest_combination(symbols: Array) -> bool:
+	if symbols.size() != crest_solution.size():
+		return false
+	for i in range(crest_solution.size()):
+		if String(symbols[i]).strip_edges().to_upper() != crest_solution[i].strip_edges().to_upper():
+			return false
+	return true
+
+func set_stealth_checkpoint(cp_id: String, cp_pos: Vector2) -> void:
+	stealth_checkpoint_id = cp_id
+	stealth_checkpoint_pos = cp_pos
+
+func record_stealth_detection() -> void:
+	stealth_detections_count += 1
+
+func can_confront_warden() -> bool:
+	return get_current_objective_id() == "confront_last_warden" and not warden_confronted
+
+func can_read_elena_research() -> bool:
+	return get_current_objective_id() == "discover_elena_research" and not elena_research_found
+
+func can_activate_third_beacon() -> bool:
+	return get_current_objective_id() == "restore_third_beacon" and not third_beacon_activated
+
+func can_unlock_dawnspire() -> bool:
+	return get_current_objective_id() == "unlock_dawnspire_road" and not dawnspire_unlocked
+
 func complete_objective(id: String) -> bool:
-	var active_quest_done: bool = chapter2_completed if quest_id == "chapter2_drowned_village" else (chapter1_completed if quest_id == "chapter1_whispers_of_briarwood" else prologue_completed)
+	var active_quest_done: bool = chapter3_completed if quest_id == "chapter3_keepers_lie" else (chapter2_completed if quest_id == "chapter2_drowned_village" else (chapter1_completed if quest_id == "chapter1_whispers_of_briarwood" else prologue_completed))
 	if active_quest_done or get_current_objective_id() != id or completed_objectives.has(id):
 		return false
 	completed_objectives[id] = true
@@ -220,10 +328,29 @@ func complete_objective(id: String) -> bool:
 			second_beacon_activated = true
 		"witness_elena_message":
 			chapter2_elena_echo_heard = true
+		"discover_warden_records":
+			warden_records_found = true
+		"explore_barracks":
+			barracks_explored = true
+		"solve_crest_puzzle":
+			crest_puzzle_solved = true
+		"navigate_shadowed_passage":
+			shadow_passage_cleared = true
+		"confront_last_warden":
+			warden_confronted = true
+		"discover_elena_research":
+			elena_research_found = true
+		"restore_third_beacon":
+			third_beacon_activated = true
+		"unlock_dawnspire_road":
+			dawnspire_unlocked = true
 	current_index += 1
 	var reached_end: bool = (current_index >= objectives.size())
 	if reached_end:
-		if quest_id == "chapter2_drowned_village":
+		if quest_id == "chapter3_keepers_lie":
+			chapter3_completed = true
+			dawnspire_unlocked = true
+		elif quest_id == "chapter2_drowned_village":
 			chapter2_completed = true
 			ironwatch_unlocked = true
 		elif quest_id == "chapter1_whispers_of_briarwood":
@@ -297,11 +424,26 @@ func record_archive_clue_found(clue_id: String) -> bool:
 	objective_changed.emit("reconstruct_village_ledger", get_current_objective_text())
 	return true
 
+func record_crest_clue_found(clue_id: String) -> bool:
+	if get_current_objective_id() != "find_crest_clues":
+		return false
+	if crest_clues_found.has(clue_id):
+		return false
+	crest_clues_found[clue_id] = true
+	if crest_clues_found.size() >= 3:
+		return complete_objective("find_crest_clues")
+	objective_changed.emit("find_crest_clues", get_current_objective_text())
+	return true
+
 func get_npc_dialogue(npc_id: String) -> Array[String]:
 	var npcs: Dictionary = data.get("npcs", {})
 	var entry: Dictionary = npcs.get(npc_id, {})
 	var stage_key := "investigation"
-	if quest_id == "chapter2_drowned_village":
+	if quest_id == "chapter3_keepers_lie":
+		stage_key = get_current_objective_id()
+		if not entry.has(stage_key):
+			stage_key = "default"
+	elif quest_id == "chapter2_drowned_village":
 		var ch2_obj: String = get_current_objective_id()
 		match ch2_obj:
 			"enter_floodmill":
@@ -362,7 +504,7 @@ func get_npc_dialogue(npc_id: String) -> Array[String]:
 			stage_key = "before_pedestal"
 		elif current_index >= 4:
 			stage_key = "after_puzzle"
-	var raw_lines: Array = entry.get(stage_key, [])
+	var raw_lines: Array = entry.get(stage_key, entry.get("default", []))
 	var lines: Array[String] = []
 	for item in raw_lines:
 		lines.append(String(item))
@@ -385,7 +527,9 @@ func get_rune_solution() -> Array[String]:
 
 func capture_state() -> Dictionary:
 	var region_scene: String = "res://scenes/sjt_exterior.tscn"
-	if quest_id == "chapter2_drowned_village":
+	if quest_id == "chapter3_keepers_lie":
+		region_scene = "res://scenes/ironwatch_keep.tscn"
+	elif quest_id == "chapter2_drowned_village":
 		region_scene = "res://scenes/floodmill_village.tscn"
 	elif quest_id == "chapter1_whispers_of_briarwood":
 		region_scene = "res://scenes/briarwood_forest.tscn"
@@ -436,6 +580,22 @@ func capture_state() -> Dictionary:
 		"chapter2_elena_echo_heard": chapter2_elena_echo_heard,
 		"chapter2_completed": chapter2_completed,
 		"ironwatch_unlocked": ironwatch_unlocked,
+		"warden_records_found": warden_records_found,
+		"barracks_explored": barracks_explored,
+		"barracks_keepsake_found": barracks_keepsake_found,
+		"crest_clues_found": crest_clues_found.duplicate(),
+		"crest_pillar_states": crest_pillar_states.duplicate(),
+		"crest_puzzle_solved": crest_puzzle_solved,
+		"stealth_checkpoint_id": stealth_checkpoint_id,
+		"stealth_checkpoint_pos_x": stealth_checkpoint_pos.x,
+		"stealth_checkpoint_pos_y": stealth_checkpoint_pos.y,
+		"stealth_detections_count": stealth_detections_count,
+		"shadow_passage_cleared": shadow_passage_cleared,
+		"warden_confronted": warden_confronted,
+		"elena_research_found": elena_research_found,
+		"third_beacon_activated": third_beacon_activated,
+		"dawnspire_unlocked": dawnspire_unlocked,
+		"chapter3_completed": chapter3_completed,
 	}
 
 func apply_state(state: Dictionary) -> bool:
@@ -491,6 +651,36 @@ func apply_state(state: Dictionary) -> bool:
 	chapter2_elena_echo_heard = bool(state.get("chapter2_elena_echo_heard", false))
 	chapter2_completed = bool(state.get("chapter2_completed", false))
 	ironwatch_unlocked = bool(state.get("ironwatch_unlocked", false))
+
+	# Phase 4 fields (safely defaulted when migrating v1/v2 saves)
+	warden_records_found = bool(state.get("warden_records_found", false))
+	barracks_explored = bool(state.get("barracks_explored", false))
+	barracks_keepsake_found = bool(state.get("barracks_keepsake_found", false))
+	var raw_crest_clues: Variant = state.get("crest_clues_found", {})
+	crest_clues_found = {}
+	if raw_crest_clues is Dictionary:
+		crest_clues_found = raw_crest_clues.duplicate()
+	elif raw_crest_clues is Array:
+		for cc in raw_crest_clues:
+			crest_clues_found[String(cc)] = true
+	var raw_crest_pillars: Variant = state.get("crest_pillar_states", [0, 0, 0])
+	crest_pillar_states = [0, 0, 0]
+	if raw_crest_pillars is Array and raw_crest_pillars.size() == 3:
+		for ci in range(3):
+			crest_pillar_states[ci] = clampi(int(raw_crest_pillars[ci]), 0, 3)
+	crest_puzzle_solved = bool(state.get("crest_puzzle_solved", false))
+	stealth_checkpoint_id = String(state.get("stealth_checkpoint_id", "checkpoint_0"))
+	stealth_checkpoint_pos = Vector2(
+		float(state.get("stealth_checkpoint_pos_x", -150.0)),
+		float(state.get("stealth_checkpoint_pos_y", -32.0))
+	)
+	stealth_detections_count = int(state.get("stealth_detections_count", 0))
+	shadow_passage_cleared = bool(state.get("shadow_passage_cleared", false))
+	warden_confronted = bool(state.get("warden_confronted", false))
+	elena_research_found = bool(state.get("elena_research_found", false))
+	third_beacon_activated = bool(state.get("third_beacon_activated", false))
+	dawnspire_unlocked = bool(state.get("dawnspire_unlocked", false))
+	chapter3_completed = bool(state.get("chapter3_completed", false))
 
 	saved_region_scene = String(state.get("region_scene", ""))
 	has_saved_player_pose = bool(state.get("has_player_pose", false))

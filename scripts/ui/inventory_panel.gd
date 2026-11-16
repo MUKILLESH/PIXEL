@@ -77,6 +77,39 @@ func _build_items(qm: Node) -> Array[String]:
 	var items: Array[String] = []
 	if qm == null:
 		return items
+	if qm.quest_id == "chapter3_keepers_lie":
+		if qm.prologue_completed or qm.chapter1_completed or qm.chapter2_completed:
+			items.append("- BRIARWOOD AND FLOODMILL: TWO ANCIENT BEACONS RESTORED")
+		if qm.optional_discoveries.has("ruined_camp_relic"):
+			items.append("- ELENA'S BRASS SURVEY COMPASS [BRIARWOOD RELIC]")
+		if qm.optional_discoveries.has("homestead_locket"):
+			items.append("- WEAVER'S TARNISHED SILVER LOCKET [FLOODMILL RELIC]")
+		if qm.warden_records_found:
+			items.append("- FIRST CATASTROPHE LEDGER: 36 VOLUNTEERS SAVED TEN THOUSAND")
+		if qm.barracks_explored:
+			items.append("- BARRACKS DUTY ROSTER: LATER KEEPERS CONCEALED BEACON CURE")
+		if qm.optional_discoveries.has("wardens_locket"):
+			items.append("- WARDEN'S TARNISHED LOCKET [BARRACKS KEEPSAKE]")
+		if qm.crest_clues_found.size() > 0:
+			var cc: Array[String] = []
+			if qm.crest_clues_found.has("clue_1"):
+				cc.append("I: SILVER BELL")
+			if qm.crest_clues_found.has("clue_2"):
+				cc.append("II: SUNDERED SHIELD")
+			if qm.crest_clues_found.has("clue_3"):
+				cc.append("III: CROWNED FLAME")
+			items.append("- WATCH CREST TABLETS (%d/3): %s" % [qm.crest_clues_found.size(), ", ".join(cc)])
+		if qm.crest_puzzle_solved:
+			items.append("- HALL OF CRESTS SEAL: SILVER BELL, SUNDERED SHIELD, CROWNED FLAME")
+		if qm.shadow_passage_cleared:
+			items.append("- NORTH WARD LANTERN: SHADOW SENTINELS HARMONIZED")
+		if qm.warden_confronted:
+			items.append("- LAST WARDEN'S TESTIMONY: THIRTY-SIX LIVES FOR TEN THOUSAND")
+		if qm.elena_research_found:
+			items.append("- ELENA'S HARMONIC FOLIO: THREE BEACONS END THE BELL'S CURSE")
+		if qm.third_beacon_activated:
+			items.append("- THIRD ANCIENT BEACON: TRIAD LATTICE CONNECTED ACROSS ASHVALE")
+		return items
 	if qm.quest_id == "chapter2_drowned_village":
 		if qm.prologue_completed or qm.chapter1_completed:
 			items.append("- BELLHAVEN TO BRIARWOOD: RUNE KEY, CIPHER AND FIRST BEACON RECORDED")
@@ -152,7 +185,7 @@ func open_inventory(qm: Node) -> void:
 			row_labels[i].text = ""
 			row_labels[i].hide()
 	if qm != null:
-		footer_label.text = "[I] OR [ESC] CLOSE - STAGE: %s" % qm.get_current_objective_id().to_upper()
+		footer_label.text = "[I] OR [ESC] CLOSE - STAGE: %s" % qm.get_current_objective_id().to_upper().replace("_", "-")
 	else:
 		footer_label.text = "[I] OR [ESC] CLOSE"
 	visible = true

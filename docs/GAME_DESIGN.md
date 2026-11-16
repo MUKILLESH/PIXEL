@@ -35,13 +35,13 @@ Ashvale spans **five interconnected regions**, traversed in strict chronological
    - **Atmosphere:** Abandoned half-submerged medieval village, Miller's Cottage, Ruined Homestead, Old Watermill, Canal Lockhouse & Sluice Canal, cutaway Forgotten Archive library, and Second Beacon Sanctuary.
    - **Role:** Watermill repair (`WatermillRepair`), canal sluice control (`SluicePuzzle`), archive ledger reconstruction (`LedgerPuzzle`), uncovering the erased thirty-six hearths, awakening the **Second Ancient Beacon**, and unlocking the **Ironwatch Keep** mountain gate.
 
-4. **Ironwatch Keep (Chapter 3 — Planned)**
-   - **Atmosphere:** Basalt fortress guarding the mountain pass, lit by iron braziers and patrolled by Wardens sworn to protect the Great Bell's secret.
-   - **Role:** Confrontation with **Commander Vane**, forged chronicle truths (*The Keeper's Lie*), and the trail toward **Dawnspire Mountain**.
+4. **Ironwatch Keep (Chapter 3 — Phase 4 Playable)**
+   - **Atmosphere:** Ruined basalt gatehouse courtyard with four hooded Warden statues & supply wagon, Abandoned Barracks, cutaway Gothic lancet Fortress Archives lit by candle chandeliers, arcane Hall of Crests, stealth-patrolled Shadowed Passage with glowing Ward Alcoves, and violet/gold Beacon Vault.
+   - **Role:** Exposing the first catastrophe sacrifice versus later Keepers' concealed memory harvest, solving the Hall of Crests (`CrestPuzzle`), crossing the Shadowed Passage, confronting the **Last Bell Warden**, recovering Elena's triad research, awakening the **Third Ancient Beacon**, and unsealing the **Dawnspire Citadel Gate**.
 
 5. **Dawnspire Mountain & The Summit Sanctum (Chapter 4 & Final Chapter — Planned)**
    - **Atmosphere:** Wind-carved alpine switchbacks, frost-rimmed obelisks overlooking the churning Veilstorm, and the colossal Great Bell belfry.
-   - **Role:** Ascent to Dawnspire, kindling the **Third Ancient Beacon**, discovering Elena's final sacrifice, and ending the Bell's curse.
+   - **Role:** Ascent to Dawnspire, channeling the connected triad of all three Ancient Beacons, discovering Elena's final sacrifice, and ending the Bell's curse.
 
 ---
 
@@ -65,8 +65,8 @@ Ashvale spans **five interconnected regions**, traversed in strict chronological
 - **Elena (Aren's Missing Mother — Backstory Anchor):**  
   Master cartographer who discovered that the three Ancient Beacons could shield Ashvale cleanly without erasing memories. Before vanishing, she hid her cipher notes in Bellhaven so Aren would follow only when the Thirteenth Toll forced the truth into the open.
 
-- **Commander Vane (Keeper of Ironwatch — Chapter 3):**  
-  Leader of Ironwatch Keep who concealed records of the Ancient Beacons out of terror that silencing the Great Bell would surrender Ashvale to the Veilstorm.
+- **Last Bell Warden / Commander Vane (Keeper of Ironwatch — Chapter 3):**  
+  Ancient guardian of Ironwatch Keep who concealed records of the Ancient Beacons out of terror that silencing the Great Bell would surrender Ashvale to the Veilstorm, confessing how thirty-six lives were forgotten so ten thousand could live before yielded to Elena's research.
 
 ---
 
@@ -88,14 +88,14 @@ Progression follows a **strict chronological order**. Players explore freely wit
 ### Chapter 2: *The Drowned Village* (Floodmill Wetlands — Phase 3 Playable)
 - Entering abandoned Floodmill, Aren and Lyra inspect the chiseled Census Stone, repair the **Old Watermill** (`IRON DRIVE GEAR`, `BRONZE PINION`, `OAK COUPLING BELT`), drain the **Archive Causeway** via the **Canal Sluice Console** (`DIVERT`, `DRAIN`, `OPEN`), gather three surviving fragments inside the cutaway **Forgotten Archive**, reconstruct the **Master Village Ledger** (`THIRTY-SIX HEARTHS`, `MEMORY OFFERING`, `IRONWATCH SEAL`) proving Floodmill's thirty-six families were erased as a memory offering, rekindle the **Second Ancient Beacon**, witness Elena's second echo, and unlock the eastern pass toward **Ironwatch Keep**.
 
-### Chapter 3: *The Keeper's Lie* (Ironwatch Keep)
-- Reaching the mountain fortress, Aren and Lyra confront **Commander Vane** and expose forged chronologies proving the Bell was never meant to be permanent.
+### Chapter 3: *The Keeper's Lie* (Ironwatch Keep — Phase 4 Playable)
+- Reaching the basalt fortress, Aren and Lyra explore the ruined courtyard and cutaway Fortress Archives (proving the original sacrifice of thirty-six volunteers saved ten thousand citizens during a genuine catastrophe) and the Abandoned Barracks (proving later High Keepers concealed the beacon alternative and silently consumed border towns like Floodmill). After gathering three historical crest clues, solving the **Hall of Crests** puzzle (`SILVER BELL`, `SUNDERED SHIELD`, `CROWNED FLAME`), and slipping through the **Shadowed Passage** past patrolling Shadow Sentinels, Aren confronts the **Last Bell Warden**, recovers Elena's Harmonic Lattice folio, restores the **Third Ancient Beacon**—linking Briarwood, Floodmill, and Ironwatch in harmonic resonance—and unseals the road to **Dawnspire**.
 
 ### Chapter 4: *The Road to Dawnspire* (Alpine Ascent)
 - As the Veilstorm closes in and the 13th chime tolls faster, Aren and Lyra climb the shattered pilgrim switchbacks, piecing together Elena's final camp and map fragments.
 
 ### Final Chapter: *The Last Bell* (Dawnspire Mountain Summit)
-- Igniting the **Third Ancient Beacon** at the summit reveals Elena's final truth: she stayed behind in the Dawnspire Sanctum to hold the fracturing seal steady until someone worthy could align all three Beacons. Channeling the unified light of the Beacons alongside Lyra, Aren shatters the memory-stealing pact and dispels the Veilstorm cleanly. Lost memories flow back across every region, Elena's spirit finds peace as dawn breaks, and Ashvale wakes to a sunlit morning where no one has to forget again.
+- Channeling the unified triad light of the three Ancient Beacons alongside Lyra reveals Elena's final truth: she stayed behind in the Dawnspire Sanctum to hold the fracturing seal steady until someone worthy could align all three Beacons, shattering the memory-stealing pact and dispelling the Veilstorm cleanly so no one has to forget again.
 
 ---
 
@@ -107,16 +107,18 @@ Progression follows a **strict chronological order**. Players explore freely wit
    Sequential structural timber/rope assembly (`BridgeRepair`: `LEFT BEAM`, `RIGHT PLANK`, `ROPE LASHING`) and three-mirror solar beam triangulation (`MirrorPuzzle`: `DAWN`, `ZENITH`, `DUSK`).
 3. **Watermill Gearbox, Canal Sluice Routing & Ledger Reconstruction (Chapter 2 — Implemented in Phase 3):**  
    `WatermillRepair` (`IRON DRIVE GEAR`, `BRONZE PINION`, `OAK COUPLING BELT`), `SluicePuzzle` (`DIVERT`, `DRAIN`, `OPEN` lowering water depth to `0` cubits), and `LedgerPuzzle` (`THIRTY-SIX HEARTHS`, `MEMORY OFFERING`, `IRONWATCH SEAL`).
-4. **Bell Resonance & Forge Counterweights (Chapters 3–5):**  
-   Harmonic chime-ripple sequences and brazier-beam alignment.
+4. **Hall of Crests & Shadowed Passage Stealth (Chapter 3 — Implemented in Phase 4):**  
+   `CrestPuzzle` (`SILVER BELL`, `SUNDERED SHIELD`, `CROWNED FLAME`) and non-combat sentinel stealth in the **Shadowed Passage** with Ward Alcove checkpoints (`checkpoint_0`/`checkpoint_1`/`checkpoint_2`), warning indicators, and non-destructive reset.
+5. **Dawnspire Ascent & Final Chime Sequence (Chapters 4–5):**  
+   Harmonic Bell resonance and alpine beacon relays.
 
 ---
 
 ## 6. Quest & Progression Rules
 
-- **Strict Ordering:** Prologue, Chapter 1, and Chapter 2 objectives advance only sequentially via unique quest IDs; out-of-order interactions show diegetic locked feedback without bypassing progression.
-- **No Repeat Farming / Exploits:** Unique story flags gate every NPC count (`talked_npcs`), item/part pickup (`materials_collected`, `mill_parts_collected`), archive records (`archive_clues_found`), optional discoveries (`optional_discoveries`), and puzzle/chapter completion flags.
-- **Stage-Aware World & Dialogue:** Talking to Bellhaven NPCs and traveling historian Lyra updates dynamically across every story milestone, ensuring players never become soft-locked if they revisit clues.
+- **Strict Ordering:** Prologue, Chapter 1, Chapter 2, and Chapter 3 objectives advance only sequentially via unique quest IDs; out-of-order interactions show diegetic locked feedback without bypassing progression.
+- **No Repeat Farming / Exploits:** Unique story flags gate every NPC count (`talked_npcs`), item/part pickup (`materials_collected`, `mill_parts_collected`), archive/crest records (`archive_clues_found`, `crest_clues_found`), optional discoveries (`optional_discoveries`), and puzzle/chapter completion flags.
+- **Stage-Aware World & Dialogue:** Talking to Bellhaven NPCs, traveling historian Lyra, and the Last Bell Warden updates dynamically across every story milestone, ensuring players never become soft-locked if they revisit clues.
 
 ---
 
@@ -126,4 +128,5 @@ Progression follows a **strict chronological order**. Players explore freely wit
 - **Phase 1 (Completed):** Playable Prologue in Bellhaven Village (`data/prologue_quest.json`), NPC & dialogue system, Rune Puzzle, Mother's Letter, and Briarwood Waystone.
 - **Phase 2 & 2.5 (Completed):** Briarwood Forest (`scenes/briarwood_forest.tscn`), Historian Lyra companion progression, `BridgeRepair` & `MirrorPuzzle`, First Ancient Beacon, Field Satchel (`InventoryPanel`), `TitleMenu`, cross-region save/resume (`SAVE_VERSION = 1`), and `.bak` recovery.
 - **Phase 3 (Completed):** Floodmill Wetlands / The Drowned Village (`scenes/floodmill_village.tscn`), 5 isometric buildings including rotating Old Watermill and cutaway Forgotten Archive Hall, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`, Second Ancient Beacon, `SAVE_VERSION = 2` with `v1` compatibility, and Ironwatch Keep gate unlock.
-- **Future Phases (Chapters 3–5):** Ironwatch Keep, Commander Vane narrative arc, Dawnspire Mountain ascent, Third Ancient Beacon, Final Chapter cutscene, and full audio mix.
+- **Phase 4 (Completed):** Ironwatch Keep / The Keeper's Lie (`scenes/ironwatch_keep.tscn`), 6 fortress areas (Courtyard, Abandoned Barracks, cutaway Gothic Archives, Hall of Crests, Shadowed Passage stealth corridor, Warden's Chamber & Beacon Vault), `CrestPuzzle`, non-destructive `ShadowSentinel` stealth, Last Bell Warden confrontation, Elena's research, Third Ancient Beacon three-beacon connection, `SAVE_VERSION = 3` (`v1`/`v2` compatible), and Dawnspire Citadel Gate unlock.
+- **Future Phases (Chapters 4–5):** Dawnspire Mountain ascent, Final Chapter climax with Elena & Great Bell destruction, and full audio mix.

@@ -16,6 +16,7 @@ const MirrorPuzzleScript = preload("res://scripts/ui/mirror_puzzle.gd")
 const WatermillRepairScript = preload("res://scripts/ui/watermill_repair.gd")
 const SluicePuzzleScript = preload("res://scripts/ui/sluice_puzzle.gd")
 const LedgerPuzzleScript = preload("res://scripts/ui/ledger_puzzle.gd")
+const CrestPuzzleScript = preload("res://scripts/ui/crest_puzzle.gd")
 const InventoryPanelScript = preload("res://scripts/ui/inventory_panel.gd")
 const TitleMenuScript = preload("res://scripts/ui/title_menu.gd")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
@@ -30,6 +31,8 @@ var mirror_puzzle: Panel
 var watermill_repair: Panel
 var sluice_puzzle: Panel
 var ledger_puzzle: Panel
+var crest_puzzle: Panel
+var stealth_status_label: Label
 var inventory_panel: Panel
 var title_menu: Panel
 var save_path: String = "user://ashvale_save.json"
@@ -88,6 +91,21 @@ func _ready() -> void:
 	add_child(ledger_puzzle)
 	ledger_puzzle.ledger_solved_signal.connect(_on_ledger_solved)
 	ledger_puzzle.ledger_closed_signal.connect(_on_modal_closed)
+	crest_puzzle = CrestPuzzleScript.new()
+	crest_puzzle.name = "CrestPuzzle"
+	add_child(crest_puzzle)
+	crest_puzzle.crest_solved_signal.connect(_on_crest_solved)
+	crest_puzzle.crest_closed_signal.connect(_on_modal_closed)
+	stealth_status_label = Label.new()
+	stealth_status_label.name = "StealthStatus"
+	stealth_status_label.visible = false
+	stealth_status_label.position = Vector2(12, 36)
+	stealth_status_label.add_theme_font_size_override("font_size", 8)
+	stealth_status_label.add_theme_color_override("font_color", Color("ffd578"))
+	stealth_status_label.add_theme_color_override("font_shadow_color", Color("120e0b"))
+	stealth_status_label.add_theme_constant_override("shadow_offset_x", 1)
+	stealth_status_label.add_theme_constant_override("shadow_offset_y", 1)
+	add_child(stealth_status_label)
 	inventory_panel = InventoryPanelScript.new()
 	inventory_panel.name = "InventoryPanel"
 	add_child(inventory_panel)
@@ -110,8 +128,18 @@ func bind_quest_manager(qm: Node) -> void:
 func _on_objective_changed(_objective_id: String, objective_text: String) -> void:
 	$Objective.text = objective_text
 
+func set_stealth_status(msg: String) -> void:
+	if stealth_status_label == null:
+		return
+	if msg == "":
+		stealth_status_label.visible = false
+		stealth_status_label.text = ""
+	else:
+		stealth_status_label.text = msg
+		stealth_status_label.visible = not _is_modal_open()
+
 func _is_modal_open() -> bool:
-	return panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
+	return panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (crest_puzzle != null and crest_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
 
 func _process(_delta: float) -> void:
 	_update_selection()
@@ -177,7 +205,9 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 		var cb: Callable = Callable()
 		if npc_id == "lyra":
 			var stage_id: String = quest_manager.get_current_objective_id()
-			if quest_manager.quest_id == "chapter2_drowned_village":
+			if quest_manager.quest_id == "chapter3_keepers_lie":
+				cb = Callable()
+			elif quest_manager.quest_id == "chapter2_drowned_village":
 				if stage_id == "speak_lyra_arrival":
 					cb = func(): quest_manager.complete_objective("speak_lyra_arrival")
 				elif stage_id == "complete_chapter2":
@@ -187,9 +217,20 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 					cb = func(): quest_manager.complete_objective("meet_lyra")
 				elif stage_id == "complete_chapter1":
 					cb = func(): _finish_chapter1()
+		elif npc_id == "warden":
+			var w_stage: String = quest_manager.get_current_objective_id()
+			if w_stage == "reach_wardens_chamber":
+				quest_manager.complete_objective("reach_wardens_chamber")
+				w_stage = quest_manager.get_current_objective_id()
+			if w_stage == "confront_last_warden":
+				lines = quest_manager.get_story_lines("warden_confrontation")
+				cb = func(): quest_manager.complete_objective("confront_last_warden")
 		else:
 			cb = func(): quest_manager.record_npc_talked(npc_id)
 		show_dialogue(source.speaker_name, lines, source, cb)
+		return
+	if source.has_method("get_ironwatch_kind"):
+		_handle_ironwatch_interaction(source)
 		return
 	if source.has_method("get_briarwood_kind"):
 		_handle_briarwood_interaction(source)
@@ -472,9 +513,114 @@ func _handle_floodmill_interaction(source: StaticBody2D) -> void:
 				show_dialogue(title, ["The Second Ancient Beacon burns bright above the marshes, lighting the northern mountain road to Ironwatch Keep."], source)
 		"ironwatch_gate":
 			if quest_manager.ironwatch_unlocked:
-				show_dialogue(title, ["The eastern mountain pass stands unlocked, awaiting Chapter 3: Ironwatch Keep."], source)
+				if source.get("ready_to_travel") == true and get_parent().has_method("travel_to_ironwatch"):
+					show_dialogue(title, ["Climbing the jagged basalt pass above Floodmill toward Ironwatch Keep..."], source, func(): get_parent().travel_to_ironwatch())
+				else:
+					show_dialogue(title, ["The eastern mountain pass stands unlocked, awaiting Chapter 3: Ironwatch Keep."], source, func():
+						source.set("ready_to_travel", true)
+						if source.has_method("refresh_prompt"):
+							source.refresh_prompt("[E] ENTER IRONWATCH KEEP")
+					)
 			else:
 				show_dialogue(title, ["Heavy iron portcullis bars seal the pass toward Ironwatch Keep. Restore Floodmill's Second Beacon first."], source)
+
+func _handle_ironwatch_interaction(source: StaticBody2D) -> void:
+	var kind: String = source.get_ironwatch_kind()
+	var obj_id: String = quest_manager.get_current_objective_id()
+	var title: String = source.speaker_name if source.speaker_name != "" else "IRONWATCH KEEP"
+	match kind:
+		"floodmill_return_gate":
+			if get_parent().has_method("travel_to_floodmill"):
+				show_dialogue(title, ["Descending the mountain switchbacks back toward Floodmill Wetlands..."], source, func(): get_parent().travel_to_floodmill())
+			else:
+				show_dialogue(title, ["Floodmill lies down the southern ridge."], source)
+		"courtyard_arch":
+			if obj_id == "enter_ironwatch":
+				show_dialogue(title, quest_manager.get_story_lines("ironwatch_arrival"), source, func(): quest_manager.complete_objective("enter_ironwatch"))
+			else:
+				show_dialogue(title, ["Beyond Ironwatch's obsidian gatehouse, cold battlements overlook four stone Watchers."], source)
+		"courtyard_monument":
+			if obj_id == "enter_ironwatch":
+				show_dialogue(title, ["Inspect Ironwatch's inner gate threshold first so Lyra can anchor her compass bearing."], source)
+			elif obj_id == "investigate_courtyard":
+				show_dialogue(title, quest_manager.get_story_lines("courtyard_inspected"), source, func(): quest_manager.complete_objective("investigate_courtyard"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("courtyard_inspected"), source)
+		"warden_records":
+			if obj_id in ["enter_ironwatch", "investigate_courtyard"]:
+				show_dialogue(title, ["Iron-bound ledgers line the cutaway Archives shelves. Investigate the Courtyard Statue Circle first."], source)
+			elif obj_id == "discover_warden_records":
+				show_dialogue(title, quest_manager.get_story_lines("warden_records_read"), source, func(): quest_manager.complete_objective("discover_warden_records"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("warden_records_read"), source)
+		"barracks_log":
+			if obj_id in ["enter_ironwatch", "investigate_courtyard", "discover_warden_records"]:
+				show_dialogue(title, ["Weathered bunks and roster books fill the garrison. Search the Fortress Archives records northeast first."], source)
+			elif obj_id == "explore_barracks":
+				show_dialogue(title, quest_manager.get_story_lines("barracks_inspected"), source, func(): quest_manager.complete_objective("explore_barracks"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("barracks_inspected"), source)
+		"barracks_keepsake":
+			var disc_id: String = String(source.get("item_id"))
+			show_dialogue(title, quest_manager.get_story_lines("barracks_keepsake_found"), source, func():
+				quest_manager.record_optional_discovery(disc_id)
+				quest_manager.barracks_keepsake_found = true
+				source.set("collected", true)
+				source.queue_redraw()
+			)
+		"crest_clue":
+			var cid: String = String(source.get("item_id"))
+			var lines: Array[String] = quest_manager.get_story_lines("crest_" + cid + "_text")
+			if obj_id in ["enter_ironwatch", "investigate_courtyard", "discover_warden_records", "explore_barracks"]:
+				show_dialogue(title, ["An ancient Watch crest tablet rests in sapphire inlay. Read the Archives and Barracks logs first."], source)
+			elif obj_id == "find_crest_clues" and not quest_manager.crest_clues_found.has(cid):
+				show_dialogue(title, lines, source, func():
+					if quest_manager.record_crest_clue_found(cid):
+						source.set("inspected", true)
+						source.queue_redraw()
+				)
+			else:
+				show_dialogue(title, lines, source)
+		"crest_altar":
+			if obj_id in ["enter_ironwatch", "investigate_courtyard", "discover_warden_records", "explore_barracks", "find_crest_clues"]:
+				show_dialogue(title, ["Three heraldic sockets lock the Shadowed Passage (%d/3 historical clues found). Discover all three Watch tablets first." % quest_manager.crest_clues_found.size()], source)
+			elif quest_manager.can_open_crest_puzzle():
+				open_crest_puzzle(source)
+			else:
+				show_dialogue(title, ["SILVER BELL, SUNDERED SHIELD, and CROWNED FLAME shine above the unlocked Shadowed Passage."], source)
+		"shadow_ward_switch":
+			if not quest_manager.crest_puzzle_solved:
+				show_dialogue(title, ["A violet ward-lantern seals the northern stair."], source)
+			elif obj_id == "navigate_shadowed_passage":
+				show_dialogue(title, quest_manager.get_story_lines("shadow_passage_completed"), source, func(): quest_manager.complete_objective("navigate_shadowed_passage"))
+			else:
+				show_dialogue(title, ["The North Ward Lantern glows steadily, holding the Shadow Sentinels at peace."], source)
+		"elena_research":
+			if not quest_manager.warden_confronted:
+				show_dialogue(title, ["A sapphire travel notebook rests under a Warden crest. Confront the Last Bell Warden by the western steps first."], source)
+			elif quest_manager.can_read_elena_research():
+				show_dialogue(title, quest_manager.get_story_lines("elena_research_read"), source, func(): quest_manager.complete_objective("discover_elena_research"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("elena_research_read"), source)
+		"third_beacon":
+			if not quest_manager.elena_research_found:
+				show_dialogue(title, ["The Third Ancient Beacon waits dormant inside its star mandala. Confront the Last Bell Warden and read Elena's research first."], source)
+			elif quest_manager.can_activate_third_beacon():
+				show_dialogue(title, quest_manager.get_story_lines("third_beacon_restored"), source, func(): quest_manager.complete_objective("restore_third_beacon"))
+			else:
+				show_dialogue(title, ["All three Ancient Beacons—Briarwood, Floodmill, and Ironwatch—ring together in golden-sapphire harmony."], source)
+		"dawnspire_gate":
+			if not quest_manager.third_beacon_activated:
+				show_dialogue(title, ["Heavy citadel chains seal the northern road toward Dawnspire. Restore Ironwatch's Third Ancient Beacon first."], source)
+			elif obj_id == "unlock_dawnspire_road":
+				show_dialogue(title, quest_manager.get_story_lines("dawnspire_gate_unlocked"), source, func(): quest_manager.complete_objective("unlock_dawnspire_road"))
+			elif obj_id == "complete_chapter3":
+				show_dialogue(title, [
+					"AREN: \"The First Watch suffered a disaster, and later keepers hid the beacons instead of ending the cycle. Mother proved there is another way.\"",
+					"LYRA: \"All three Ancient Beacons shine across Ashvale now, Aren. The mountain road to Dawnspire belongs to us.\""
+				], source, func(): _finish_chapter3())
+			else:
+				show_dialogue(title, ["The Citadel Gate stands unlocked beneath the golden-sapphire beam pointing up toward Dawnspire."], source)
 
 func open_rune_puzzle(source: StaticBody2D) -> void:
 	if rune_puzzle == null or rune_puzzle.solved:
@@ -520,6 +666,19 @@ func open_ledger_puzzle(source: StaticBody2D) -> void:
 	$Prompt.hide()
 	var clues_ok: bool = quest_manager != null and quest_manager.archive_clues_found.size() >= 3
 	ledger_puzzle.open_puzzle(clues_ok)
+	_update_selection()
+
+func open_crest_puzzle(source: StaticBody2D) -> void:
+	if crest_puzzle == null or crest_puzzle.solved:
+		return
+	terminal = source
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	var clues_ok: bool = quest_manager != null and quest_manager.crest_clues_found.size() >= 3
+	crest_puzzle.open_puzzle(clues_ok)
 	_update_selection()
 
 func _open_modal_panel(modal_panel: Panel, source: StaticBody2D) -> void:
@@ -584,6 +743,14 @@ func _on_ledger_solved() -> void:
 	else:
 		_on_modal_closed()
 
+func _on_crest_solved() -> void:
+	if quest_manager != null:
+		quest_manager.crest_pillar_states.assign([1, 2, 3])
+		quest_manager.complete_objective("solve_crest_puzzle")
+		show_dialogue("HALL OF CRESTS", quest_manager.get_story_lines("crest_puzzle_completed"), terminal)
+	else:
+		_on_modal_closed()
+
 func _on_rune_puzzle_closed() -> void:
 	_on_modal_closed()
 
@@ -629,6 +796,21 @@ func _finish_chapter2() -> void:
 		$PrologueComplete/BannerTitle.text = "CHAPTER 2 COMPLETE — THE DROWNED VILLAGE"
 		$PrologueComplete/Summary.text = "The Second Ancient Beacon burns above Floodmill. The truth of thirty-six forgotten hearths points northeast toward Ironwatch Keep.\n\nCHAPTER 3 UNLOCKED: THE KEEPER'S LIE"
 		$PrologueComplete/ContinueHint.text = "[E] / [ESC] CONTINUE EXPLORING FLOODMILL"
+		prologue_banner.show()
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	_update_selection()
+
+func _finish_chapter3() -> void:
+	if quest_manager != null:
+		quest_manager.complete_objective("complete_chapter3")
+	if prologue_banner != null:
+		$PrologueComplete/BannerTitle.text = "CHAPTER 3 COMPLETE — THE KEEPER'S LIE"
+		$PrologueComplete/Summary.text = "The Third Ancient Beacon burns above Ironwatch Vault, uniting Briarwood, Floodmill, and Ironwatch in harmonic light.\n\nTHE ROAD TO DAWNSPIRE STANDS UNLOCKED"
+		$PrologueComplete/ContinueHint.text = "[E] / [ESC] CONTINUE EXPLORING IRONWATCH"
 		prologue_banner.show()
 	if player != null:
 		player.set("movement_locked", true)
@@ -691,6 +873,8 @@ func start_new_game() -> void:
 		terminal.set_dialogue_open(false)
 	QuestManagerScript.pending_load_path = ""
 	QuestManagerScript.carry_prologue_completed = false
+	QuestManagerScript.carry_chapter1_completed = false
+	QuestManagerScript.carry_chapter2_completed = false
 	var parent := get_parent()
 	if parent != null and parent.has_method("reset_new_game"):
 		parent.reset_new_game()
@@ -713,7 +897,8 @@ func continue_game(custom_path: String = "") -> bool:
 	var same_briarwood: bool = target_region.ends_with("briarwood_forest.tscn") and parent != null and parent.name == "BriarwoodForest"
 	var same_bellhaven: bool = target_region.ends_with("sjt_exterior.tscn") and parent != null and parent.has_method("reset_new_game")
 	var same_floodmill: bool = target_region.ends_with("floodmill_village.tscn") and parent != null and parent.name == "FloodmillVillage"
-	if same_briarwood or same_bellhaven or same_floodmill:
+	var same_ironwatch: bool = target_region.ends_with("ironwatch_keep.tscn") and parent != null and parent.name == "IronwatchKeep"
+	if same_briarwood or same_bellhaven or same_floodmill or same_ironwatch:
 		var loaded: bool = parent.apply_saved_state(target_path)
 		if loaded and player != null:
 			player.set("movement_locked", false)

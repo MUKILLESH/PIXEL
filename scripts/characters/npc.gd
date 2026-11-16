@@ -29,6 +29,11 @@ func _ready() -> void:
 func get_npc_id() -> String:
 	return npc_id
 
+func refresh_prompt(new_text: String) -> void:
+	prompt_text = new_text
+	if has_node("Indicator"):
+		$Indicator.text = new_text
+
 func _process(delta: float) -> void:
 	idle_time += delta
 	var next_frame: int = int(idle_time * 1.8) % 2
@@ -130,6 +135,28 @@ func _draw() -> void:
 			patch(3 + side, -34 + bob, 2, 5, "753920")
 			patch(-2 + side, -33 + bob, 1, 1, "242b38")
 			patch(1 + side, -33 + bob, 1, 1, "242b38")
+		"warden":
+			# Last Bell Warden: ancient keep guardian in slate plate, indigo-violet mantle, bell sigil, ward lantern staff
+			patch(-6, -28 + bob, 12, 18, "14141f")
+			patch(-4, -12, 3, 10, "262a36")
+			patch(1, -12, 3, 10, "262a36")
+			patch(-6, -27 + bob, 12, 17, "383254")
+			patch(-5, -26 + bob, 10, 14, "4c5466")
+			# Silver pauldrons & tarnished bronze Bell crest on breastplate
+			patch(-6, -26 + bob, 3, 4, "8f9aa8")
+			patch(3, -26 + bob, 3, 4, "8f9aa8")
+			patch(-2, -23 + bob, 4, 4, "d9a94e")
+			patch(-1, -22 + bob, 2, 2, "6c5280")
+			# Hooded helm & silver beard
+			patch(-5 + side, -40 + bob, 10, 12, "2a2540")
+			patch(-4 + side, -37 + bob, 8, 9, "c9b39d")
+			patch(-3 + side, -32 + bob, 6, 4, "aeb8c7")
+			patch(-2 + side, -34 + bob, 1, 1, "98f0ff")
+			patch(1 + side, -34 + bob, 1, 1, "98f0ff")
+			# Tall bronze ward-staff & sapphire lantern
+			patch(6, -34 + bob, 2, 24, "6e5736")
+			patch(5, -38 + bob, 4, 4, "7ce8ff")
+			patch(6, -37 + bob, 2, 2, "ffffff")
 		_:
 			# Sister Elara: cowled chronicler in sapphire robes, silver stole, open parchment tome
 			patch(-5, -27 + bob, 10, 17, "161924")

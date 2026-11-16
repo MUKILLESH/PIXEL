@@ -1,0 +1,200 @@
+{
+  "quest_id": "chapter3_keepers_lie",
+  "title": "Chapter 3: The Keeper's Lie",
+  "crest_solution": ["SILVER BELL", "SUNDERED SHIELD", "CROWNED FLAME"],
+  "objectives": [
+    {
+      "id": "enter_ironwatch",
+      "text": "Enter Ironwatch Keep."
+    },
+    {
+      "id": "investigate_courtyard",
+      "text": "Investigate the ruined courtyard."
+    },
+    {
+      "id": "discover_warden_records",
+      "text": "Discover the Wardens' records."
+    },
+    {
+      "id": "explore_barracks",
+      "text": "Explore the abandoned barracks."
+    },
+    {
+      "id": "find_crest_clues",
+      "text": "Find the three historical crest clues (0/3)."
+    },
+    {
+      "id": "solve_crest_puzzle",
+      "text": "Solve the Hall of Crests puzzle."
+    },
+    {
+      "id": "navigate_shadowed_passage",
+      "text": "Navigate the Shadowed Passage."
+    },
+    {
+      "id": "reach_wardens_chamber",
+      "text": "Reach the Warden's Chamber."
+    },
+    {
+      "id": "confront_last_warden",
+      "text": "Confront the Last Bell Warden."
+    },
+    {
+      "id": "discover_elena_research",
+      "text": "Discover Elena's research."
+    },
+    {
+      "id": "restore_third_beacon",
+      "text": "Restore the Third Ancient Beacon."
+    },
+    {
+      "id": "unlock_dawnspire_road",
+      "text": "Unlock the road to Dawnspire."
+    },
+    {
+      "id": "complete_chapter3",
+      "text": "Complete Chapter 3."
+    }
+  ],
+  "npcs": {
+    "lyra": {
+      "speaker": "HISTORIAN LYRA",
+      "enter_ironwatch": [
+        "LYRA: \"Stay sharp behind these basalt walls, Aren. Ironwatch Keep belonged to the Bell Wardens before Floodmill was ever struck from the maps.\"",
+        "LYRA: \"Walk past the courtyard gate arch so we can get our bearings beneath the main bastion.\""
+      ],
+      "investigate_courtyard": [
+        "LYRA: \"Four hooded Warden statues surrounding an abandoned supply wagon... Inspect that stone monument in the center of the courtyard.\""
+      ],
+      "discover_warden_records": [
+        "LYRA: \"Those lantern shelves inside the eastern cutaway chamber—that must be the Fortress Archives! Let's read the Wardens' records before we judge what happened here.\""
+      ],
+      "explore_barracks": [
+        "LYRA: \"Thirty-six volunteers during the first storm... I can understand desperation once. Now examine the Abandoned Barracks on the west flank to see what later Wardens wrote.\""
+      ],
+      "find_crest_clues": [
+        "LYRA: \"Someone sealed the inner sanctum behind three watch crests. Search the Archives lectern, the Barracks armory plaque, and the Hall of Crests stele for all three clues.\""
+      ],
+      "solve_crest_puzzle": [
+        "LYRA: \"We know the sequence from all three Watch tablets! Approach the Heraldic Altar in the Hall of Crests and align SILVER BELL, SUNDERED SHIELD, and CROWNED FLAME.\""
+      ],
+      "navigate_shadowed_passage": [
+        "LYRA: \"The north portcullis dropped! Watch the Shadow Sentinels patrolling the corridor—wait inside the glowing teal Ward Alcoves between passes, then activate the North Ward Lantern.\""
+      ],
+      "reach_wardens_chamber": [
+        "LYRA: \"The sentinels are quiet. Step northeast through the unsealed archway into the Warden's Chamber and Beacon Vault.\""
+      ],
+      "confront_last_warden": [
+        "LYRA: \"Look by the vault steps—someone is still keeping vigil here. Speak with the Last Bell Warden.\""
+      ],
+      "discover_elena_research": [
+        "LYRA: \"Wait—across the vault west of the Third Beacon, that satchel seal belongs to Elena! Examine your mother's research folio right beside the altar.\""
+      ],
+      "restore_third_beacon": [
+        "LYRA: \"A triangular harmonic lattice... Briarwood, Floodmill, and Ironwatch! Ignite the Third Ancient Beacon at the center of the vault!\""
+      ],
+      "unlock_dawnspire_road": [
+        "LYRA: \"All three Ancient Beacons are resonating across the kingdom! Unlock the northern Dawnspire Citadel Gate east of the beacon platform.\""
+      ],
+      "complete_chapter3": [
+        "LYRA: \"The road to Dawnspire stands open above the clouds, Aren. Touch the Dawnspire Gate once more when you are ready to close Chapter 3.\""
+      ],
+      "default": [
+        "LYRA: \"Every bell stroke in Ashvale traced back to this fortress. Let's carry the connected beacons north toward Dawnspire.\""
+      ]
+    },
+    "warden": {
+      "speaker": "LAST BELL WARDEN",
+      "confront_last_warden": [
+        "WARDEN: \"So another mapmaker climbs the keep... and brings a historian who reads what kings buried.\"",
+        "WARDEN: \"We chose to forget thirty-six lives so that ten thousand could live.\"",
+        "AREN: \"You never asked those thirty-six.\"",
+        "WARDEN: \"No. And that is the burden I have carried longer than any kingdom should endure.\"",
+        "LYRA: \"A burden is not permission to repeat the harm.\"",
+        "WARDEN: \"Wait... then take the key to your mother's satchel yonder. Read what Elena proved before she marched for Dawnspire.\""
+      ],
+      "discover_elena_research": [
+        "WARDEN: \"Elena stood where you stand now. Her harmonic folio lies beside the western pillar—read it with open eyes.\""
+      ],
+      "restore_third_beacon": [
+        "WARDEN: \"If three beacons truly hold the storm without taking another name... kindle the Third Ancient Beacon and prove what I feared to hope.\""
+      ],
+      "unlock_dawnspire_road": [
+        "WARDEN: \"The bell spire answers above the vault. Open the Dawnspire Citadel Gate northeast of the beacon—no keeper bars your road.\""
+      ],
+      "complete_chapter3": [
+        "WARDEN: \"The kingdom remembers Floodmill because you refused to look away. Go north, young mapmaker—Chapter 3 ends at the Dawnspire arch.\""
+      ],
+      "default": [
+        "WARDEN: \"Stand in peace beneath the vault. Your path leads through the Shadowed Passage first.\""
+      ]
+    }
+  },
+  "story_events": {
+    "ironwatch_arrival": [
+      "IRONWATCH KEEP: Obsidian rain-clouds crown jagged basalt towers where cracked battlements overlook the drowned valley below.",
+      "Cold violet ward-flames still flicker above an outer courtyard lined with silent statues. Investigate the ruined courtyard ahead."
+    ],
+    "courtyard_inspected": [
+      "COURTYARD MONUMENT: Four hooded stone Wardens stand in an unbroken ring, their lanterns pointed inward toward an abandoned supply wagon.",
+      "Chiseled into the base: \"FIRST WATCH HOLDS THE GATE; LET NO ARCHIVE RECORD CROSS THESE WALLS.\" Search the cutaway Fortress Archives to the northeast."
+    ],
+    "warden_records_read": [
+      "FIRST CATASTROPHE LEDGER (ARCHIVES): \"Year One of the Thirteenth Toll—the sky cracked above Ashvale and thirty-six Wardens stepped willingly into the bronze bind so ten thousand citizens could breathe through dawn.\"",
+      "AREN: \"The first sacrifice saved the kingdom... when there was no other shield.\" LYRA: \"Look at the date on the margin—later seals forbid reopening the southern beacons. Search the Abandoned Barracks west for what came after.\""
+    ],
+    "barracks_inspected": [
+      "BARRACKS DUTY ROSTER: Half-rusted spears lean beside dusty bunks where a sealed captain's manifest lies pinned under a helm.",
+      "MARGIN NOTE: \"Year One Hundred—High Keepers ordered border towns struck silently from the rolls rather than relight the outer beacons. Floodmill paid for silence so the capital never questioned the bell.\"",
+      "LYRA: \"The first generation bore a tragedy. Later generations turned that tragedy into a secret harvest. Now find the three Heraldic Crest Clues hidden around the keep.\""
+    ],
+    "barracks_keepsake_found": [
+      "WARDEN'S TARNISHED LOCKET: Inside a dusty barracks footlocker sits a dented brass locket engraved 'To Master Elian—Return when the bell rests.' Beside it lies a sketch of three little girls by Floodmill bridge.",
+      "Even Ironwatch's own watchmen were never told whose memories their patrols were erasing."
+    ],
+    "crest_clue_1_text": [
+      "ARCHIVES LECTERN (CREST CLUE 1/3): \"FIRST WATCH TABLATURE — Before the storm tore the coast, the First Watch raised the SILVER BELL to gather every hearth behind stone walls.\"",
+      "PILLAR INSCRIPTION: Set PILLAR I to SILVER BELL."
+    ],
+    "crest_clue_2_text": [
+      "BARRACKS ARMORY PLAQUE (CREST CLUE 2/3): \"SECOND WATCH TABLATURE — When the gale broke upon the bastion, thirty-six stood behind the SUNDERED SHIELD and bore the toll.\"",
+      "PILLAR INSCRIPTION: Set PILLAR II to SUNDERED SHIELD."
+    ],
+    "crest_clue_3_text": [
+      "HALL OF CRESTS STELE (CREST CLUE 3/3): \"THIRD WATCH TABLATURE — Above the hidden vault, the builders swore by the CROWNED FLAME that the distant beacons would restore dawn.\"",
+      "PILLAR INSCRIPTION: Set PILLAR III to CROWNED FLAME."
+    ],
+    "crest_puzzle_completed": [
+      "Heavy iron chains groan behind the northwest arch as the three Watch crests flare gold and unlock the portcullis to the Shadowed Passage.",
+      "Ahead, twin Shadow Sentinels sweep violet ward-beams across the corridor between glowing teal Safe Alcoves."
+    ],
+    "shadow_passage_completed": [
+      "NORTH WARD LANTERN HARMONIZED: Warm amber-cyan resonance pulses down the corridor, calming the restless Shadow Sentinels back into quiet stone echoes.",
+      "The iron gate northeast opens into the Warden's Chamber and Beacon Vault."
+    ],
+    "wardens_chamber_entered": [
+      "WARDEN'S CHAMBER AND BEACON VAULT: High amethyst columns frame a dormant star-mandala altar where an armored keeper waits motionless by the western steps.",
+      "Approach and confront the Last Bell Warden."
+    ],
+    "warden_confrontation": [
+      "LAST BELL WARDEN: \"Thirty-six names burned out of living memory in that first winter. Because we sealed the gate, cities prospered behind warm walls.\"",
+      "WARDEN: \"We chose to forget thirty-six lives so that ten thousand could live.\"",
+      "AREN: \"You never asked those thirty-six.\"",
+      "WARDEN: \"No. And that is the burden I have carried longer than any kingdom should endure.\"",
+      "LYRA: \"A burden is not permission to repeat the harm.\"",
+      "Silence settles beneath the vault dome. The Warden bows his head slightly and motions toward a sapphire notebook resting near the western altar—Elena's research."
+    ],
+    "elena_research_read": [
+      "ELENA'S HARMONIC LATTICE FOLIO: \"Bellhaven's Great Bell drains memory only because its resonance stands unanchored! Briarwood, Floodmill, and Ironwatch form an equilateral triad—three lit Ancient Beacons can hold the Veilstorm at bay without taking a single human mind.\"",
+      "MARGINAL INK (ELENA): \"If the Keeper seals Ironwatch's third pillar, I will take our triad charts north up the Dawnspire stairs myself. Aren—if you find this page, finish lighting the Third Beacon first.\""
+    ],
+    "third_beacon_restored": [
+      "Sapphire and golden light roars skyward from Ironwatch Vault! Far to the southwest and southeast, twin filaments of radiance surge from Briarwood and Floodmill, locking all three Ancient Beacons into one shimmering triad across Ashvale.",
+      "The northern Dawnspire Citadel Gate hums with unlocked resonance. Examine the Dawnspire Gate northeast of the vault."
+    ],
+    "dawnspire_gate_unlocked": [
+      "DAWNSPIRES CITADEL GATE: Ancient bronze seals retract cleanly beneath the three-beacon chord, revealing a wind-carved stair rising toward Dawnspire peak.",
+      "Speak cleanly or touch the unlocked Dawnspire Gate once more to complete Chapter 3."
+    ]
+  }
+}
