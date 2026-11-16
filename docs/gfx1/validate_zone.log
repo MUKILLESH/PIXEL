@@ -1,0 +1,74 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: Bellhaven spawn stable
+PASS: Title displays Ashvale
+PASS: Subtitle displays Bellhaven Village
+PASS: Objective set to thirteenth bell
+PASS: Spawn outside solids
+PASS: Solid projected footprint
+PASS: Nested facade depth sorting
+PASS: Canopy is separate from building footprint
+PASS: Entrance route beneath canopy is walkable
+PASS: Entrance wall blocks penetration while allowing sliding
+PASS: Canopy column 76 is solid
+PASS: Canopy column 148 is solid
+PASS: Basin footprint blocks walking
+PASS: Monument footprint blocks walking
+PASS: Forecourt route to terminal remains open
+PASS: Terminal proximity works in SJT region
+PASS: Preserved pedestal message opens
+PASS: Pedestal displays exact thirteenth bell message
+PASS: Source displays Stone Rune Pedestal
+PASS: Reading locks movement
+PASS: Dismiss restores exploration
+PASS: Scenery covers edge (0.0, -320.0) / (-320.0, -180.0)
+PASS: Scenery covers edge (0.0, -320.0) / (320.0, -180.0)
+PASS: Scenery covers edge (0.0, -320.0) / (320.0, 180.0)
+PASS: Scenery covers edge (0.0, -320.0) / (-320.0, 180.0)
+PASS: Scenery covers edge (672.0, 16.0) / (-320.0, -180.0)
+PASS: Scenery covers edge (672.0, 16.0) / (320.0, -180.0)
+PASS: Scenery covers edge (672.0, 16.0) / (320.0, 180.0)
+PASS: Scenery covers edge (672.0, 16.0) / (-320.0, 180.0)
+PASS: Scenery covers edge (0.0, 352.0) / (-320.0, -180.0)
+PASS: Scenery covers edge (0.0, 352.0) / (320.0, -180.0)
+PASS: Scenery covers edge (0.0, 352.0) / (320.0, 180.0)
+PASS: Scenery covers edge (0.0, 352.0) / (-320.0, 180.0)
+PASS: Scenery covers edge (-672.0, 16.0) / (-320.0, -180.0)
+PASS: Scenery covers edge (-672.0, 16.0) / (320.0, -180.0)
+PASS: Scenery covers edge (-672.0, 16.0) / (320.0, 180.0)
+PASS: Scenery covers edge (-672.0, 16.0) / (-320.0, 180.0)
+PASS: Third-party reference folder excluded from resource scan
+PASS: Overlapping interaction ranges exercised
+PASS: Priority beats distance
+PASS: Only one world prompt, no duplicate HUD prompt
+PASS: Equal priorities choose nearest
+PASS: Equal distance uses stable node-path tie break
+PASS: Leaving highest-priority range hands off prompt
+PASS: Only selected object's message opens
+PASS: All nearby prompts suppressed while reading
+PASS: Decorative notice does not advance mystery objective
+PASS: Dismiss restores selected prompt only
+PASS: Leaving all ranges clears prompts
+PASS: Player scale and foot collision preserved
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Furniture has ground collision
+PASS: Twelve local decorative furnishings
+PASS: Seating loop segment 0 clear of furniture
+PASS: Seating loop segment 1 clear of furniture
+PASS: Seating loop segment 2 clear of furniture
+PASS: Seating loop segment 3 clear of furniture
+PASS: Seating loop segment 4 clear of furniture
+PASS: Seating loop segment 5 clear of furniture
+PASS: Persistent objective panel under 20 pixels tall
+PASS: Suite completed
+SJT RESULT: 71 checks, 0 failures

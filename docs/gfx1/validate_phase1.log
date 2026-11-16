@@ -1,0 +1,80 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: Bellhaven scene loads
+PASS: All Bellhaven quest actors exist
+PASS: All prologue story objects and UI exist
+PASS: Starts at Objective 1: investigate_bell
+PASS: HUD shows Objective 1
+PASS: Interaction spot 0 is free of solids
+PASS: Interaction spot 1 is free of solids
+PASS: Interaction spot 2 is free of solids
+PASS: Interaction spot 3 is free of solids
+PASS: Interaction spot 4 is free of solids
+PASS: Interaction spot 5 is free of solids
+PASS: QuestManager blocks out-of-order completion
+PASS: Locked chest rejects early pickup
+PASS: Locked chest does not advance objective
+PASS: Dormant Briarwood gate blocks early departure
+PASS: Dormant gate does not advance objective
+PASS: Caelen shows pre-pedestal dialogue
+PASS: Talking before pedestal does not complete speak_npcs
+PASS: Single prompt shown at Rune Pedestal
+PASS: Pedestal opens initial omen message
+PASS: Objective 1 completed
+PASS: Objective 2 unlocked in order
+PASS: HUD tracks 0/3 villagers
+PASS: Single prompt shown for Master Caelen
+PASS: Master Caelen dialogue opens
+PASS: Caelen line 1 authentic
+PASS: Multi-line dialogue advances to line 2 without closing
+PASS: Caelen increments NPC counter to 1/3
+PASS: Re-talking to Caelen cannot farm NPC progress
+PASS: Mother's letter remains gated until all 3 NPCs visited
+PASS: Mira dialogue opens
+PASS: Dismissing Mira mid-dialogue restores movement cleanly
+PASS: Dismissing early does not credit Mira and restores prompt
+PASS: Mira increments NPC counter to 2/3
+PASS: Caelen reveals Outer Ring MOON clue
+PASS: Mira reveals Middle Ring SUN clue
+PASS: Elara reveals Inner Ring STAR clue
+PASS: Mother's letter explicitly confirms MOON, SUN, STAR
+PASS: Sister Elara dialogue opens
+PASS: Objective 2 completed after 3 unique NPCs
+PASS: Objective 3 unlocked in order
+PASS: HUD updates to Objective 3
+PASS: Mother's chest highlights on Objective 3
+PASS: Rune puzzle cannot be skipped before finding Mother's letter
+PASS: Mother's letter opens after Caelen gives key
+PASS: Objective 3 completed
+PASS: Objective 4 unlocked in order
+PASS: HUD updates to Objective 4
+PASS: Rune puzzle modal opens and locks movement
+PASS: Rune puzzle displays transcribed cipher clue note
+PASS: World prompts hidden while Rune Puzzle is open
+PASS: ESC closes Rune Puzzle without softlock
+PASS: Closing Rune Puzzle restores pedestal prompt
+PASS: Rune puzzle reopens cleanly after ESC
+PASS: Incorrect rune combination rejected
+PASS: Incorrect attempt does not complete quest
+PASS: Correct rune cipher (MOON, SUN, STAR) solves puzzle via keyboard
+PASS: Objective 4 completed cleanly
+PASS: Pedestal glows and unlocks Briarwood Waystone
+PASS: Beacon revelation dialogue opens immediately after solve
+PASS: Objective 5 unlocked after revelation
+PASS: Solved pedestal shows post-solve lore instead of reopening puzzle
+PASS: Objective 5 completed at awakened Briarwood Waystone
+PASS: Objective 6 active during final revelation dialogue
+PASS: Final Briarwood & mother connection dialogue opens
+PASS: Cancelling waystone dialogue leaves Objective 6 recoverable
+PASS: Cancelling waystone dialogue restores prompt
+PASS: Objective 6 completed and Briarwood unlocked
+PASS: Prologue Complete screen visible
+PASS: Exact prologue completion banner displayed
+PASS: Dismissing Prologue Complete restores free exploration
+PASS: HUD reflects completed prologue
+PASS: Post-prologue waystone shows Chapter 1 transition note without re-triggering banner
+PASS: NPC solid collider blocks walking
+PASS: NPC idle animation clock advances
+PASS: NPC dialogue reflects completed quest state
+PASS: Phase 1 suite completed
+PHASE 1 RESULT: 77 checks, 0 failures

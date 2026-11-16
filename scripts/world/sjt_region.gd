@@ -1,5 +1,6 @@
 extends Node2D
 const Prop = preload("res://scripts/world/prop.gd")
+const BellhavenTree = preload("res://scripts/world/bellhaven_tree.gd")
 const Landmark = preload("res://scripts/world/sjt_landmark.gd")
 const Furniture = preload("res://scripts/world/campus_furniture.gd")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
@@ -17,12 +18,13 @@ var sunrise_modulate: CanvasModulate
 
 func _ready() -> void:
 	var ground: TileMapLayer = $Ground
+	ground.tile_set = preload("res://assets/tiles/bellhaven/meadow.tres")
 	for x in range(-28, 29):
 		for y in range(-28, 29):
-			ground.set_cell(Vector2i(x, y), 0, Vector2i(posmod(x * 17 + y * 31, 3), 0))
+			ground.set_cell(Vector2i(x, y), 0, Vector2i(posmod((x*374761+y*668265) ^ ((x+29)*(y+31)*127),6), 0))
 	for point: Vector2 in [Vector2(-240,-30),Vector2(-230,100),Vector2(-140,125),Vector2(220,-50),Vector2(245,80),Vector2(175,215),Vector2(-170,235),Vector2(-310,35),Vector2(280,5),Vector2(-160,-170),Vector2(85,-190),Vector2(300,170)]:
 		var tree := StaticBody2D.new()
-		tree.set_script(Prop)
+		tree.set_script(BellhavenTree)
 		tree.position = point
 		$Actors.add_child(tree)
 	var furnishings: Array = [
@@ -126,6 +128,18 @@ func _ready() -> void:
 			$Actors/Player/Camera2D.snap_to_target()
 		_sync_world_from_quest()
 	$Landscape.queue_redraw()
+	# Non-blocking, foot-sorted GFX-1 dressing. No quest actors are moved.
+	for spec: Array in [[0,Vector2(-160,60)],[1,Vector2(156,-30)],[2,Vector2(-145,18)],[2,Vector2(93,-79)],[3,Vector2(-225,135)],[3,Vector2(223,181)]]:
+		var detail := Node2D.new()
+		detail.set_script(preload("res://scripts/world/bellhaven_decor.gd"))
+		detail.set("style",spec[0])
+		detail.position = spec[1]
+		$Actors.add_child(detail)
+	var air := Node2D.new()
+	air.name = "BellhavenAir"
+	air.set_script(preload("res://scripts/world/bellhaven_air.gd"))
+	air.z_index = 2
+	add_child(air)
 	var is_dawn: bool = (quest_manager.storm_resolved or quest_manager.chapter5_completed)
 	AudioManagerScript.play_global_region(get_tree(), "epilogue_dawn" if is_dawn else "bellhaven")
 	if is_dawn:

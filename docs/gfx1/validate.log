@@ -1,0 +1,66 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: Startup scene loads
+PASS: 2401 cells cover courtyard and scenery apron
+PASS: 64 x 32 tiles
+PASS: 2:1 diamond coordinate mapping
+PASS: World actors Y sorted
+PASS: Spawn is stable without input
+PASS: Spawn has no collision overlap
+PASS: Player camera active
+PASS: Camera renders at whole pixels
+PASS: Ground covers camera edge (0.0, -320.0) / (-320.0, -180.0)
+PASS: Ground covers camera edge (0.0, -320.0) / (320.0, -180.0)
+PASS: Ground covers camera edge (0.0, -320.0) / (320.0, 180.0)
+PASS: Ground covers camera edge (0.0, -320.0) / (-320.0, 180.0)
+PASS: Ground covers camera edge (672.0, 16.0) / (-320.0, -180.0)
+PASS: Ground covers camera edge (672.0, 16.0) / (320.0, -180.0)
+PASS: Ground covers camera edge (672.0, 16.0) / (320.0, 180.0)
+PASS: Ground covers camera edge (672.0, 16.0) / (-320.0, 180.0)
+PASS: Ground covers camera edge (0.0, 352.0) / (-320.0, -180.0)
+PASS: Ground covers camera edge (0.0, 352.0) / (320.0, -180.0)
+PASS: Ground covers camera edge (0.0, 352.0) / (320.0, 180.0)
+PASS: Ground covers camera edge (0.0, 352.0) / (-320.0, 180.0)
+PASS: Ground covers camera edge (-672.0, 16.0) / (-320.0, -180.0)
+PASS: Ground covers camera edge (-672.0, 16.0) / (320.0, -180.0)
+PASS: Ground covers camera edge (-672.0, 16.0) / (320.0, 180.0)
+PASS: Ground covers camera edge (-672.0, 16.0) / (-320.0, 180.0)
+PASS: Out-of-range E does not open message
+PASS: Moving camera advances without backward jitter or fractional scroll
+PASS: Camera eases behind movement
+PASS: WASD action moves at configured speed
+PASS: Diagonal speed normalized
+PASS: Diagonal facing tracked
+PASS: No drift after release
+PASS: Solid blocks movement at (-190.0, -30.0)
+PASS: Solid blocks movement at (-195.0, 100.0)
+PASS: Solid blocks movement at (45.0, 0.0)
+PASS: Nearby interaction indicator visible
+PASS: E opens terminal message
+PASS: Prompts hidden during dialogue
+PASS: Keyboard repeat does not dismiss or retrigger
+PASS: Exact introductory message
+PASS: Message locks movement
+PASS: E dismisses without reopening
+PASS: Escape dismisses
+PASS: Prompt restored after dismissal
+PASS: Facing direction 0
+PASS: Walking pose advances for direction 0
+PASS: Facing direction 1
+PASS: Walking pose advances for direction 1
+PASS: Facing direction 2
+PASS: Walking pose advances for direction 2
+PASS: Facing direction 3
+PASS: Walking pose advances for direction 3
+PASS: Facing direction 4
+PASS: Walking pose advances for direction 4
+PASS: Facing direction 5
+PASS: Walking pose advances for direction 5
+PASS: Facing direction 6
+PASS: Walking pose advances for direction 6
+PASS: Facing direction 7
+PASS: Walking pose advances for direction 7
+PASS: Smoothed camera settles on target
+PASS: Map boundary blocks exit
+PASS: Test suite reached its end
+RESULT: 63 checks, 0 failures
