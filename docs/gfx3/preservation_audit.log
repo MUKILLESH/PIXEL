@@ -1,0 +1,5 @@
+scripts/world/floodmill_building.gd func _ready() unchanged: True
+scripts/world/floodmill_prop.gd func _ready() unchanged: True
+scripts/interactables/floodmill_interactable.gd func _ready() unchanged: True
+scripts/world/floodmill_region.gd func _build_canal_barriers unchanged: True
+scripts/world/floodmill_region.gd func _sync_world_from_quest unchanged: True

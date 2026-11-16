@@ -40,17 +40,16 @@ func _ready() -> void:
 	add_child(shape_node)
 
 func _draw() -> void:
+	if not "--bake-floodmill" in OS.get_cmdline_user_args():
+		var texture: Texture2D = preload("res://scripts/world/floodmill_art.gd").texture("res://assets/floodmill/prop_%d.png" % kind)
+		draw_texture(texture,Vector2(-64,-112))
+		return
+	_draw_source()
+
+func _draw_source() -> void:
 	match kind:
-		0: # MarshWillow
-			draw_colored_polygon(PackedVector2Array([Vector2(-22, -2), Vector2(0, -11), Vector2(22, -2), Vector2(0, 7)]), Color(0.02, 0.04, 0.04, 0.36))
-			draw_rect(Rect2(-5, -24, 10, 24), Color("473426"))
-			draw_rect(Rect2(1, -24, 4, 24), Color("2e2117"))
-			draw_circle(Vector2(-10, -32), 14.0, Color("294f37"))
-			draw_circle(Vector2(10, -32), 14.0, Color("2d573d"))
-			draw_circle(Vector2(0, -42), 15.0, Color("386b4a"))
-			for vx in range(-18, 20, 5):
-				var drop: int = 16 + ((vx * 7) % 9)
-				draw_line(Vector2(vx, -28), Vector2(vx, -28 + drop), Color("4b8259"), 1.5)
+		0:
+			preload("res://scripts/world/floodmill_art.gd").willow(self)
 		1: # MossyRuin
 			draw_colored_polygon(PackedVector2Array([Vector2(-12, -1), Vector2(0, -6), Vector2(12, -1), Vector2(0, 4)]), Color(0.02, 0.04, 0.04, 0.34))
 			draw_rect(Rect2(-9, -20, 18, 20), Color("535c59"))
@@ -84,3 +83,11 @@ func _draw() -> void:
 			draw_circle(Vector2(-1, -1), 5.5, Color("593c23"), false, 2.0)
 			draw_line(Vector2(-5, -1), Vector2(4, -1), Color("4a311c"), 1.0)
 			draw_line(Vector2(-1, -5), Vector2(-1, 4), Color("4a311c"), 1.0)
+
+func _process(_delta: float) -> void:
+	if kind != 0: return
+	var player := get_tree().get_first_node_in_group("player") as Node2D
+	if player != null:
+		var local := player.global_position-global_position
+		var opacity: float = 0.4 if Rect2(-37,-83,74,78).has_point(local) else 1
+		if modulate.a != opacity: modulate.a = opacity

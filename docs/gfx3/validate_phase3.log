@@ -1,0 +1,132 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: Briarwood loaded and exposes travel_to_floodmill()
+PASS: Floodmill Gate locked before Chapter 1 completion
+PASS: Chapter 1 completion unlocks Briarwood Floodmill Gate
+PASS: First post-unlock gate interact informs Chapter 2 readiness
+PASS: Briarwood Floodmill Gate arms ready_to_travel on dismiss
+PASS: Transition from Briarwood loads FloodmillVillage cleanly
+PASS: Floodmill loads chapter2_drowned_village at Objective 1
+PASS: Prologue and Chapter 1 completion flags carried cleanly into Floodmill
+PASS: HUD header reflects Chapter 2 in Floodmill
+PASS: All 5 Floodmill isometric buildings exist
+PASS: WatermillRepair, SluicePuzzle, and LedgerPuzzle UI panels exist
+PASS: Floodmill approach spot 0 is free of solids
+PASS: Floodmill approach spot 1 is free of solids
+PASS: Floodmill approach spot 2 is free of solids
+PASS: Floodmill approach spot 3 is free of solids
+PASS: Floodmill approach spot 4 is free of solids
+PASS: Floodmill approach spot 5 is free of solids
+PASS: Floodmill approach spot 6 is free of solids
+PASS: Floodmill approach spot 7 is free of solids
+PASS: Floodmill approach spot 8 is free of solids
+PASS: Floodmill approach spot 9 is free of solids
+PASS: Floodmill approach spot 10 is free of solids
+PASS: Floodmill approach spot 11 is free of solids
+PASS: Floodmill approach spot 12 is free of solids
+PASS: Floodmill approach spot 13 is free of solids
+PASS: Floodmill approach spot 14 is free of solids
+PASS: Floodmill approach spot 15 is free of solids
+PASS: Floodmill approach spot 16 is free of solids
+PASS: Floodmill approach spot 17 is free of solids
+PASS: QuestManager blocks out-of-order restore_watermill
+PASS: ArchiveFloodBlocker starts active before sluice solved
+PASS: Flooded Archive causeway physically blocks north canal crossing
+PASS: Speaking to Lyra early does not skip enter_floodmill
+PASS: Watermill part pickup locked until broken watermill inspected
+PASS: Walked physically to Floodmill Entrance Arch
+PASS: Objective 1 completed: enter_floodmill
+PASS: Walked physically to Lyra arrival spot
+PASS: Lyra delivers Floodmill arrival revelation
+PASS: Objective 2 completed: speak_lyra_arrival
+PASS: Walked into Abandoned Village square
+PASS: Objective 3 completed: explore_ruined_village
+PASS: Lyra advances to Old Watermill courtyard
+PASS: Walked to Weaver Homestead Locket
+PASS: Optional Weaver Homestead Locket collected
+PASS: Optional homestead relic preserves active objective
+PASS: Walked to Broken Watermill
+PASS: Objective 4 completed: discover_watermill
+PASS: Walked to Millwright Diagram
+PASS: Millwright diagram provides complete repair order
+PASS: Walked to Iron Drive Gear
+PASS: Collected 1/3 mill parts (Iron Drive Gear)
+PASS: Duplicate mill part cannot be farmed
+PASS: Walked to Bronze Pinion
+PASS: Collected 2/3 mill parts (Bronze Pinion)
+PASS: Walked to Oak Coupling Belt
+PASS: Objective 5 completed on 3/3 mill parts
+PASS: Walked to Sluice Console early
+PASS: Sluice Console requires Watermill repair first
+PASS: Walked back to Old Watermill
+PASS: WatermillRepair panel opens and locks movement
+PASS: World prompts hidden while WatermillRepair is open
+PASS: ESC closes WatermillRepair without softlock
+PASS: WatermillRepair reopens cleanly after ESC
+PASS: Incorrect watermill gear sequence rejected
+PASS: WatermillRepair solves via keyboard and spins waterwheel
+PASS: Objective 6 state synchronized across world and landscape
+PASS: Objective 7 unlocked: investigate_sluice_gates
+PASS: Repaired Watermill does not reopen minigame
+PASS: Walked to Sluice Console
+PASS: Objective 7 completed: investigate_sluice_gates
+PASS: Walked to Canal Depth Gauge
+PASS: Canal Depth Gauge reveals sluice protocol clue
+PASS: Walked back to Sluice Console
+PASS: SluicePuzzle opens and locks movement
+PASS: Incorrect sluice configuration leaves water deep and rejects
+PASS: SluicePuzzle drains causeway and disables ArchiveFloodBlocker
+PASS: Lyra crosses north to the Forgotten Archive courtyard
+PASS: Objective 8 completed: redirect_water_flow
+PASS: Player physically walks north across drained Archive Causeway past y=-50
+PASS: Walked to Archive Entrance threshold
+PASS: Objective 9 completed: enter_forgotten_archive
+PASS: Walked to Master Ledger Table early
+PASS: Ledger reconstruction blocked until all 3 Archive records discovered
+PASS: LedgerPuzzle rejects binding if all_clues_discovered is false
+PASS: Walked to Torn Parish Roll (Census)
+PASS: Collected Archive Record 1/3
+PASS: Re-reading Parish Roll does not duplicate progress
+PASS: Walked to Ash-Stained Decree (Edict)
+PASS: Collected Archive Record 2/3
+PASS: Walked to Lockbox Receipt (Vault)
+PASS: Collected Archive Record 3/3
+PASS: Walked north to sealed Second Beacon
+PASS: Second Beacon requires Ledger reconstruction and truth discovery first
+PASS: Walked back to Ledger Table
+PASS: LedgerPuzzle opens cleanly once all 3 records found
+PASS: Incorrect ledger pairing rejected
+PASS: LedgerPuzzle solves cleanly via keyboard
+PASS: Objective 10 completed: reconstruct_village_ledger
+PASS: Restored ledger reveals deliberate memory erasure of Floodmill
+PASS: Objective 11 completed and Lyra moves to Sanctuary
+PASS: Lyra awaits at Second Beacon Sanctuary
+PASS: Walked to Second Beacon Sanctuary
+PASS: Objective 12 completed: Second Ancient Beacon restored
+PASS: Objective 13 unlocked: witness_elena_message
+PASS: Canonical Elena line 1 delivered
+PASS: Canonical Elena line 2 delivered
+PASS: Canonical Aren response delivered
+PASS: Canonical Lyra response delivered
+PASS: Objective 13 completed: witness_elena_message
+PASS: Walked to Lyra at Second Beacon Sanctuary
+PASS: Objective 14 completed and Ironwatch Keep unlocked
+PASS: Exact Chapter 2 completion banner shown
+PASS: Dismissing Chapter 2 banner restores free exploration
+PASS: Repeated Lyra interaction does not duplicate Chapter 2 completion
+PASS: Walked to Ironwatch Keep Gate
+PASS: Ironwatch Keep Gate displays unlocked Chapter 3 teaser cleanly
+PASS: Field Satchel tracks all Chapter 2 items, clues, relics, and echo
+PASS: Walked to custom Floodmill save position
+PASS: Manual Save persists Chapter 2 state cleanly
+PASS: Second Manual Save rotates .bak backup cleanly
+PASS: Continue initiated from Bellhaven startup toward Floodmill
+PASS: Continue transitions automatically to FloodmillVillage
+PASS: Resumed Floodmill player restores exact saved pose and facing
+PASS: All Chapter 2 quest flags survived reload
+PASS: Floodmill mechanical wheel, drained causeway, gate, and Lyra state survived reload
+PASS: Phase 2 (v1) save remains 100% compatible without reset
+PASS: Loaded v1 save preserves Chapter 1 completion and safely defaults Chapter 2 fields
+PASS: Corrupted primary save safely falls back to valid .bak backup
+PASS: Phase 3 suite completed
+PHASE 3 RESULT: 129 checks, 0 failures

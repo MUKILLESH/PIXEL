@@ -44,7 +44,7 @@ class ArchiveBayVisual extends Node2D:
 				draw_line(_p(u0 + 3, v - 2, sh), _p(u1 - 3, v - 2, sh), Color("6b492b"), 2.0)
 				for bx in range(int(u0) + 4, int(u1) - 4, 4):
 					var col := Color("9e4b3c") if (bx % 8 == 0) else (Color("487368") if (bx % 12 == 0) else Color("b59257"))
-					draw_line(_p(bx, v - 2, sh - 8), _p(bx, v - 2, sh - 1), col, 2.0)
+					draw_line(_p(bx, v - 2, sh - 5 - posmod(bx,4)), _p(bx, v - 2, sh - 1), col, 2.0)
 			# Upper stone parapet coping
 			_poly([_p(u0 - 1, v - 2, 56), _p(u1 + 1, v - 2, 56), _p(u1 + 1, v + 4, 62), _p(u0 - 1, v + 4, 62)], Color("6d7572"))
 			# Warm wall candle sconce
@@ -63,7 +63,7 @@ class ArchiveBayVisual extends Node2D:
 				draw_line(_p(u - 2, v0 + 3, sh), _p(u - 2, v1 - 3, sh), Color("6b492b"), 2.0)
 				for bv in range(int(v0) + 4, int(v1) - 4, 4):
 					var col := Color("4f7a80") if (bv % 8 == 0) else (Color("8a5540") if (bv % 12 == 0) else Color("bda168"))
-					draw_line(_p(u - 2, bv, sh - 8), _p(u - 2, bv, sh - 1), col, 2.0)
+					draw_line(_p(u - 2, bv, sh - 5 - posmod(bv,4)), _p(u - 2, bv, sh - 1), col, 2.0)
 			_poly([_p(u - 2, v0 - 1, 56), _p(u - 2, v1 + 1, 56), _p(u + 4, v1 + 1, 62), _p(u + 4, v0 - 1, 62)], Color("5a6260"))
 			var mid_v: float = (v0 + v1) * 0.5
 			draw_rect(Rect2(_p(u - 3, mid_v, 49) - Vector2(2, 2), Vector2(4, 4)), Color("ffca57"))
@@ -81,6 +81,20 @@ class ArchiveBayVisual extends Node2D:
 			draw_line(_p(6, 54, 42), _p(66, 54, 42), Color("7a5335"), 2.0)
 			draw_line(_p(6, 54, 28), _p(66, 54, 28), Color("4a321f"), 3.0)
 
+		# Fine book bands, shelf edges and cracked coping preserve the original bay anchors.
+		if bay_kind in ["nw","ne"]:
+			for h in [18,29,40]:
+				for t in range(int(pts[0])+4,int(pts[1])-3,4):
+					var p: Vector2 = _p(t,66,h-3) if bay_kind == "nw" else _p(66,t,h-3)
+					draw_rect(Rect2(p,Vector2(2,1)),Color("c1b389"))
+			var mid: float = (pts[0]+pts[1])*0.5
+			var top: Vector2 = _p(mid,68,59) if bay_kind == "nw" else _p(68,mid,59)
+			draw_line(top,top+Vector2(2,4),Color("354747"),1)
+			draw_line(top+Vector2(2,4),top+Vector2(0,8),Color("354747"),1)
+		elif bay_kind == "pillar":
+			for y in range(-35,-5,7):
+				draw_line(Vector2(-4,y),Vector2(4,y+1),Color("3f5353"),1)
+			draw_rect(Rect2(-1,-44,2,3),Color("fff1bf"))
 	func _p(u: float, v: float, h: float = 0.0) -> Vector2:
 		return Vector2(u - v, -0.5 * (u + v) - h) - position
 
@@ -152,11 +166,22 @@ func set_watermill_active(active: bool) -> void:
 	watermill_active = active
 	queue_redraw()
 
+var wheel_visual: Node2D
+var wheel_tick: float = 0.0
 func _process(delta: float) -> void:
-	if kind == 3 and watermill_active:
-		wheel_angle = fmod(wheel_angle + delta * 1.4, TAU)
-		queue_redraw()
-
+	if kind != 3 or "--bake-floodmill" in OS.get_cmdline_user_args(): return
+	if wheel_visual == null:
+		wheel_visual = Node2D.new()
+		wheel_visual.set_script(preload("res://scripts/world/floodmill_wheel.gd"))
+		wheel_visual.position = Vector2(0,1)
+		add_child(wheel_visual)
+	wheel_tick += delta
+	if wheel_tick >= 0.1:
+		if watermill_active: wheel_angle = fmod(wheel_angle+wheel_tick*0.7,TAU)
+		wheel_tick = 0
+		wheel_visual.angle = wheel_angle
+		wheel_visual.active = watermill_active
+		wheel_visual.queue_redraw()
 func _poly_pts(verts: Array) -> void:
 	draw_colored_polygon(PackedVector2Array(verts), verts.pop_back())
 
@@ -170,6 +195,11 @@ func _slab(u0: float, u1: float, v0: float, v1: float, h: float, col: Color) -> 
 	draw_colored_polygon(PackedVector2Array([iso_p(u0, v0, h), iso_p(u1, v0, h), iso_p(u1, v1, h), iso_p(u0, v1, h)]), col)
 
 func _draw() -> void:
+	if kind < 4 and not "--bake-floodmill" in OS.get_cmdline_user_args():
+		var state: int = 1 if kind == 3 and watermill_active else 0
+		var texture: Texture2D = preload("res://scripts/world/floodmill_art.gd").texture("res://assets/floodmill/building_%d_%d.png" % [kind,state])
+		draw_texture(texture,Vector2(-96,-160))
+		return
 	if kind == 4:
 		# Cutaway Archive oak floor is drawn on FloodmillLandscape; only draw subtle entrance stone trim here
 		return
@@ -189,9 +219,11 @@ func _draw_miller_cottage() -> void:
 	_plane_v(0, 0, 36, 0, 10, STONE_DARK)
 	_plane_u(0, 48, 0, 10, 34, PLASTER)
 	_plane_v(0, 0, 36, 10, 34, PLASTER_DAMP)
+	_masonry(48,36,10)
 	# Moss waterline patina
 	_plane_u(4, 24, -1, 1, 7, STONE_MOSS)
 	_plane_v(-1, 6, 24, 2, 8, STONE_MOSS)
+	_wall_weather(48,36,34)
 	# Gable triangle on left wall
 	draw_colored_polygon(PackedVector2Array([iso_p(0, 0, 34), iso_p(0, 36, 34), iso_p(0, 18, 52)]), PLASTER_DAMP)
 	# Half-timber framing + boarded doorway + shuttered window
@@ -209,6 +241,8 @@ func _draw_miller_cottage() -> void:
 	draw_colored_polygon(PackedVector2Array([iso_p(-2, 18, 53), iso_p(50, 18, 53), iso_p(50, 38, 33), iso_p(-2, 38, 33)]), SHINGLE_DARK)
 	draw_line(iso_p(-2, 18, 53), iso_p(50, 18, 53), Color("7d5438"), 2.5)
 	draw_colored_polygon(PackedVector2Array([iso_p(12, 2, 38), iso_p(24, 2, 38), iso_p(22, 10, 46), iso_p(10, 10, 46)]), STONE_MOSS)
+	_roof_tiles(50,18,33,53,false)
+	_door_detail(8,18,26)
 	# Chimney stack
 	_plane_u(34, 42, 22, 44, 62, STONE_MID)
 	_plane_v(34, 22, 30, 44, 62, STONE_DARK)
@@ -222,12 +256,16 @@ func _draw_ruined_homestead() -> void:
 	_plane_u(0, 32, 0, 12, 28, PLASTER_DAMP)
 	_plane_v(0, 0, 32, 12, 28, STONE_DARK)
 	_plane_u(32, 44, 0, 12, 20, STONE_MID)
+	_masonry(44,32,12)
+	_wall_weather(32,32,28)
 	# Sagging doorway with crooked oak plank door
 	_plane_u(14, 24, -1, 0, 21, Color("1d1916"))
 	draw_colored_polygon(PackedVector2Array([iso_p(15, -2, 0), iso_p(22, -2, 2), iso_p(24, -2, 19), iso_p(17, -2, 20)]), Color("5e3e29"))
 	# Intact left roof pitch + collapsed exposed rafters on right half (Reference Image 3 style!)
 	draw_colored_polygon(PackedVector2Array([iso_p(-2, -2, 27), iso_p(22, -2, 27), iso_p(20, 16, 44), iso_p(-2, 16, 44)]), SHINGLE)
 	draw_colored_polygon(PackedVector2Array([iso_p(-2, 16, 44), iso_p(20, 16, 44), iso_p(22, 33, 27), iso_p(-2, 33, 27)]), SHINGLE_DARK)
+	_roof_tiles(20,16,27,44,false)
+	_door_detail(14,24,21)
 	# Exposed broken roof beams & ridge timber
 	draw_line(iso_p(-2, 16, 44), iso_p(42, 16, 44), TIMBER_LIGHT, 2.0)
 	for ru in [24.0, 32.0, 40.0]:
@@ -242,6 +280,8 @@ func _draw_canal_lockhouse() -> void:
 	_plane_u(0, 40, 0, 0, 8, STONE_DARK)
 	_plane_u(8, 22, -1, 0, 22, Color("20252b"))
 	_plane_u(10, 20, -2, 2, 20, Color("38291d"))
+	_masonry(40,28,40)
+	_door_detail(8,22,22)
 	# Lancets + mossy tide mark
 	_plane_u(28, 34, -1, 18, 29, Color("1f262e"))
 	_plane_u(29, 33, -2, 19, 28, Color("84b8ba"))
@@ -251,6 +291,10 @@ func _draw_canal_lockhouse() -> void:
 	draw_colored_polygon(PackedVector2Array([iso_p(-2, -2, 39), iso_p(42, -2, 39), apex]), SLATE_LIGHT)
 	draw_colored_polygon(PackedVector2Array([iso_p(-2, 30, 39), iso_p(-2, -2, 39), apex]), SLATE)
 	draw_rect(Rect2(apex - Vector2(1, 7), Vector2(2, 7)), GOLD)
+	for i in range(1,5):
+		var ratio: float = i/5.0
+		draw_line(apex.lerp(iso_p(-2,-2,39),ratio),apex.lerp(iso_p(42,-2,39),ratio),Color("748389"),1)
+		draw_line(apex.lerp(iso_p(-2,30,39),ratio),apex.lerp(iso_p(-2,-2,39),ratio),Color("4d6269"),1)
 
 func _draw_old_watermill() -> void:
 	# Stone watermill base, wheel pit trough, upper timber millhouse, high tower & rotating wheel
@@ -266,6 +310,8 @@ func _draw_old_watermill() -> void:
 	_plane_v(0, 0, 38, 0, 20, STONE_DARK)
 	_plane_u(0, 54, 0, 20, 42, PLASTER)
 	_plane_v(0, 0, 38, 20, 42, PLASTER_DAMP)
+	_masonry(54,38,20)
+	_wall_weather(54,38,42)
 	# Left gable triangle filling under pitched slate roof
 	draw_colored_polygon(PackedVector2Array([iso_p(0, 0, 42), iso_p(0, 38, 42), iso_p(0, 19, 61)]), PLASTER_DAMP)
 	draw_line(iso_p(0, 19, 20), iso_p(0, 19, 61), TIMBER, 2.0)
@@ -284,6 +330,8 @@ func _draw_old_watermill() -> void:
 	draw_colored_polygon(PackedVector2Array([iso_p(-2, 19, 62), iso_p(56, 19, 62), iso_p(56, 40, 41), iso_p(-2, 40, 41)]), SLATE)
 	draw_line(iso_p(-2, 19, 62), iso_p(56, 19, 62), Color("6d7e94"), 2.5)
 
+	_roof_tiles(56,19,41,62,true)
+	_door_detail(32,42,22)
 	# Upper stone granary/flume tower rising at back right (u = 30..54, v = 14..38, h = 46..74)
 	_plane_u(30, 54, 14, 46, 74, STONE_LIGHT)
 	_plane_v(30, 14, 38, 46, 74, STONE_MID)
@@ -291,28 +339,67 @@ func _draw_old_watermill() -> void:
 	draw_colored_polygon(PackedVector2Array([iso_p(29, 13, 73), iso_p(55, 13, 73), tw_apex]), SLATE_LIGHT)
 	draw_colored_polygon(PackedVector2Array([iso_p(29, 39, 73), iso_p(29, 13, 73), tw_apex]), SLATE)
 
-	# Iconic isometric Wooden Waterwheel mounted on the front-left wall (centered u=14, v=-6, h=14)
-	var hub := iso_p(14.0, -6.0, 14.0)
-	var outer_pts: Array[Vector2] = []
-	var inner_pts: Array[Vector2] = []
-	var spoke_count: int = 8
-	for i in range(spoke_count + 1):
-		var a: float = wheel_angle + float(i) * TAU / float(spoke_count)
-		var du: float = cos(a) * 16.0
-		var dh: float = sin(a) * 16.0
-		outer_pts.append(iso_p(14.0 + du, -6.0, 14.0 + dh))
-		inner_pts.append(iso_p(14.0 + du * 0.72, -6.0, 14.0 + dh * 0.72))
-	# Back rim for 3D wheel thickness
-	var back_pts: Array[Vector2] = []
-	for i in range(spoke_count + 1):
-		var a: float = wheel_angle + float(i) * TAU / float(spoke_count)
-		back_pts.append(iso_p(14.0 + cos(a) * 16.0, -1.5, 14.0 + sin(a) * 16.0))
-	draw_polyline(PackedVector2Array(back_pts), Color("452c1b"), 3.0)
-	for i in range(spoke_count):
-		draw_line(hub, outer_pts[i], TIMBER_LIGHT, 2.0)
-		draw_line(outer_pts[i], back_pts[i], Color("855936"), 2.5)
-	draw_polyline(PackedVector2Array(outer_pts), Color("855936"), 3.0)
-	draw_polyline(PackedVector2Array(inner_pts), TIMBER, 2.0)
-	# Axle trestle & brass/iron hub center
-	draw_line(iso_p(14.0, -10.0, 0.0), hub, TIMBER, 3.0)
-	draw_circle(hub, 3.5, Color("8be6f0") if watermill_active else Color("7d868c"))
+	for row in range(1,5):
+		var ratio: float = row/5.0
+		draw_line(tw_apex.lerp(iso_p(29,13,73),ratio),tw_apex.lerp(iso_p(55,13,73),ratio),Color("78878b"),1)
+		draw_line(tw_apex.lerp(iso_p(29,39,73),ratio),tw_apex.lerp(iso_p(29,13,73),ratio),Color("526971"),1)
+	for v in [20,27,33]:
+		draw_line(iso_p(30,v,72),iso_p(30,v,64),Color("587165"),2)
+	# Granary masonry, recessed loft window, hoist brackets and damp cornice.
+	for h in range(48,74,6):
+		draw_line(iso_p(30,14,h),iso_p(54,14,h),Color("5a6969"),1)
+		draw_line(iso_p(30,14,h),iso_p(30,38,h),Color("414e50"),1)
+		for u in range(32+h%12,54,10):
+			draw_line(iso_p(u,14,h),iso_p(u,14,h+5),Color("596868"),1)
+	_plane_u(38,47,13,54,66,Color("293d44"))
+	_plane_u(39,46,12,55,65,Color("a99665") if watermill_active else Color("54727b"))
+	draw_line(iso_p(42,12,55),iso_p(42,12,65),Color("343d37"),1)
+	draw_line(iso_p(0,0,22),iso_p(0,18,40),Color("7e7258"),2)
+	draw_line(iso_p(0,38,22),iso_p(0,18,40),Color("7e7258"),2)
+
+func _masonry(w: int, d: int, height: int) -> void:
+	for h in range(1,height,5):
+		for u in range(1,w-1,9):
+			var offset: int = 4 if h%2 else 0
+			var start: int = mini(u+offset,w-2)
+			_plane_u(start,mini(start+7,w-1),-0.2,h,h+3,Color("84918a") if (u+h)%3 else Color("576c68"))
+		for v in range(1,d-1,9):
+			_plane_v(-0.2,v,mini(v+7,d-1),h,h+3,Color("4e605e") if (v+h)%3 else Color("6b7b71"))
+
+func _wall_weather(w: int, d: int, height: int) -> void:
+	for u in range(3,w-2,11):
+		_plane_u(u,mini(u+5,w-1),-0.3,11,15+(u%9),Color("8f9680"))
+		draw_line(iso_p(u,-0.4,height-4),iso_p(u+2,-0.4,height-10),Color("797e6c"),1)
+	for v in range(5,d-2,8):
+		_plane_v(-0.3,v,v+3,9,18,Color("5d7163"))
+	# Narrow framing with diagonal braces, leaving all original openings in place.
+	for u in range(0,w,24):
+		draw_line(iso_p(u,0,11),iso_p(u,0,height),TIMBER,2)
+		draw_line(iso_p(u,0,13),iso_p(mini(u+15,w),0,height-3),Color("716247"),2)
+
+func _door_detail(left: int, right: int, top: int) -> void:
+	for u in range(left+1,right,3):
+		draw_line(iso_p(u,-2,2),iso_p(u,-2,top-2),Color("8b7853"),1)
+	for h in [5,top-5]:
+		draw_line(iso_p(left+1,-3,h),iso_p(right-1,-3,h),Color("283b3c"),1)
+	draw_rect(Rect2(iso_p(right-2,-3,top/2.0),Vector2(2,2)),Color("c7b680"))
+
+func _roof_tiles(w: int, ridge: int, low: int, high: int, slate: bool) -> void:
+	for back in [false,true]:
+		for v in range(-2,ridge,4):
+			for u in range(-2,w-3,7):
+				var vv: float = ridge*2-v if back else v
+				var vv2: float = vv-3 if back else vv+3
+				var h: float = low+(v+2)*float(high-low)/(ridge+2)
+				var h2: float = low+(v+5)*float(high-low)/(ridge+2)
+				var shift: int = 3 if posmod(v,8) == 2 else 0
+				var uu: int = mini(u+shift,w-5)
+				var color: Color = Color("4b626b") if slate else Color("6f6550")
+				if posmod(u*11+v*3,5) == 0: color = Color("7d8b81") if slate else Color("9a8864")
+				if back: color = color.darkened(0.22)
+				if posmod(u*7+v,23) == 0: color = Color("293d3d") # Missing tile / exposed felt.
+				draw_colored_polygon(PackedVector2Array([iso_p(uu,vv,h),iso_p(uu+6,vv,h),iso_p(uu+6,vv2,h2),iso_p(uu,vv2,h2)]),color)
+				draw_line(iso_p(uu,vv,h),iso_p(uu+6,vv,h),color.lightened(0.12),1)
+	# Moss collects along one leaking valley.
+	for i in range(7):
+		draw_rect(Rect2(iso_p(8+i*2,4+i,low+6+i),Vector2(4,2)),Color("61794d"))

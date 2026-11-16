@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS reachable: FloodmillEntranceArch
+PASS reachable: VillageMonument
+PASS reachable: HomesteadRelic
+PASS reachable: BrokenWatermill
+PASS reachable: MillDiagram
+PASS reachable: MillPartGear
+PASS reachable: MillPartPinion
+PASS reachable: MillPartBelt
+PASS reachable: SluiceConsole
+PASS reachable: CanalGauge
+PASS reachable: ArchiveEntrance
+PASS reachable: ArchiveRecordCensus
+PASS reachable: ArchiveRecordTribute
+PASS reachable: ArchiveRecordTransfer
+PASS reachable: LedgerTable
+PASS reachable: SecondBeacon
+PASS reachable: IronwatchGate
+PASS reachable: Lyra
+GFX3 REACHABILITY: 18/18, 5074 cells visited; 0 failures
+GFX3 RASTER CONTRACT: 13 files checked; total failures=0

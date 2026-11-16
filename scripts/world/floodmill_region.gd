@@ -29,9 +29,10 @@ var archive_records: Dictionary = {}
 func _ready() -> void:
 	# Generate full wetland ground tiles covering camera boundaries (-38..38)
 	var ground: TileMapLayer = $Ground
+	ground.tile_set = load("res://assets/tiles/floodmill/marsh.tres")
 	for x in range(-38, 39):
 		for y in range(-38, 39):
-			ground.set_cell(Vector2i(x, y), 0, Vector2i(posmod(x * 11 + y * 17, 3), 0))
+			ground.set_cell(Vector2i(x, y), 0, Vector2i(posmod(x * 11 + y * 17 + x*y, 6), 0))
 
 	# 2.5D Isometric Buildings across Abandoned Village, Lockhouse, Watermill, and Archive
 	var buildings := [
@@ -71,6 +72,7 @@ func _ready() -> void:
 		node.position = p[1]
 		$Actors.add_child(node)
 
+	_add_visual_dressing()
 	# East-West Sluice Canal & Drainable Archive Causeway barrier
 	_build_canal_barriers()
 
@@ -399,3 +401,12 @@ func travel_to_ironwatch() -> void:
 		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
 		QuestManagerScript.pending_entry_pose = false
 		get_tree().change_scene_to_file("res://scenes/ironwatch_keep.tscn")
+
+
+func _add_visual_dressing() -> void:
+	for item: Array in [[0,Vector2(-21,51)],[1,Vector2(78,113)],[2,Vector2(-211,153)],[3,Vector2(28,-234)],[3,Vector2(99,-234)],[4,Vector2(-164,-94)],[5,Vector2(272,106)]]:
+		var prop := Node2D.new()
+		prop.set_script(preload("res://scripts/world/floodmill_dressing.gd"))
+		prop.kind = item[0]
+		prop.position = item[1]
+		$Actors.add_child(prop)

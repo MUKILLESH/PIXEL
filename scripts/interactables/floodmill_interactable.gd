@@ -193,15 +193,7 @@ func _draw() -> void:
 			draw_rect(Rect2(-8, -20, 16, 5), book_col)
 			draw_rect(Rect2(9, -20, 3, 4), Color("ffca57"))
 		"second_beacon":
-			if activated:
-				draw_colored_polygon(PackedVector2Array([Vector2(-24, 0), Vector2(0, -13), Vector2(24, 0), Vector2(0, 13)]), Color(0.40, 0.92, 0.96, 0.28))
-			draw_rect(Rect2(-13, -15, 26, 15), Color("4f5959"))
-			draw_rect(Rect2(-9, -34, 18, 19), Color("677373"))
-			draw_rect(Rect2(3, -34, 6, 19), Color("414a4a"))
-			var crystal := Color("8ef5ff") if activated else Color("4a6375")
-			var core := Color("ffffff") if activated else Color("89a5b8")
-			draw_colored_polygon(PackedVector2Array([Vector2(-6, -36), Vector2(0, -50), Vector2(6, -36), Vector2(0, -29)]), crystal)
-			draw_rect(Rect2(-2, -43, 4, 6), core)
+			preload("res://scripts/world/floodmill_art.gd").beacon(self,activated)
 		"ironwatch_gate":
 			# Basalt mountain keep archway with iron portcullis bars
 			if unlocked:
