@@ -2,6 +2,7 @@ extends Node2D
 const FONT = preload("res://assets/fonts/after_hours.tres")
 
 var pedestal_awakened: bool = false
+var sunrise_epilogue: bool = false
 var _anim_time: float = 0.0
 var _redraw_accum: float = 0.0
 
@@ -66,6 +67,14 @@ func _draw() -> void:
 	draw_string(FONT,Vector2(-18,194),"VILLAGE SQUARE",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("b8b294"))
 	draw_string(FONT,Vector2(-270,206),"TO BRIARWOOD",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("c7be9e"))
 	draw_string(FONT,Vector2(182,126),"TO IRONWATCH",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("c7be9e"))
+	if sunrise_epilogue:
+		# Warm golden morning sunlight washes across Bellhaven Square in post-game sunrise state
+		poly([Vector2(-220, -20), Vector2(260, -140), Vector2(360, 120), Vector2(-120, 240)], Color(1.0, 0.86, 0.52, 0.11))
+		for s_pos: Vector2 in [Vector2(-36, 86), Vector2(16, 76), Vector2(30, 148)]:
+			var glow := PackedVector2Array()
+			for gi in range(12):
+				glow.append(s_pos + Vector2(cos(gi * TAU / 12) * 26.0, sin(gi * TAU / 12) * 13.0).round())
+			draw_colored_polygon(glow, Color(1.0, 0.88, 0.56, 0.14))
 	# Cast shadows derived from real footprints
 	var projected := PackedVector2Array()
 	for point: Vector2 in preload("res://scripts/world/sjt_building.gd").FOOTPRINT:

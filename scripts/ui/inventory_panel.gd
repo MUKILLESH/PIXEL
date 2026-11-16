@@ -77,6 +77,39 @@ func _build_items(qm: Node) -> Array[String]:
 	var items: Array[String] = []
 	if qm == null:
 		return items
+	if qm.quest_id == "chapter5_the_last_bell":
+		items.append("- THREE RESTORED BEACONS: BRIARWOOD, FLOODMILL, IRONWATCH")
+		if qm.memory_fragments_recovered.size() > 0:
+			var m_tags: Array[String] = []
+			if qm.memory_fragments_recovered.has("frag_home"):
+				m_tags.append("HOME")
+			if qm.memory_fragments_recovered.has("frag_promise"):
+				m_tags.append("PROMISE")
+			if qm.memory_fragments_recovered.has("frag_sacrifice"):
+				m_tags.append("SACRIFICE")
+			items.append("- RECOVERED MEMORY RECORDS (%d/3): %s" % [qm.memory_fragments_recovered.size(), ", ".join(m_tags)])
+		if qm.warden_record_revealed:
+			items.append("- COMPLETE WARDEN TESTIMONY: CALLUM'S SACRIFICE AND THE LIE")
+		if qm.elena_final_message_heard:
+			items.append("- ELENA'S FINAL TESTIMONY: LET THE BEACONS CARRY THE WARD")
+		if qm.beacon_conduits_activated.size() > 0:
+			items.append("- BEACON CONDUITS ACTIVE (%d/3)%s" % [qm.beacon_conduits_activated.size(), " [HARMONIC NETWORK STABLE]" if qm.protective_network_stabilized else ""])
+		if qm.binding_severed:
+			items.append("- HARMONIC CROWN SEAL: MEMORY BINDING SEVERED, STORM BROKEN")
+		if qm.epilogue_completed:
+			items.append("- ASHVALE MEMORIAL CHRONICLE: ELENA'S JOURNAL AT DAWN")
+		var relics: Array[String] = []
+		if qm.optional_discoveries.has("ruined_camp_relic"):
+			relics.append("COMPASS")
+		if qm.optional_discoveries.has("homestead_locket"):
+			relics.append("LOCKET")
+		if qm.optional_discoveries.has("wardens_locket") or qm.barracks_keepsake_found:
+			relics.append("KEEPSAKE")
+		if qm.optional_discoveries.has("dawnspire_memorial") or qm.optional_discoveries.has("dawnspire_pilgrim_letter"):
+			relics.append("PILGRIM RECORD")
+		if not relics.is_empty():
+			items.append("- VALE REMEMBRANCES CARRIED: " + ", ".join(relics))
+		return items
 	if qm.quest_id == "chapter4_road_to_dawnspire":
 		if qm.chapter3_completed or qm.third_beacon_activated:
 			items.append("- THREE RESTORED BEACONS: BRIARWOOD, FLOODMILL, IRONWATCH")

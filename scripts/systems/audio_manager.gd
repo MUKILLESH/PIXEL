@@ -259,6 +259,12 @@ func _synth_pad_or_ambience(key: String, dur: float) -> PackedByteArray:
 		"mus_dawnspire", "amb_dawnspire":
 			base_freq = 164.81
 			fifth_freq = 246.94
+		"mus_great_bell", "amb_great_bell":
+			base_freq = 123.47
+			fifth_freq = 185.00
+		"mus_epilogue_dawn", "amb_epilogue_dawn":
+			base_freq = 261.63
+			fifth_freq = 392.00
 	for i in range(count):
 		var t: float = float(i) / float(SAMPLE_RATE)
 		var sample_f: float = 0.0
@@ -362,6 +368,36 @@ func _synth_sfx(key: String) -> PackedByteArray:
 			f2 = 293.66
 			dur = 0.68
 			amp = 0.22
+		"sfx_memory_fragment":
+			f1 = 523.25
+			f2 = 783.99
+			dur = 0.42
+			amp = 0.17
+		"sfx_conduit_align":
+			f1 = 349.23
+			f2 = 698.46
+			dur = 0.44
+			amp = 0.19
+		"sfx_ritual_stabilize":
+			f1 = 392.00
+			f2 = 587.33
+			dur = 0.56
+			amp = 0.21
+		"sfx_binding_sever":
+			f1 = 196.00
+			f2 = 587.33
+			dur = 0.72
+			amp = 0.23
+		"sfx_storm_recede":
+			f1 = 130.81
+			f2 = 261.63
+			dur = 0.58
+			amp = 0.15
+		"sfx_dawn_chord":
+			f1 = 440.00
+			f2 = 659.25
+			dur = 0.64
+			amp = 0.20
 	var count: int = int(dur * SAMPLE_RATE)
 	var buf := PackedByteArray()
 	buf.resize(count * 2)

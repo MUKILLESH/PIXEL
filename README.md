@@ -2,7 +2,7 @@
 
 An isometric 2.5D pixel-art mystery adventure built in **Godot 4.7.2 Standard** (`GDScript`).
 
-After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time, apprentice mapmaker **Aren** uncovers a rune cipher leading to his missing mother **Elena**, journeys through **Briarwood Forest** alongside traveling historian **Lyra** to awaken the First Ancient Beacon, enters **Floodmill: The Drowned Village** to restore the Second Ancient Beacon, breaches **Ironwatch Keep** to uncover the Bell Wardens' lie and ignite the Third Ancient Beacon, and ascends **Dawnspire Mountain** to synchronize all three Beacons and unseal the **Great Bell Gate**.
+After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time, apprentice mapmaker **Aren** uncovers a rune cipher leading to his missing mother **Elena**, journeys through **Briarwood Forest** alongside traveling historian **Lyra** to awaken the First Ancient Beacon, enters **Floodmill: The Drowned Village** to restore the Second Ancient Beacon, breaches **Ironwatch Keep** to uncover the Bell Wardens' lie and ignite the Third Ancient Beacon, ascends **Dawnspire Mountain** to synchronize all three Beacons, and enters **The Great Bell Sanctum** to reveal Elena's final message, sever the memory-consuming binding forever, and bring the unbroken dawn home to Ashvale.
 
 ## Controls
 
@@ -65,12 +65,19 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 7. Ascend into **Dawnspire Sanctuary** (`enter_dawnspire_sanctuary`), synchronize all three Ancient Beacons at the **Sanctuary Nexus** (`synchronize_three_beacons`), witness **Elena's Sanctuary Revelation** (`witness_sanctuary_revelation`), unseal the **Great Bell Gate** (`reach_great_bell_gate`), and complete Chapter 4 (`CHAPTER 4 COMPLETE — THE ROAD TO DAWNSPIRE`, unlocking **The Last Bell**).
 *(Optional Dawnspire explorations: **Abandoned Mountain Campsite**, **Forgotten Pilgrim's Letter**, **Mountain Memorial Plaque**, and **Hidden Valley Overlook**.)*
 
+### Chapter 5 — The Last Bell & Epilogue (`scenes/great_bell_sanctum.tscn` & Sunrise Bellhaven)
+1. Cross through the unsealed **Great Bell Gate** into **The Bell Antechamber** (`enter_great_bell_chamber`) and speak with **Historian Lyra** (`speak_lyra_antechamber`).
+2. Enter the **Hall of Forgotten Names** (`investigate_forgotten_hall`), recover all **3 Essential Memory Fragments** (`frag_home`, `frag_promise`, `frag_sacrifice` -> `recover_memory_fragments`), unlock the **Bell Wardens' Complete Record** (`reveal_warden_record`), and discover **Elena's Final Message** (`discover_elena_final_message`) to unseal the **Heart of the Bell**.
+3. Examine the memory-consuming binding beneath the Great Bell (`examine_memory_binding`), activate all **3 Beacon Conduits** around the dais (`conduit_briarwood`, `conduit_floodmill`, `conduit_ironwatch` -> `activate_beacon_conduits`), stabilize the replacement protective network (`stabilize_protective_network`), and sever the sacrificial binding (`sever_memory_binding`).
+4. Witness the skippable **Last Bell** climax cinematic (`witness_last_bell_cinematic`) as chains shatter and the Veilstorm clears permanently into morning light.
+5. Step east onto **The Dawn Terrace** (`return_to_dawn_terrace`), place Elena's weathered leather journal beside the **Memorial of Remembered Names** (`complete_final_epilogue`), view the interactive **Ending Credits** (`display_ending_credits`), and explore post-game Dawn Terrace and **Bellhaven at Sunrise** (`sjt_exterior.tscn`) with villagers, Lyra, and personalized remembrance tributes.
+
 ## Save System & Resume Flow
 
-- Progress is stored atomically at `user://ashvale_save.json` with `.tmp` staging and `.bak` backup rotation (`SAVE_VERSION := 4`, backwards compatible with `version == 1`, `2`, and `3` saves).
-- Saved state includes the active region scene (`sjt_exterior.tscn`, `briarwood_forest.tscn`, `floodmill_village.tscn`, `ironwatch_keep.tscn`, or `dawnspire_mountain.tscn`), Aren's exact position and facing direction, completed objectives, inventory/clues, bridge/mirror/watermill/sluice/ledger/crest/skybridge/celestial/sanctuary states, stealth and cliff shelter checkpoints, beacon activations, and NPC positions.
+- Progress is stored atomically at `user://ashvale_save.json` with `.tmp` staging and `.bak` backup rotation (`SAVE_VERSION := 5`, backwards compatible with `version == 1`, `2`, `3`, and `4` saves).
+- Saved state includes the active region scene (`sjt_exterior.tscn`, `briarwood_forest.tscn`, `floodmill_village.tscn`, `ironwatch_keep.tscn`, `dawnspire_mountain.tscn`, or `great_bell_sanctum.tscn`), Aren's exact position and facing direction, completed objectives, inventory/clues, bridge/mirror/watermill/sluice/ledger/crest/skybridge/celestial/sanctuary/conduit/epilogue states, stealth and cliff shelter checkpoints, beacon activations, and NPC positions. Choosing **Continue** after completing the finale loads cleanly into post-game exploration without repeating an ending loop.
 - Corrupted primary saves or mismatched schemas are rejected cleanly and automatically fall back to `user://ashvale_save.json.bak` when valid.
-- **Audio & Cinematic Polish (Phase 4.5 + Phase 5):** Procedural PCM16 regional ambience and 16 sound effects (including Dawnspire wind, distant thunder, counterweight lock, celestial alignment, sanctuary awakening, and Great Bell resonance) routed through `default_bus_layout.tres` (`Master`, `Music`, `SFX`, `Ambient`) with `TitleMenu` volume controls persisted to `user://ashvale_audio_settings.json`, skippable story cinematics (`CinematicDirector`, `[X] SKIP SCENE`) across Bellhaven, Briarwood, Floodmill, Ironwatch Keep, and Dawnspire Mountain, regional arrival banners, and seamless forward/backward region entry poses.
+- **Audio & Cinematic Polish (Phases 4.5–6):** Procedural PCM16 regional ambience (including `great_bell` and `epilogue_dawn`) and 22 sound effects routed through `default_bus_layout.tres` (`Master`, `Music`, `SFX`, `Ambient`) with `TitleMenu` volume controls persisted to `user://ashvale_audio_settings.json`, skippable story cinematics (`CinematicDirector`, `[X] SKIP SCENE`) across every region including `last_bell_climax`, regional arrival banners, and seamless forward/backward region entry poses (including Dawn Terrace <-> Sunrise Bellhaven).
 
 ## Running & Validation
 
@@ -78,7 +85,7 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 # Launch playable startup scene
 .\Godot_v4.7.2-stable_win64_console.exe
 
-# Run automated validation suites (836 checks total across 10 suites + bus check)
+# Run automated validation suites (908 checks total across 11 suites + bus check)
 .\Godot_v4.7.2-stable_win64_console.exe --headless --import
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 300 -s .\.agents\skills\godot-audio\assets\check_audio_buses.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate.gd
@@ -91,6 +98,7 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4_5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase5.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase6.gd
 
 # Generate screenshot captures
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_sjt.gd
@@ -99,6 +107,7 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_ironwatch.gd
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 240 -s res://tests/capture_phase4_5.gd -- --after
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 300 -s res://tests/capture_dawnspire.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 300 -s res://tests/capture_phase6.gd
 ```
 
 See [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md), [docs/ART_DIRECTION.md](docs/ART_DIRECTION.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/FILES.md](docs/FILES.md), and [docs/VALIDATION.md](docs/VALIDATION.md) for architecture, visual standards, file inventory, and manual QA steps.

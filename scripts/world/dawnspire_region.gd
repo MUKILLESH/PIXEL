@@ -619,6 +619,23 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 		return true
 	return false
 
+func travel_to_great_bell() -> bool:
+	if quest_manager == null or not (quest_manager.chapter4_completed and quest_manager.great_bell_gate_unlocked):
+		return false
+	if not is_inside_tree():
+		return false
+	QuestManagerScript.carry_prologue_completed = true
+	QuestManagerScript.carry_chapter1_completed = true
+	QuestManagerScript.carry_chapter2_completed = true
+	QuestManagerScript.carry_chapter3_completed = true
+	QuestManagerScript.carry_chapter4_completed = true
+	QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
+	QuestManagerScript.pending_entry_pose = true
+	QuestManagerScript.pending_entry_position = Vector2(-216, 206)
+	QuestManagerScript.pending_entry_facing = 0
+	get_tree().change_scene_to_file("res://scenes/great_bell_sanctum.tscn")
+	return true
+
 func travel_to_ironwatch() -> void:
 	if is_inside_tree():
 		QuestManagerScript.pending_entry_pose = true

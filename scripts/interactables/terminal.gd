@@ -6,7 +6,7 @@ signal proximity_changed(nearby: bool)
 @export var interaction_priority: int = 10
 @export var prompt_text: String = "[E] INSPECT RUNE PEDESTAL"
 @export var notice_board: bool = false
-@export_enum("RunePedestal", "NoticeBoard", "MothersLetter", "BriarwoodGate") var role: int = 0
+@export_enum("RunePedestal", "NoticeBoard", "MothersLetter", "BriarwoodGate", "VillageMemorial", "DawnTerraceArch") var role: int = 0
 
 var puzzle_solved: bool = false
 var gate_unlocked: bool = false
@@ -102,6 +102,29 @@ func _draw() -> void:
 		if not gate_unlocked:
 			draw_line(Vector2(-9, -6), Vector2(8, -16), Color("3d4a3d"), 2)
 			draw_line(Vector2(-7, -20), Vector2(9, -10), Color("586958"), 2)
+		return
+
+	if role == 4:
+		# Sunrise Bellhaven Memorial of Remembered Names & Elena's Journal
+		draw_colored_polygon(PackedVector2Array([Vector2(-15, -2), Vector2(0, -9), Vector2(15, -2), Vector2(0, 5)]), Color(1.0, 0.88, 0.54, 0.25))
+		draw_rect(Rect2(-12, -5, 24, 5), Color("6e675c"))
+		draw_rect(Rect2(-8, -28, 16, 23), Color("ada28e"))
+		draw_rect(Rect2(4, -28, 4, 23), Color("857b6c"))
+		draw_colored_polygon(PackedVector2Array([Vector2(-10, -28), Vector2(0, -35), Vector2(10, -28)]), Color("cfc3ab"))
+		for ry in [-23, -19, -15]:
+			draw_line(Vector2(-5, ry), Vector2(4, ry), Color("5e4f38"), 1)
+		draw_rect(Rect2(-2, -29, 4, 3), Color("f5cf6e"))
+		# Elena's leather journal beside the memorial base
+		draw_rect(Rect2(6, -6, 8, 5), Color("6e3b1f"))
+		draw_rect(Rect2(8, -5, 3, 2), Color("e6b85c"))
+		return
+
+	if role == 5:
+		# Sunrise trail marker ascending back to Dawn Terrace
+		draw_colored_polygon(PackedVector2Array([Vector2(-13, -1), Vector2(0, -7), Vector2(13, -1), Vector2(0, 5)]), Color(1.0, 0.88, 0.56, 0.24))
+		draw_rect(Rect2(-6, -24, 12, 24), Color("6b6257"))
+		draw_rect(Rect2(-8, -27, 16, 4), Color("948877"))
+		draw_rect(Rect2(-2, -19, 4, 7), Color("ffd975"))
 		return
 
 	# Default role == 0: Ancient Stone Rune Pedestal

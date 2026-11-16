@@ -1,4 +1,4 @@
-# Validation & Playtesting — ASHVALE: THE THIRTEENTH BELL (Phases 0–5)
+# Validation & Playtesting — ASHVALE: THE THIRTEENTH BELL (Phases 0–6)
 
 ## Automated Suites
 
@@ -17,6 +17,7 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4_5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase5.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase6.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 180
 ```
 
@@ -50,11 +51,16 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
   - Aren idle breathing animation, walking footstep SFX trigger cadence, and Master Caelen 8-direction turn + dialogue badge.
   - `TitleMenu` audio bus controls (`Music`, `SFX` mute at 0), independent `user://ashvale_audio_settings.json` persistence/reload, and clean test backup/restore without touching saves.
   - Skippable story cinematics, letterbox framing, `PixelCamera` focus/restoration, `KEY_X` skip callbacks, region transitions, and `12.5 Hz` landscape redraw throttling.
-- **`tests/validate_phase5.gd` (113 checks, 0 failures — Total across all 10 suites: 836 checks, 0 failures):**
+- **`tests/validate_phase5.gd` (113 checks, 0 failures):**
   - `Ironwatch -> Dawnspire` gate lockout pre-Chapter-3, two-step arming & transition post-Chapter-3, all 7 alpine areas, `Lyra`, `SkybridgeRepair`, `CelestialPuzzle`, and all 23 approach positions free of solids.
   - Out-of-order progression lockouts, physical `SkybridgeBlocker` and `SanctuaryBlocker` collision gating, Whispering Cliffs checkpoint tracking (`cliff_cp_1`), predictable gale wind drift, non-destructive cliff precipice recovery, and all 4 optional mountain discoveries.
   - `SkybridgeRepair` ESC close, wrong-combo rejection, keyboard solve (`GRANITE WEIGHT`, `BRONZE PINION`, `TENSION CHAIN`), and physical north ravine crossing.
   - Pilgrim's Refuge murals, canonical 4-line Elena's Journal verbatim, all 3 Celestial Observatory pillars (`sun`, `moon`, `stars`), `CelestialPuzzle` (`FIRST BEACON DAWN`, `SECOND BEACON TIDE`, `THIRD BEACON CROWN`), Sanctuary stair physical ascent, Three-Beacon synchronization, canonical 6-line Sanctuary Revelation verbatim, Great Bell Gate unlock, non-duplicating `CHAPTER 4 COMPLETE — THE ROAD TO DAWNSPIRE` banner, Field Satchel Chapter 4 tracking, backward `Dawnspire -> Ironwatch` travel, `SAVE_VERSION = 4` resume, `v1`/`v2`/`v3` save compatibility, and `.bak` recovery.
+- **`tests/validate_phase6.gd` (72 checks, 0 failures — Total across all 11 suites: 908 checks, 0 failures):**
+  - `Dawnspire -> Great Bell Sanctum` gate gating pre/post Chapter 4, all 4 sanctum areas (Bell Antechamber, Hall of Forgotten Names, Heart of the Bell, Dawn Terrace), `HeartChamberBlocker` and `DawnTerraceBlocker` physical doorway gates, and all 16 approach positions free of solids.
+  - Strict sequence gating across all 14 `chapter5_the_last_bell` objectives, all 3 Memory Fragments (**The Home**, **The Promise**, **The Sacrifice**), Bell Wardens' Complete Record, and canonical Elena Final Message verbatim lines (`"You already did, Aren. You remembered me."` / `"Let the thirteen tolls end here."`).
+  - Three Beacon Conduits (`conduit_briarwood`, `conduit_floodmill`, `conduit_ironwatch`), replacement protective network stabilization, memory binding severance (`binding_severed = true`, `storm_resolved = true`), and skippable `last_bell_climax` cinematic (`[X]`).
+  - Dawn Terrace return, canonical Memorial Epilogue dialogue verbatim (`"Of places. And of the people we almost forgot."`) with optional discovery remembrances, Elena's journal placement, interactive `EndingCredits` (`ASHVALE: THE THIRTEENTH BELL` / `THE END`) closing cleanly without repeating ending loops, Sunrise Bellhaven (`sjt_exterior.tscn` morning lighting, `VillageMemorial`, `LyraBellhaven`, `DawnTerraceArch`, updated Caelen/Mira/Elara dialogue, and round-trip Dawn Terrace return), `SAVE_VERSION = 5` post-game `Continue` safety, `v1`–`v4` backwards compatibility, and `.bak` recovery.
 
 ## Visual Screenshot Captures
 
@@ -65,9 +71,10 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_ironwatch.gd
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 240 -s res://tests/capture_phase4_5.gd -- --after
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 300 -s res://tests/capture_dawnspire.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 300 -s res://tests/capture_phase6.gd
 ```
 
-Inspected visual captures include `tests/briarwood_edge_lyra.png`, `tests/briarwood_bridge_repair.png`, `tests/briarwood_mirror_puzzle.png`, `tests/briarwood_beacon_complete.png`, `tests/briarwood_overview.png`, `tests/phase2_5_satchel.png`, `tests/phase2_5_menu.png`, `tests/floodmill_arrival_village.png`, `tests/floodmill_watermill_repair.png`, `tests/floodmill_sluice_puzzle.png`, `tests/floodmill_ledger_puzzle.png`, `tests/floodmill_second_beacon.png`, `tests/floodmill_overview.png`, `tests/verify_ironwatch_courtyard.png`, `tests/verify_ironwatch_archives.png`, `tests/verify_ironwatch_crest_puzzle.png`, `tests/verify_ironwatch_stealth.png`, `tests/verify_ironwatch_warden_vault.png`, `tests/verify_ironwatch_beacon_lit.png`, Phase 4.5 before/after & cinematic captures (`tests/before_*.png`, `tests/after_*.png`, `tests/cinematic_bellhaven_toll.png`, `tests/cinematic_ironwatch_triad.png`), and Phase 5 Dawnspire captures (`tests/verify_dawnspire_foothills.png`, `tests/verify_dawnspire_cliffs_skybridge.png`, `tests/verify_dawnspire_skybridge_puzzle.png`, `tests/verify_dawnspire_pilgrims_refuge.png`, `tests/verify_dawnspire_observatory_puzzle.png`, `tests/verify_dawnspire_sanctuary_gate.png`).
+Inspected visual captures include `tests/briarwood_edge_lyra.png`, `tests/briarwood_bridge_repair.png`, `tests/briarwood_mirror_puzzle.png`, `tests/briarwood_beacon_complete.png`, `tests/briarwood_overview.png`, `tests/phase2_5_satchel.png`, `tests/phase2_5_menu.png`, `tests/floodmill_arrival_village.png`, `tests/floodmill_watermill_repair.png`, `tests/floodmill_sluice_puzzle.png`, `tests/floodmill_ledger_puzzle.png`, `tests/floodmill_second_beacon.png`, `tests/floodmill_overview.png`, `tests/verify_ironwatch_courtyard.png`, `tests/verify_ironwatch_archives.png`, `tests/verify_ironwatch_crest_puzzle.png`, `tests/verify_ironwatch_stealth.png`, `tests/verify_ironwatch_warden_vault.png`, `tests/verify_ironwatch_beacon_lit.png`, Phase 4.5 before/after & cinematic captures (`tests/before_*.png`, `tests/after_*.png`, `tests/cinematic_bellhaven_toll.png`, `tests/cinematic_ironwatch_triad.png`), Phase 5 Dawnspire captures (`tests/verify_dawnspire_*.png`), and Phase 6 Finale captures (`tests/verify_phase6_antechamber.png`, `tests/verify_phase6_forgotten_hall.png`, `tests/verify_phase6_heart_ritual.png`, `tests/verify_phase6_climax_cinematic.png`, `tests/verify_phase6_dawn_epilogue.png`, `tests/verify_phase6_ending_credits.png`).
 
 ## Manual Playtesting Checklist (Interactive Verification)
 

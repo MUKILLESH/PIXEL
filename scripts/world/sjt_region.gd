@@ -10,6 +10,10 @@ const InteractableScene = preload("res://scenes/environment/terminal.tscn")
 var quest_manager: Node
 var mothers_letter: StaticBody2D
 var briarwood_gate: StaticBody2D
+var village_memorial: StaticBody2D
+var dawn_terrace_arch: StaticBody2D
+var lyra_bellhaven: StaticBody2D
+var sunrise_modulate: CanvasModulate
 
 func _ready() -> void:
 	var ground: TileMapLayer = $Ground
@@ -86,10 +90,23 @@ func _ready() -> void:
 		edge.add_child(collision)
 		$Boundary.add_child(edge)
 
+	sunrise_modulate = CanvasModulate.new()
+	sunrise_modulate.name = "SunriseModulate"
+	sunrise_modulate.color = Color(1.0, 1.0, 1.0, 1.0)
+	add_child(sunrise_modulate)
+
 	quest_manager = QuestManagerScript.new()
 	quest_manager.name = "QuestManager"
 	add_child(quest_manager)
 	quest_manager.objective_completed.connect(_on_objective_completed)
+
+	if not QuestManagerScript.pending_chapter5_snapshot.is_empty():
+		var snap: Dictionary = QuestManagerScript.pending_chapter5_snapshot
+		QuestManagerScript.pending_chapter5_snapshot = {}
+		quest_manager.apply_state(snap)
+	if QuestManagerScript.carry_storm_resolved:
+		quest_manager.storm_resolved = true
+		QuestManagerScript.carry_storm_resolved = false
 
 	$HUD.player = $Actors/Player
 	$HUD.terminal = $Actors/Terminal
@@ -109,8 +126,12 @@ func _ready() -> void:
 			$Actors/Player/Camera2D.snap_to_target()
 		_sync_world_from_quest()
 	$Landscape.queue_redraw()
-	AudioManagerScript.play_global_region(get_tree(), "bellhaven")
-	$HUD.play_region_transition("BELLHAVEN VILLAGE", "PROLOGUE - THE THIRTEENTH TOLL")
+	var is_dawn: bool = (quest_manager.storm_resolved or quest_manager.chapter5_completed)
+	AudioManagerScript.play_global_region(get_tree(), "epilogue_dawn" if is_dawn else "bellhaven")
+	if is_dawn:
+		$HUD.play_region_transition("BELLHAVEN AT SUNRISE", "EPILOGUE - ASHVALE REMEMBERED")
+	else:
+		$HUD.play_region_transition("BELLHAVEN VILLAGE", "PROLOGUE - THE THIRTEENTH TOLL")
 
 func _on_objective_completed(objective_id: String) -> void:
 	match objective_id:
@@ -165,6 +186,50 @@ func _sync_world_from_quest() -> void:
 			briarwood_gate.refresh_prompt("[E] INSPECT BRIARWOOD WAYSTONE")
 		briarwood_gate.queue_redraw()
 	$Landscape.pedestal_awakened = quest_manager.puzzle_solved
+	var sunrise_active: bool = (quest_manager.storm_resolved or quest_manager.chapter5_completed)
+	$Landscape.sunrise_epilogue = sunrise_active
+	if sunrise_modulate != null:
+		sunrise_modulate.color = Color(1.03, 0.98, 0.90, 1.0) if sunrise_active else Color(1.0, 1.0, 1.0, 1.0)
+	if sunrise_active:
+		$HUD/Subtitle.text = "BELLHAVEN AT SUNRISE"
+		$HUD/Clock.text = "DAWN EPILOGUE"
+		if village_memorial == null:
+			village_memorial = InteractableScene.instantiate() as StaticBody2D
+			village_memorial.name = "VillageMemorial"
+			village_memorial.role = 4
+			village_memorial.interaction_priority = 11
+			village_memorial.prompt_text = "[E] READ MEMORIAL OF REMEMBERED NAMES"
+			village_memorial.position = Vector2(-36, 86)
+			$Actors.add_child(village_memorial)
+		if dawn_terrace_arch == null:
+			dawn_terrace_arch = InteractableScene.instantiate() as StaticBody2D
+			dawn_terrace_arch.name = "DawnTerraceArch"
+			dawn_terrace_arch.role = 5
+			dawn_terrace_arch.interaction_priority = 8
+			dawn_terrace_arch.prompt_text = "[E] ASCEND TO DAWN TERRACE"
+			dawn_terrace_arch.position = Vector2(178, 124)
+			$Actors.add_child(dawn_terrace_arch)
+		if lyra_bellhaven == null:
+			lyra_bellhaven = NpcScene.instantiate() as StaticBody2D
+			lyra_bellhaven.name = "LyraBellhaven"
+			lyra_bellhaven.npc_id = "lyra_bellhaven"
+			lyra_bellhaven.speaker_name = "HISTORIAN LYRA"
+			lyra_bellhaven.prompt_text = "[E] SPEAK WITH LYRA"
+			lyra_bellhaven.interaction_priority = 9
+			lyra_bellhaven.position = Vector2(16, 76)
+			lyra_bellhaven.facing = 4
+			$Actors.add_child(lyra_bellhaven)
+	else:
+		$HUD/Subtitle.text = "BELLHAVEN VILLAGE"
+		if village_memorial != null and is_instance_valid(village_memorial):
+			village_memorial.queue_free()
+			village_memorial = null
+		if dawn_terrace_arch != null and is_instance_valid(dawn_terrace_arch):
+			dawn_terrace_arch.queue_free()
+			dawn_terrace_arch = null
+		if lyra_bellhaven != null and is_instance_valid(lyra_bellhaven):
+			lyra_bellhaven.queue_free()
+			lyra_bellhaven = null
 	$Landscape.queue_redraw()
 
 func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
@@ -187,9 +252,19 @@ func reset_new_game() -> void:
 	$Actors/Player.movement_locked = false
 	$Actors/Player/Camera2D.snap_to_target()
 	_sync_world_from_quest()
+	AudioManagerScript.play_global_region(get_tree(), "bellhaven")
 
 func travel_to_briarwood() -> void:
 	if quest_manager != null and quest_manager.briarwood_unlocked and is_inside_tree():
 		QuestManagerScript.carry_prologue_completed = true
 		QuestManagerScript.pending_entry_pose = false
 		get_tree().change_scene_to_file("res://scenes/briarwood_forest.tscn")
+
+func travel_to_great_bell_terrace() -> void:
+	if quest_manager != null and (quest_manager.storm_resolved or quest_manager.chapter5_completed) and is_inside_tree():
+		QuestManagerScript.carry_chapter4_completed = true
+		QuestManagerScript.pending_chapter5_snapshot = quest_manager.capture_state()
+		QuestManagerScript.pending_entry_pose = true
+		QuestManagerScript.pending_entry_position = Vector2(270, -84)
+		QuestManagerScript.pending_entry_facing = 0
+		get_tree().change_scene_to_file("res://scenes/great_bell_sanctum.tscn")

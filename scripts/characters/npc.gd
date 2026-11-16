@@ -120,7 +120,7 @@ func _draw() -> void:
 			patch(-5 + side, -35 + bob, 2, 5, "752d1b")
 			patch(-2 + side, -34 + bob, 1, 1, "242b38")
 			patch(1 + side, -34 + bob, 1, 1, "242b38")
-		"lyra":
+		"lyra", "lyra_bellhaven":
 			# Lyra: traveling historian in teal-and-ochre coat, weathered cloak, headband, brass astrolabe & field journal
 			patch(-5, -27 + bob, 10, 17, "161924")
 			patch(-4, -12, 3, 10, "3d281a")

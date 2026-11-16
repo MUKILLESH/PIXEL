@@ -1,0 +1,214 @@
+{
+  "quest_id": "chapter5_the_last_bell",
+  "title": "Chapter 5: The Last Bell",
+  "objectives": [
+    {
+      "id": "enter_great_bell_chamber",
+      "text": "Enter the Great Bell Chamber."
+    },
+    {
+      "id": "speak_lyra_antechamber",
+      "text": "Speak with Lyra."
+    },
+    {
+      "id": "investigate_forgotten_hall",
+      "text": "Investigate the Hall of Forgotten Names."
+    },
+    {
+      "id": "recover_memory_fragments",
+      "text": "Recover the three essential memory fragments (0/3)."
+    },
+    {
+      "id": "reveal_warden_record",
+      "text": "Reveal the Bell Wardens' complete record."
+    },
+    {
+      "id": "discover_elena_final_message",
+      "text": "Discover Elena's final message."
+    },
+    {
+      "id": "examine_memory_binding",
+      "text": "Examine the memory-consuming binding."
+    },
+    {
+      "id": "activate_beacon_conduits",
+      "text": "Activate the three beacon conduits (0/3)."
+    },
+    {
+      "id": "stabilize_protective_network",
+      "text": "Stabilize the replacement protective network."
+    },
+    {
+      "id": "sever_memory_binding",
+      "text": "Sever the bell's memory binding."
+    },
+    {
+      "id": "witness_last_bell_cinematic",
+      "text": "Witness the Last Bell cinematic."
+    },
+    {
+      "id": "return_to_dawn_terrace",
+      "text": "Return to the Dawn Terrace."
+    },
+    {
+      "id": "complete_final_epilogue",
+      "text": "Complete the final story epilogue."
+    },
+    {
+      "id": "display_ending_credits",
+      "text": "Display ending credits."
+    }
+  ],
+  "npcs": {
+    "lyra": {
+      "speaker": "HISTORIAN LYRA",
+      "enter_great_bell_chamber": [
+        "LYRA: \"Step across the Antechamber Threshold westward, Aren. Let us steady ourselves before waking what rests inside this mountain.\""
+      ],
+      "speak_lyra_antechamber": [
+        "LYRA: \"Three hundred years of half-told chronicles stop right beyond these arches.\"",
+        "LYRA: \"Down at the Bellhaven lantern paths, I started looking for an old masonry ruin. Instead we uncovered thirty-six Floodmill hearths, Ironwatch's hidden vault, and your mother's road.\"",
+        "AREN: \"Whatever waited inside that bronze dome, Elena refused to let anyone forget it was human.\"",
+        "LYRA: \"Inspect the Hall of Forgotten Names northward. Every crystal alcove ahead holds a piece of who they erased.\""
+      ],
+      "investigate_forgotten_hall": [
+        "LYRA: \"Look along the carved gallery north of here—dozens of names chiseled pale and bound into the Bell's resonance. Examine the arch into the Hall of Forgotten Names.\""
+      ],
+      "recover_memory_fragments": [
+        "LYRA: \"Three memory crystals burn stronger than the rest along the north gallery—The Home, The Promise, and The Sacrifice. Recover all three essential fragments first.\""
+      ],
+      "reveal_warden_record": [
+        "LYRA: \"With all three fragments recovered, touch the Bell Wardens' Complete Record stele in the east hall. Its cipher unlocks now.\""
+      ],
+      "discover_elena_final_message": [
+        "LYRA: \"That plinth by the Heart Arch isn't ancient Warden crystal—Elena left her own resonance echo beside it. Hear her final message, Aren.\""
+      ],
+      "examine_memory_binding": [
+        "LYRA: \"The ward down to the Heart of the Bell just parted! Walk north into the round chamber and inspect the memory-consuming binding beneath the Great Bell.\""
+      ],
+      "activate_beacon_conduits": [
+        "LYRA: \"Three dormant conduits ring the dais—Briarwood Dawn, Floodmill Tide, and Ironwatch Crown. Channel all three beacons into the chamber so the sky shield won't collapse when we break the chain.\""
+      ],
+      "stabilize_protective_network": [
+        "LYRA: \"Briarwood, Floodmill, and Ironwatch are singing in clean unison! Return to the central Great Bell Altar and lock the replacement protective network in place!\""
+      ],
+      "sever_memory_binding": [
+        "LYRA: \"The beacon dome holds strong on its own above Dawnspire! Touch the altar chains one last time, Aren, and sever the memory binding forever.\""
+      ],
+      "witness_last_bell_cinematic": [
+        "LYRA: \"Stand back—the sacrificial chains are fracturing into morning light!\""
+      ],
+      "return_to_dawn_terrace": [
+        "LYRA: \"Listen... not thirteen tolls. Just clear mountain wind. Walk east through the unsealed archway onto the Dawn Terrace.\""
+      ],
+      "complete_final_epilogue": [
+        "LYRA: \"Look down across Ashvale through the broken clouds, Aren. Stand beside the Memorial of Remembered Names with me.\""
+      ],
+      "display_ending_credits": [
+        "LYRA: \"You carried every name home—even hers.\""
+      ],
+      "default": [
+        "LYRA: \"No storm hangs over Bellhaven anymore, Aren. Whenever you wish, we can descend to see the village awake at sunrise.\""
+      ]
+    },
+    "bellhaven_caelen": [
+      "MASTER CAELEN: \"Thirty years I feared that thirteenth toll would tear Bellhaven apart, Aren. Instead... morning actually came cleanly over the eaves.\"",
+      "MASTER CAELEN: \"Voices long slipped into silver fog came back to folk around the well at first light. You and Elena kept every promise you made to this valley.\""
+    ],
+    "bellhaven_mira": [
+      "MIRA THE BLACKSMITH: \"My anvil rang once on its own when the mountain clouds tore apart! Not a curse-tremor—just pure bronze ringing to rest.\"",
+      "MIRA THE BLACKSMITH: \"Folks have already carved fresh oak boards beside the square memorial for names they remembered overnight. Stop by the stone anytime, cartographer.\""
+    ],
+    "bellhaven_elara": [
+      "SISTER ELARA: \"For the first time in three centuries, twilight faded without harvesting a single song, face, or hearth-name from Bellhaven.\"",
+      "SISTER ELARA: \"Elena's leather journal sits in quiet honor beside the Village Memorial now. Future Wardens—or mapmakers—will read the whole truth, never a comforting lie.\""
+    ],
+    "bellhaven_lyra": [
+      "LYRA: \"Bellhaven smells like hearth-smoke and pine instead of cold rain today. Even the Stone Rune Pedestal looks peaceful in sunrise light.\"",
+      "LYRA: \"Our chronicle of Ashvale is complete, Aren—not because every wound vanished, but because nothing was left forgotten in the dark.\""
+    ]
+  },
+  "story_events": {
+    "antechamber_entry": [
+      "Obsidian-veined masonry opens into an austere domed vestibule deep inside Dawnspire Summit. A steady bronze vibration hums through the floorboards beneath Aren's boots.",
+      "Across the hall waits Historian Lyra, gazing toward three towering arches leading north into a hall glimmering with pale memory-crystals."
+    ],
+    "forgotten_hall_arch": [
+      "Hundreds of translucent crystal shards hang like quiet chimes along the gallery walls—each preserving a voice, melody, or family name once fed to the Great Bell.",
+      "Three brighter crystalline alcoves pulse softly along the northern colonnade, drawing Aren forward."
+    ],
+    "memory_frag_home": [
+      "MEMORY FRAGMENT I — THE HOME: \"Warm pine rafters above Bellhaven Square, flour dusted over Mother's map table, and twelve lantern beams counting the safe return of couriers before storm curfew.\"",
+      "AREN: \"That's our table... the little brass weight I lost when I was eight. The Bell never destroyed what it took—it locked our lives inside these walls.\""
+    ],
+    "memory_frag_promise": [
+      "MEMORY FRAGMENT II — THE PROMISE: \"Floodmill families clasping silver lockets beside thirty-six lamp-lit hearths—swearing each other to remember even if the valley erased every street beneath water.\"",
+      "LYRA: \"Every hearth number matches the parish ledger we pieced together! No volunteer surrendered their memory without leaving a thread for someone to follow.\""
+    ],
+    "memory_frag_sacrifice": [
+      "MEMORY FRAGMENT III — THE SACRIFICE: \"First Warden Callum weeping beside Ironwatch's unlit third beacon—writing that one desperate mercy became a lazy crown for keepers who feared losing authority more than hurting neighbors.\"",
+      "AREN: \"Even in the worst catastrophe, nobody wanted a silent cage built out of stolen names.\""
+    ],
+    "warden_complete_record": [
+      "THE BELL WARDENS' COMPLETE RECORD: \"Before the First Catastrophe, three Ancient Beacons held Ashvale safe under sunlight and shared watchfulness. When a sudden fracture severed the high conduits, First Warden Callum bound his own memory into the Great Bell to buy one decade for repairs.\"",
+      "THE BELL WARDENS' COMPLETE RECORD: \"Later Wardens discovered how effortless silence was compared to mending three rugged beacons. Generation by generation, they buried the Floodmill dam, sealed Ironwatch Vault, and taught the kingdom the Lie—until no living soul recalled how the ward might end.\""
+    ],
+    "elena_final_message": [
+      "Pale sapphire-gold resonance gathers above the final plinth—not trapped like the stolen fragments, but freely woven by Elena's own hand before her memory faded beside the summit altar.",
+      "ELENA'S ECHO: \"If you reached the bell, then you never stopped looking.\"",
+      "AREN: \"Elena...\"",
+      "ELENA'S ECHO: \"Do not let this place take anything else from you.\"",
+      "ELENA'S ECHO: \"They told us the bell needed a voice.\"",
+      "ELENA'S ECHO: \"What it really took was everything that made us who we were.\"",
+      "AREN: \"I came to bring you home.\"",
+      "ELENA'S ECHO: \"You already did, Aren. You remembered me.\"",
+      "ELENA'S ECHO: \"Break the binding. Let the beacons carry the ward.\"",
+      "ELENA'S ECHO: \"Let the thirteen tolls end here.\"",
+      "Warm light settles quietly into the plinth as the barrier into the Heart of the Bell unlocks ahead."
+    ],
+    "examine_binding_initial": [
+      "Above a sunken circle of engraved slate hangs the Great Bell—colossal, scarred bronze wrapped in dark iron-silver memory threads pulsing with trapped villagers' echoes.",
+      "Three unlit Beacon Conduit plinths ring the chamber dais: FIRST BEACON DAWN (Briarwood) to the west, SECOND BEACON TIDE (Floodmill) to the north, and THIRD BEACON CROWN (Ironwatch) to the east.",
+      "LYRA: \"We cannot shatter the bell's binding until all three Beacon Conduits channel the replacement shield directly above Dawnspire. Light every conduit around this chamber first!\""
+    ],
+    "conduit_briarwood_activate": [
+      "Aren touches the Western Plinth; emerald-gold warmth surges cleanly up from Briarwood Forest—whispering oaks, clear streams, and an unbroken forest sanctuary!",
+      "FIRST CONDUIT ACTIVE — BRIARWOOD DAWN: One third of the protective sky-shield locks steady overhead."
+    ],
+    "conduit_floodmill_activate": [
+      "Aren touches the Northern Plinth; tranquil silver-aqua light rises from Floodmill Wetlands—carrying the memory of thirty-six remembered hearths without sorrow or drowning!",
+      "SECOND CONDUIT ACTIVE — FLOODMILL TIDE: Clear harmonic resonance balances the Great Bell's dome."
+    ],
+    "conduit_ironwatch_activate": [
+      "Aren touches the Eastern Plinth; amber-violet fire climbs from Ironwatch Keep—turning a fortress of secrecy into an honest watchtower of remembrance!",
+      "THIRD CONDUIT ACTIVE — IRONWATCH CROWN: All three Ancient Beacons now bridge cleanly into the Heart of the Bell!"
+    ],
+    "stabilize_network_dialogue": [
+      "Aren and Lyra align the central stone channels as golden-cyan beams from Briarwood, Floodmill, and Ironwatch weave a calm, living dome straight above the Great Bell.",
+      "Not a single human name feeds the barrier now—sunlight, water, stone, and shared vigilance sustain the valley's protection instead.",
+      "LYRA: \"The replacement protective network is stable! Only the old sacrificial binding remains welded around the bell's tongue. End it now, Aren.\""
+    ],
+    "sever_binding_dialogue": [
+      "Stepping up to the scarred altar, Aren releases the iron-silver latch fastening the memory-chains to the Great Bell's crown.",
+      "Across the chamber, dark chains shudder and fracture beneath pure morning light from the three restored Ancient Beacons!"
+    ],
+    "last_bell_climax_dialogue": [
+      "The dark memory-chains shatter into drifting golden sparks. Three radiant beams flood cleanly across the Veilstorm overhead.",
+      "Once—deep, slow, and peaceful—the Great Bell rings its final farewell note, releasing every bound name into clear mountain air.",
+      "Storm-clouds part above Ashvale for the first time in three hundred years. Sunlight spills onto the eastern Dawn Terrace while profound, gentle silence settles over the chamber."
+    ],
+    "dawn_terrace_arrival": [
+      "Warm golden dawn breaks unhindered across Briarwood's green canopy, Floodmill's glittering basin, Ironwatch's open battlements, and Bellhaven's waking chimney-smoke below.",
+      "Beside the sunlit balustrade stands a freshly cleared limestone stele—the Memorial of Remembered Names, waiting for its closing entry."
+    ],
+    "final_epilogue_memorial": [
+      "Aren lays his mother's weathered leather journal softly at the base of the Memorial of Remembered Names beneath clear morning sunlight.",
+      "Names from Bellhaven, Briarwood, Floodmill, and Ironwatch gleam beside Elena's own name—remembered truthfully, never stolen or hidden again.",
+      "LYRA: \"Will you keep drawing maps?\"",
+      "AREN: \"Someone has to.\"",
+      "LYRA: \"Of places?\"",
+      "AREN: \"Of places. And of the people we almost forgot.\"",
+      "Morning light warms the entire valley of Ashvale as its chronicle settles peacefully to rest."
+    ]
+  }
+}

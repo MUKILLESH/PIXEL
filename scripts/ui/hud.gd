@@ -19,6 +19,7 @@ const LedgerPuzzleScript = preload("res://scripts/ui/ledger_puzzle.gd")
 const CrestPuzzleScript = preload("res://scripts/ui/crest_puzzle.gd")
 const SkybridgeRepairScript = preload("res://scripts/ui/skybridge_repair.gd")
 const CelestialPuzzleScript = preload("res://scripts/ui/celestial_puzzle.gd")
+const EndingCreditsScript = preload("res://scripts/ui/ending_credits.gd")
 const InventoryPanelScript = preload("res://scripts/ui/inventory_panel.gd")
 const TitleMenuScript = preload("res://scripts/ui/title_menu.gd")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
@@ -38,6 +39,7 @@ var ledger_puzzle: Panel
 var crest_puzzle: Panel
 var skybridge_repair: Panel
 var celestial_puzzle: Panel
+var ending_credits: Panel
 var stealth_status_label: Label
 var shortcut_hint_label: Label
 var cinematic_director: Control
@@ -120,6 +122,10 @@ func _ready() -> void:
 	add_child(celestial_puzzle)
 	celestial_puzzle.celestial_solved_signal.connect(_on_celestial_solved)
 	celestial_puzzle.celestial_closed_signal.connect(_on_modal_closed)
+	ending_credits = EndingCreditsScript.new()
+	ending_credits.name = "EndingCredits"
+	add_child(ending_credits)
+	ending_credits.credits_action_selected.connect(_on_ending_credits_action)
 	stealth_status_label = Label.new()
 	stealth_status_label.name = "StealthStatus"
 	stealth_status_label.visible = false
@@ -245,7 +251,7 @@ func start_story_cinematic(cin_id: String, focus_pos: Vector2, tint: Color = Col
 
 func _is_modal_open() -> bool:
 	var seq_open: bool = (cinematic_director != null and cinematic_director.active and cinematic_director.sequence_mode)
-	return seq_open or panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (crest_puzzle != null and crest_puzzle.visible) or (skybridge_repair != null and skybridge_repair.visible) or (celestial_puzzle != null and celestial_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
+	return seq_open or panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (crest_puzzle != null and crest_puzzle.visible) or (skybridge_repair != null and skybridge_repair.visible) or (celestial_puzzle != null and celestial_puzzle.visible) or (ending_credits != null and ending_credits.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
 
 func _process(delta: float) -> void:
 	if _region_fade_alpha > 0.0 and transition_fade != null:
@@ -318,7 +324,10 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 		var cb: Callable = Callable()
 		if npc_id == "lyra":
 			var stage_id: String = quest_manager.get_current_objective_id()
-			if quest_manager.quest_id == "chapter4_road_to_dawnspire":
+			if quest_manager.quest_id == "chapter5_the_last_bell":
+				if stage_id == "speak_lyra_antechamber":
+					cb = func(): quest_manager.speak_lyra_antechamber()
+			elif quest_manager.quest_id == "chapter4_road_to_dawnspire":
 				if stage_id == "speak_lyra_foothills":
 					cb = func(): quest_manager.complete_objective("speak_lyra_foothills")
 			elif quest_manager.quest_id == "chapter3_keepers_lie":
@@ -333,6 +342,8 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 					cb = func(): quest_manager.complete_objective("meet_lyra")
 				elif stage_id == "complete_chapter1":
 					cb = func(): _finish_chapter1()
+		elif npc_id == "lyra_bellhaven":
+			cb = Callable()
 		elif npc_id == "warden":
 			var w_stage: String = quest_manager.get_current_objective_id()
 			if w_stage == "reach_wardens_chamber":
@@ -345,6 +356,9 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 		else:
 			cb = func(): quest_manager.record_npc_talked(npc_id)
 		show_dialogue(source.speaker_name, lines, source, cb)
+		return
+	if source.has_method("get_great_bell_kind"):
+		_handle_great_bell_interaction(source)
 		return
 	if source.has_method("get_dawnspire_kind"):
 		_handle_dawnspire_interaction(source)
@@ -388,6 +402,22 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 				if source.has_method("refresh_prompt"):
 					source.refresh_prompt("[E] ENTER BRIARWOOD FOREST")
 			)
+		return
+	if role == 4:
+		var m_lines: Array[String] = [
+			"MEMORIAL OF REMEMBERED NAMES: Carved limestone honors Bellhaven, Briarwood, Floodmill, Ironwatch, and Dawnspire names alike—remembered forever in daylight.",
+			"Resting calmly against the plinth lies Elena's weathered leather journal, opened to her final map of Ashvale's three restored Ancient Beacons.",
+		]
+		var opt_sum: Array[String] = quest_manager.get_optional_discovery_summary()
+		for note_line in opt_sum:
+			m_lines.append("REMEMBRANCE: " + note_line)
+		show_dialogue("MEMORIAL OF REMEMBERED NAMES", m_lines, source)
+		return
+	if role == 5:
+		if get_parent().has_method("travel_to_great_bell_terrace"):
+			show_dialogue("DAWNSPIRE SUNRISE TRAIL", ["Ascending from peaceful Bellhaven Square up toward the Dawn Terrace overlook..."], source, func(): get_parent().travel_to_great_bell_terrace())
+		else:
+			show_dialogue("DAWNSPIRE SUNRISE TRAIL", ["Dawnspire Peak stands clear against the morning horizon without a trace of storm clouds."], source)
 		return
 	# Default: Stone Rune Pedestal (role == 0)
 	var obj_id: String = quest_manager.get_current_objective_id()
@@ -912,6 +942,15 @@ func _handle_dawnspire_interaction(source: StaticBody2D) -> void:
 				show_dialogue(title, quest_manager.get_story_lines("great_bell_gate_opened"), source, func(): quest_manager.complete_objective("reach_great_bell_gate"))
 			elif obj_id == "complete_chapter4":
 				show_dialogue(title, quest_manager.get_story_lines("chapter4_finale_dialogue"), source, func(): _finish_chapter4())
+			elif quest_manager.chapter4_completed:
+				if source.get("ready_to_travel") == true and get_parent().has_method("travel_to_great_bell"):
+					show_dialogue(title, ["Crossing the threshold beneath the Great Bell into Dawnspire's final sanctum..."], source, func(): get_parent().travel_to_great_bell())
+				else:
+					show_dialogue(title, ["The Great Bell Gate stands unsealed above the clouds, awaiting the Final Chapter: The Last Bell."], source, func():
+						source.set("ready_to_travel", true)
+						if source.has_method("refresh_prompt"):
+							source.refresh_prompt("[E] ENTER GREAT BELL SANCTUM")
+					)
 			else:
 				show_dialogue(title, ["The Great Bell Gate stands unsealed above the clouds, awaiting the Final Chapter: The Last Bell."], source)
 		"optional_discovery":
@@ -922,6 +961,154 @@ func _handle_dawnspire_interaction(source: StaticBody2D) -> void:
 				source.set("collected", true)
 				source.queue_redraw()
 			)
+
+func _handle_great_bell_interaction(source: StaticBody2D) -> void:
+	var kind: String = source.get_great_bell_kind()
+	var obj_id: String = quest_manager.get_current_objective_id()
+	var title: String = source.speaker_name if source.speaker_name != "" else "THE GREAT BELL SANCTUM"
+	match kind:
+		"sanctum_dawnspire_gate":
+			if get_parent().has_method("travel_to_dawnspire"):
+				show_dialogue(title, ["Returning through the Sanctum threshold onto Dawnspire Summit..."], source, func(): get_parent().travel_to_dawnspire())
+			else:
+				show_dialogue(title, ["Dawnspire Sanctuary lies beyond the threshold archway."], source)
+		"antechamber_threshold":
+			if obj_id == "enter_great_bell_chamber":
+				show_dialogue(title, quest_manager.get_story_lines("antechamber_entry"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "great_bell_resonance")
+					quest_manager.enter_great_bell_chamber()
+				)
+			else:
+				show_dialogue(title, ["Obsidian pillars vibrate softly beneath the weight of the Great Bell overhead."], source)
+		"forgotten_hall_arch":
+			if obj_id in ["enter_great_bell_chamber", "speak_lyra_antechamber"]:
+				show_dialogue(title, ["Speak with Historian Lyra beside the Antechamber braziers before delving into the Hall of Forgotten Names."], source)
+			elif obj_id == "investigate_forgotten_hall":
+				show_dialogue(title, quest_manager.get_story_lines("forgotten_hall_arch"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "memory_fragment")
+					quest_manager.investigate_forgotten_hall()
+				)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("forgotten_hall_arch"), source)
+		"memory_crystal":
+			var fid: String = String(source.get("item_id"))
+			var f_lines: Array[String] = quest_manager.get_story_lines("memory_" + fid)
+			if obj_id in ["enter_great_bell_chamber", "speak_lyra_antechamber", "investigate_forgotten_hall"]:
+				show_dialogue(title, ["A luminous memory-shard hums behind translucent wards. Investigate the Hall of Forgotten Names arch first."], source)
+			elif obj_id == "recover_memory_fragments" and not quest_manager.memory_fragments_recovered.has(fid):
+				show_dialogue(title, f_lines, source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "memory_fragment")
+					quest_manager.recover_memory_fragment(fid)
+					source.set("collected", true)
+					source.queue_redraw()
+				)
+			else:
+				show_dialogue(title, f_lines, source)
+		"warden_record":
+			if obj_id in ["enter_great_bell_chamber", "speak_lyra_antechamber", "investigate_forgotten_hall", "recover_memory_fragments"]:
+				show_dialogue(title, ["Carved Warden script remains sealed beneath three crystal harmonics (%d/3 memory fragments recovered). Recover all three fragments first." % quest_manager.get_recovered_memory_fragment_count()], source)
+			elif obj_id == "reveal_warden_record":
+				show_dialogue(title, quest_manager.get_story_lines("warden_complete_record"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "observatory_activate")
+					quest_manager.reveal_warden_complete_record()
+				)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("warden_complete_record"), source)
+		"elena_echo_plinth":
+			if not quest_manager.warden_record_revealed:
+				show_dialogue(title, ["Warm sapphire resonance trembles softly inside this plinth. Reveal the Bell Wardens' complete record first."], source)
+			elif obj_id == "discover_elena_final_message":
+				start_story_cinematic("elena_final_message", source.global_position + Vector2(0, -18), Color(0.96, 0.86, 0.54), "memory_fragment")
+				show_dialogue("ELENA'S FINAL MESSAGE", quest_manager.get_story_lines("elena_final_message"), source, func():
+					quest_manager.discover_elena_final_message()
+				)
+			else:
+				show_dialogue("ELENA'S FINAL MESSAGE", quest_manager.get_story_lines("elena_final_message"), source)
+		"great_bell_binding":
+			if not quest_manager.elena_final_message_heard:
+				show_dialogue(title, ["Dark iron-silver threads bind the Great Bell overhead. Discover Elena's final message first."], source)
+			elif obj_id == "examine_memory_binding":
+				show_dialogue(title, quest_manager.get_story_lines("examine_binding_initial"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "great_bell_resonance")
+					quest_manager.examine_memory_binding()
+				)
+			elif obj_id == "activate_beacon_conduits":
+				show_dialogue(title, ["The replacement shield needs all three Beacon Conduits lit around the dais (%d/3 active): Briarwood West, Floodmill North, and Ironwatch East." % quest_manager.get_activated_beacon_conduit_count()], source)
+			elif quest_manager.can_stabilize_protective_network():
+				show_dialogue("PROTECTIVE NETWORK STABILIZATION", quest_manager.get_story_lines("stabilize_network_dialogue"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "ritual_stabilize")
+					quest_manager.stabilize_protective_network()
+				)
+			elif quest_manager.can_sever_memory_binding():
+				show_dialogue("THE LAST RITUAL - SEVERING THE BINDING", quest_manager.get_story_lines("sever_binding_dialogue"), source, func():
+					quest_manager.sever_memory_binding()
+					AudioManagerScript.play_global_sfx(get_tree(), "storm_recede")
+					start_story_cinematic("last_bell_climax", source.global_position + Vector2(0, -24), Color(1.0, 0.88, 0.48), "binding_sever")
+					show_dialogue("THE LAST BELL - BREAKING THE CHAINS", quest_manager.get_story_lines("last_bell_climax_dialogue"), source, func():
+						quest_manager.complete_last_bell_cinematic()
+					)
+				)
+			elif obj_id == "witness_last_bell_cinematic":
+				start_story_cinematic("last_bell_climax", source.global_position + Vector2(0, -24), Color(1.0, 0.88, 0.48), "binding_sever")
+				show_dialogue("THE LAST BELL - BREAKING THE CHAINS", quest_manager.get_story_lines("last_bell_climax_dialogue"), source, func():
+					quest_manager.complete_last_bell_cinematic()
+				)
+			else:
+				show_dialogue(title, ["Without its memory-chains, the Great Bell rests silent and serene beneath the three-beacon crown."], source)
+		"beacon_conduit":
+			var cid: String = String(source.get("item_id"))
+			var ev_key: String = cid.replace("conduit_", "conduit_") + "_activate"
+			if not quest_manager.memory_binding_examined:
+				show_dialogue(title, ["An unlit stone conduit linked to Ashvale's ancient beacon ley-lines. Examine the memory binding under the Great Bell first."], source)
+			elif obj_id == "activate_beacon_conduits" and not quest_manager.beacon_conduits_activated.has(cid):
+				show_dialogue(title, quest_manager.get_story_lines(ev_key), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "conduit_align")
+					quest_manager.activate_beacon_conduit(cid)
+					source.set("activated", true)
+					source.queue_redraw()
+				)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines(ev_key), source)
+		"dawn_terrace_overlook":
+			if not quest_manager.last_bell_cinematic_seen:
+				show_dialogue(title, ["Dark clouds still swirl past the sealed east archway."], source)
+			elif obj_id == "return_to_dawn_terrace":
+				show_dialogue(title, quest_manager.get_story_lines("dawn_terrace_arrival"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "dawn_chord")
+					quest_manager.return_to_dawn_terrace()
+				)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("dawn_terrace_arrival"), source)
+		"dawn_memorial":
+			if not quest_manager.dawn_terrace_returned and obj_id == "return_to_dawn_terrace":
+				show_dialogue(title, ["Step out onto the Dawn Terrace overlook beside the broken clouds first before laying Elena's journal at the memorial."], source)
+			elif obj_id == "complete_final_epilogue":
+				var epi_lines: Array[String] = quest_manager.get_story_lines("final_epilogue_memorial")
+				var opt_notes: Array[String] = quest_manager.get_optional_discovery_summary()
+				for note in opt_notes:
+					epi_lines.append("REMEMBRANCE: " + note)
+				show_dialogue("MEMORIAL OF REMEMBERED NAMES", epi_lines, source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "dawn_chord")
+					quest_manager.complete_final_epilogue()
+					open_ending_credits(source)
+				)
+			elif obj_id == "display_ending_credits":
+				open_ending_credits(source)
+			else:
+				var post_lines: Array[String] = [
+					"MEMORIAL OF REMEMBERED NAMES: \"For those who kept watch without stealing another tomorrow. Bellhaven, Briarwood, Floodmill, Ironwatch, and Dawnspire stand remembered in sunlight.\"",
+					"Elena's leather journal rests calmly beside the limestone base."
+				]
+				for note in quest_manager.get_optional_discovery_summary():
+					post_lines.append("REMEMBRANCE: " + note)
+				show_dialogue("MEMORIAL OF REMEMBERED NAMES", post_lines, source)
+		"bellhaven_sunrise_arch":
+			if not (quest_manager.storm_resolved or quest_manager.chapter5_completed):
+				show_dialogue(title, ["Resolve the Great Bell's binding before descending back into Ashvale."], source)
+			elif get_parent().has_method("travel_to_bellhaven_sunrise"):
+				show_dialogue(title, ["Descending beneath unbroken morning light toward Bellhaven Square..."], source, func(): get_parent().travel_to_bellhaven_sunrise())
+			else:
+				show_dialogue(title, ["Clear roads lead home down into Bellhaven Valley."], source)
 
 func open_rune_puzzle(source: StaticBody2D) -> void:
 	if rune_puzzle == null or rune_puzzle.solved:
@@ -1241,7 +1428,41 @@ func manual_save(custom_path: String = "") -> bool:
 			title_menu.set_feedback("Save failed with error code %d." % err, true)
 	return ok
 
+func open_ending_credits(source: StaticBody2D = null) -> void:
+	if ending_credits == null:
+		return
+	if source != null:
+		terminal = source
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	ending_credits.open_credits(quest_manager)
+	_update_selection()
+
+func _on_ending_credits_action(action: String) -> void:
+	if quest_manager != null and quest_manager.get_current_objective_id() == "display_ending_credits":
+		AudioManagerScript.play_global_sfx(get_tree(), "chapter_complete")
+		quest_manager.complete_ending_credits()
+	match action:
+		"close":
+			_on_modal_closed()
+		"bellhaven":
+			_on_modal_closed()
+			var parent := get_parent()
+			if parent != null and parent.has_method("travel_to_bellhaven_sunrise"):
+				parent.travel_to_bellhaven_sunrise()
+		"title":
+			if quest_manager != null:
+				quest_manager.save_to_file(save_path)
+			open_title_menu("Chronicle complete. Choose Bellhaven Visit, Continue, or New Game.")
+		"new_game":
+			start_new_game()
+
 func start_new_game() -> void:
+	if ending_credits != null:
+		ending_credits.hide()
 	if title_menu != null:
 		title_menu.hide()
 	if terminal != null:
@@ -1252,6 +1473,10 @@ func start_new_game() -> void:
 	QuestManagerScript.carry_chapter1_completed = false
 	QuestManagerScript.carry_chapter2_completed = false
 	QuestManagerScript.carry_chapter3_completed = false
+	QuestManagerScript.carry_chapter4_completed = false
+	QuestManagerScript.carry_storm_resolved = false
+	QuestManagerScript.carry_optional_discoveries.clear()
+	QuestManagerScript.pending_chapter5_snapshot = {}
 	var parent := get_parent()
 	if parent != null and parent.has_method("reset_new_game"):
 		parent.reset_new_game()
@@ -1276,7 +1501,8 @@ func continue_game(custom_path: String = "") -> bool:
 	var same_floodmill: bool = target_region.ends_with("floodmill_village.tscn") and parent != null and parent.name == "FloodmillVillage"
 	var same_ironwatch: bool = target_region.ends_with("ironwatch_keep.tscn") and parent != null and parent.name == "IronwatchKeep"
 	var same_dawnspire: bool = target_region.ends_with("dawnspire_mountain.tscn") and parent != null and parent.name == "DawnspireMountain"
-	if same_briarwood or same_bellhaven or same_floodmill or same_ironwatch or same_dawnspire:
+	var same_great_bell: bool = target_region.ends_with("great_bell_sanctum.tscn") and parent != null and parent.name == "GreatBellSanctum"
+	if same_briarwood or same_bellhaven or same_floodmill or same_ironwatch or same_dawnspire or same_great_bell:
 		var loaded: bool = parent.apply_saved_state(target_path)
 		if loaded and player != null:
 			player.set("movement_locked", false)
