@@ -23,9 +23,10 @@ var inscriptions: Dictionary = {}
 func _ready() -> void:
 	# Generate full grass ground tiles covering all camera boundaries (-36..36)
 	var ground: TileMapLayer = $Ground
+	ground.tile_set = preload("res://assets/tiles/briarwood/forest.tres")
 	for x in range(-36, 37):
 		for y in range(-36, 37):
-			ground.set_cell(Vector2i(x, y), 0, Vector2i(posmod(x * 13 + y * 29, 3), 0))
+			ground.set_cell(Vector2i(x, y), 0, Vector2i(posmod(x * 13 + y * 29 + x*y, 6), 0))
 
 	# Outer forest perimeter & atmospheric props (keeping trails and spots clear)
 	var props := [
@@ -51,6 +52,7 @@ func _ready() -> void:
 		node.position = p[1]
 		$Actors.add_child(node)
 
+	_add_visual_dressing()
 	# Stream & Bridge physical barriers
 	_build_stream_barriers()
 
@@ -319,3 +321,27 @@ func travel_to_floodmill() -> void:
 		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
 		QuestManagerScript.pending_entry_pose = false
 		get_tree().change_scene_to_file("res://scenes/floodmill_village.tscn")
+
+func _add_visual_dressing() -> void:
+	# Dense boundary groves, never new physical obstacles. The original map remains authoritative.
+	var dressing = preload("res://scripts/world/briarwood_dressing.gd")
+	for row in range(7):
+		for side in [-1,1]:
+			for column in range(3):
+				var tree := Node2D.new()
+				tree.set_script(dressing)
+				tree.position = Vector2(side*(290+column*62+posmod(row*17,27)),-265+row*91+column%2*22)
+				tree.kind = (row+column)%3/2
+				$Actors.add_child(tree)
+	for i in range(9):
+		var tree := Node2D.new()
+		tree.set_script(dressing)
+		tree.position = Vector2(-265+i*66,-290-posmod(i*19,35))
+		tree.kind = i%2
+		$Actors.add_child(tree)
+	for item: Array in [[1,Vector2(-132,-205)],[1,Vector2(-32,-264)],[2,Vector2(226,-127)],[2,Vector2(103,184)],[3,Vector2(120,-154)],[3,Vector2(-198,58)]]:
+		var prop := Node2D.new()
+		prop.set_script(dressing)
+		prop.style = item[0]
+		prop.position = item[1]
+		$Actors.add_child(prop)

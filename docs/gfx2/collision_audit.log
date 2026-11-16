@@ -1,0 +1,3 @@
+scripts/world/briarwood_prop.gd collision setup unchanged: True
+scripts/interactables/briarwood_interactable.gd collision setup unchanged: True
+scripts/world/briarwood_region.gd collision setup unchanged: True

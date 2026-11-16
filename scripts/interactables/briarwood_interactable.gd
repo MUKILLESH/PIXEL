@@ -170,22 +170,9 @@ func _draw() -> void:
 			draw_line(Vector2(0, -21), Vector2(0, -13), glow, 1.0)
 			draw_rect(Rect2(-1, -16, 2, 2), Color("ffffff") if inspected else glow)
 		"mirror_pedestal":
-			var rim := Color("8be6f0") if activated else Color("d9b366")
-			draw_rect(Rect2(-9, -12, 18, 12), Color("505852"))
-			draw_rect(Rect2(-6, -21, 12, 9), Color("69736b"))
-			draw_circle(Vector2(0, -24), 7.0, Color("293b47"))
-			draw_circle(Vector2(0, -24), 7.0, rim, false, 2.0)
-			draw_line(Vector2(-3, -27), Vector2(3, -21), Color("b8f6fc"), 1.5)
+			preload("res://scripts/world/briarwood_art.gd").mirror(self,activated)
 		"first_beacon":
-			if activated:
-				draw_colored_polygon(PackedVector2Array([Vector2(-22, 0), Vector2(0, -12), Vector2(22, 0), Vector2(0, 12)]), Color(0.38, 0.90, 0.94, 0.25))
-			draw_rect(Rect2(-12, -14, 24, 14), Color("565c59"))
-			draw_rect(Rect2(-8, -32, 16, 18), Color("6e7571"))
-			draw_rect(Rect2(3, -32, 5, 18), Color("484d4a"))
-			var crystal := Color("8ef5ff") if activated else Color("4a6375")
-			var core := Color("ffffff") if activated else Color("89a5b8")
-			draw_colored_polygon(PackedVector2Array([Vector2(-5, -34), Vector2(0, -48), Vector2(5, -34), Vector2(0, -28)]), crystal)
-			draw_rect(Rect2(-2, -41, 4, 6), core)
+			preload("res://scripts/world/briarwood_art.gd").beacon(self,activated)
 		"hidden_relic":
 			# Ruined camp surveyor's chest & notebook
 			draw_rect(Rect2(-9, -10, 18, 10), Color("5c3d24"))

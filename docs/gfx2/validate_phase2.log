@@ -1,0 +1,111 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: Bellhaven scene loads for transition test
+PASS: Bellhaven region exposes travel_to_briarwood()
+PASS: Briarwood Forest scene exists at canonical path
+PASS: Post-prologue Briarwood Gate shows transition message first
+PASS: Closing post-prologue gate message arms ready_to_travel
+PASS: Gate prompt updates to [E] ENTER BRIARWOOD FOREST
+PASS: Second gate interact opens Briarwood departure message
+PASS: Briarwood Forest scene loads
+PASS: Briarwood QuestManager loads chapter1_whispers_of_briarwood
+PASS: Forest Edge & Fork actors exist
+PASS: Worksite supplies and inscriptions exist
+PASS: Mirror Grove, Beacon, Ruined Camp & Floodmill Gate exist
+PASS: Phase 2 minigame UI panels and banner exist
+PASS: Starts at Objective 1: enter_briarwood
+PASS: HUD displays Objective 1
+PASS: HUD header reflects Chapter 1 in Briarwood Forest
+PASS: Briarwood interaction spot 0 is free of solids
+PASS: Briarwood interaction spot 1 is free of solids
+PASS: Briarwood interaction spot 2 is free of solids
+PASS: Briarwood interaction spot 3 is free of solids
+PASS: Briarwood interaction spot 4 is free of solids
+PASS: Briarwood interaction spot 5 is free of solids
+PASS: Briarwood interaction spot 6 is free of solids
+PASS: Briarwood interaction spot 7 is free of solids
+PASS: Briarwood interaction spot 8 is free of solids
+PASS: Briarwood interaction spot 9 is free of solids
+PASS: Briarwood interaction spot 10 is free of solids
+PASS: Briarwood interaction spot 11 is free of solids
+PASS: Briarwood interaction spot 12 is free of solids
+PASS: Briarwood interaction spot 13 is free of solids
+PASS: Briarwood interaction spot 14 is free of solids
+PASS: QuestManager blocks out-of-order repair_bridge
+PASS: BridgeBlocker starts active before repair
+PASS: Collapsed bridge physically blocks north river crossing
+PASS: Lyra can speak before threshold
+PASS: Speaking with Lyra early does not skip enter_briarwood
+PASS: Material pickup locked until bridge inspected
+PASS: Broken bridge tells player to meet Lyra first
+PASS: Single prompt active at WaystoneEntrance
+PASS: Waystone dialogue opens
+PASS: Objective 1 completed
+PASS: Objective 2 unlocked: meet_lyra
+PASS: Lyra speaks canonical Bellhaven recognition line
+PASS: Lyra speaks canonical thirteenth toll line
+PASS: Objective 2 completed
+PASS: Objective 3 unlocked: investigate_bridge
+PASS: Direction sign reads cleanly
+PASS: Broken bridge inspection dialogue opens
+PASS: Objective 3 completed
+PASS: Objective 4 unlocked: find_repair_materials
+PASS: Carpenter's ledger gives complete bridge repair sequence clue
+PASS: Collected 1/3 repair materials (Left Beam)
+PASS: Already gathered material cannot be farmed again
+PASS: Duplicate pickup does not inflate material count
+PASS: Collected 2/3 repair materials (Right Plank)
+PASS: Objective 4 completed on 3/3 materials
+PASS: Objective 5 unlocked: repair_bridge
+PASS: Bridge repair UI opens and locks movement
+PASS: World prompts hidden while Bridge Repair UI is open
+PASS: ESC closes Bridge Repair without softlock
+PASS: Bridge Repair UI reopens cleanly after ESC
+PASS: Incorrect bridge assembly sequence rejected
+PASS: Incorrect repair does not advance quest
+PASS: Bridge Repair minigame solves cleanly via keyboard
+PASS: Objective 5 completed
+PASS: BridgeBlocker disabled and repaired bridge rendered
+PASS: Lyra relocates to northern bank ruins after bridge repair
+PASS: Objective 6 unlocked: discover_inscriptions
+PASS: Repaired bridge shows story text instead of reopening minigame
+PASS: Player physically walks north across repaired Old Bridge past river (y=-57.0)
+PASS: Optional Ruined Camp survey chest discovery recorded
+PASS: Optional discovery preserves active main objective
+PASS: Floodmill Gate remains sealed prior to Chapter 1 completion
+PASS: West inscription reveals DAWN clue (1/3)
+PASS: Center inscription reveals ZENITH clue (2/3)
+PASS: East inscription reveals DUSK clue (3/3)
+PASS: Objective 6 completed after all 3 inscriptions
+PASS: Objective 7 unlocked: solve_mirror_puzzle
+PASS: First Beacon stays sealed until Mirror Grove solved
+PASS: Mirror Grove UI opens and locks movement
+PASS: ESC closes Mirror Grove UI without softlock
+PASS: Mirror Grove UI reopens cleanly
+PASS: Incorrect mirror alignment rejected
+PASS: Incorrect mirror alignment does not complete quest
+PASS: Mirror puzzle solves cleanly via keyboard
+PASS: Objective 7 completed
+PASS: Mirror Grove dais and sunbeams light up
+PASS: Lyra moves up to First Beacon Shrine
+PASS: Objective 8 unlocked: activate_first_beacon
+PASS: Solved mirror dais shows post-solve lore instead of reopening puzzle
+PASS: Objective 8 completed: First Ancient Beacon activated
+PASS: First Beacon glow active in world
+PASS: Objective 9 unlocked: experience_elena_recording
+PASS: Canonical Elena memory echo line 1 delivered
+PASS: Canonical Elena memory echo line 2 delivered
+PASS: Objective 9 completed: Elena recording heard
+PASS: Objective 10 unlocked: complete_chapter1
+PASS: Objective 10 completed and Floodmill Gate unlocked
+PASS: Floodmill Gate node reflects unlocked state
+PASS: Exact Chapter 1 completion banner shown
+PASS: Dismissing Chapter 1 banner restores free exploration
+PASS: HUD updates cleanly after Chapter 1 completion
+PASS: Floodmill Gate reflects unlocked Chapter 2 transition
+PASS: Atomic save writes Chapter 1 progress to JSON file
+PASS: Fresh Briarwood scene restores full saved state
+PASS: Saved visual/physics world state synchronized cleanly
+PASS: Saved Lyra story position restored accurately
+PASS: Phase 2 suite completed
+PHASE 2 RESULT: 108 checks, 0 failures

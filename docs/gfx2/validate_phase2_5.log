@@ -1,0 +1,91 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: Booted BellhavenVillage via SceneTree
+PASS: HUD mounts TitleMenu and InventoryPanel
+PASS: Pressing M opens Title/System Menu and locks movement
+PASS: Continue cleanly rejects when no save file exists
+PASS: Title Menu displays missing-save feedback
+PASS: ESC closes Title Menu and restores movement
+PASS: Pressing I opens empty Field Satchel initially
+PASS: Pressing I again closes Field Satchel cleanly
+PASS: Walked physically to Stone Rune Pedestal
+PASS: Prologue Obj 1 completed without teleport
+PASS: Walked to Master Caelen
+PASS: Walked around Belfry to Mira
+PASS: Walked to Sister Elara
+PASS: Prologue Obj 2 completed via real walking
+PASS: Field Satchel displays Caelen's Brass Key
+PASS: Walked to Mother's Letter chest
+PASS: Prologue Obj 3 completed via real walking
+PASS: Field Satchel records Mother's cipher note
+PASS: Walked back to Rune Pedestal
+PASS: Rune Puzzle opens cleanly
+PASS: Prologue Obj 4 solved via real walking
+PASS: Manual save writes Bellhaven state
+PASS: Walked away from Bellhaven save spot before reload
+PASS: Continue restores saved Bellhaven state in place
+PASS: Same-region Bellhaven resume restores exact pose, facing, and solved Rune Pedestal
+PASS: Walked to Briarwood Waystone
+PASS: Prologue Complete banner displayed after real walk
+PASS: Real scene transition moved player seamlessly from Bellhaven into Briarwood Forest
+PASS: Prologue inventory & flags carried cleanly into Briarwood
+PASS: Walked to Briarwood Trail Stone
+PASS: Briarwood Obj 1 completed via walk
+PASS: Walked to Historian Lyra campsite
+PASS: Lyra delivers canonical story dialogue
+PASS: Briarwood Obj 2 completed via walk
+PASS: Walked along Fork trail to Old Bridge
+PASS: Briarwood Obj 3 completed via walk
+PASS: Walked to Left Beam plank
+PASS: Walked to Right Plank
+PASS: Walked to Rope Lashing
+PASS: Briarwood Obj 4 completed via walk
+PASS: Satchel lists unspent bridge repair materials
+PASS: Walked back to Old Bridge
+PASS: BridgeRepair panel opened
+PASS: Briarwood Obj 5 solved via walk
+PASS: Player walked straight across repaired Old Bridge over the stream
+PASS: Walked to West Inscription
+PASS: Walked to Center Inscription
+PASS: Walked to East Inscription
+PASS: Briarwood Obj 6 completed via walk
+PASS: Walked to optional Ruined Camp chest
+PASS: Optional survey compass collected via walk
+PASS: Walked to Mirror Grove Dais
+PASS: MirrorPuzzle opened cleanly
+PASS: Briarwood Obj 7 solved via walk
+PASS: Walked to First Ancient Beacon
+PASS: Briarwood Obj 8 completed via walk
+PASS: Briarwood Obj 9 completed via walk
+PASS: Walked to Historian Lyra at Beacon Shrine
+PASS: Chapter 1 complete banner displayed after full no-teleport playthrough
+PASS: Walked to custom save spot near Floodmill path
+PASS: Field Satchel accurately tracks all post-chapter items and discoveries
+PASS: Title Menu opens in Briarwood
+PASS: Manual Save writes primary chronicle save
+PASS: Second Manual Save rotates .bak cleanly without error
+PASS: Simulated fresh game launch into startup Bellhaven scene
+PASS: Continue from Title/System HUD initiates cross-region resume
+PASS: Continue transitions automatically to saved BriarwoodForest region
+PASS: Resumed player sits at exact saved position and facing
+PASS: All Chapter 1 quest flags survived reload
+PASS: Collected items, inscriptions, and optional discoveries survived reload
+PASS: Minigame panels stay locked/solved after reload
+PASS: World blockers and interactable visual states survived reload
+PASS: Historian Lyra checkpoint survived reload
+PASS: Walked to Lyra after reload
+PASS: Repeating Lyra dialogue post-reload does not re-trigger completion banner
+PASS: New Game from Briarwood returns cleanly to BellhavenVillage
+PASS: New Game starts at Prologue Objective 1
+PASS: New Game resets Aren to Bellhaven spawn
+PASS: Corrupt save rejected cleanly: {this is truncated json!!!
+PASS: peek_save_summary marks corrupt save invalid
+PASS: Corrupt save rejected cleanly: {"version": 999, "quest_data
+PASS: peek_save_summary marks corrupt save invalid
+PASS: Corrupt save rejected cleanly: {"version": 1, "quest_data_p
+PASS: peek_save_summary marks corrupt save invalid
+PASS: Corrupt save rejected cleanly: {"version": 1, "quest_data_p
+PASS: peek_save_summary marks corrupt save invalid
+PASS: Corrupted primary save automatically falls back to valid .bak backup
+PASS: Phase 2.5 suite completed
+PHASE 2.5 RESULT: 88 checks, 0 failures
