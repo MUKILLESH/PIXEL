@@ -3,6 +3,7 @@ const Prop = preload("res://scripts/world/prop.gd")
 const Landmark = preload("res://scripts/world/sjt_landmark.gd")
 const Furniture = preload("res://scripts/world/campus_furniture.gd")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
+const AudioManagerScript = preload("res://scripts/systems/audio_manager.gd")
 const NpcScene = preload("res://scenes/characters/npc.tscn")
 const InteractableScene = preload("res://scenes/environment/terminal.tscn")
 
@@ -101,8 +102,15 @@ func _ready() -> void:
 		QuestManagerScript.pending_load_path = ""
 		apply_saved_state(load_p)
 	else:
+		if QuestManagerScript.pending_entry_pose:
+			QuestManagerScript.pending_entry_pose = false
+			$Actors/Player.position = QuestManagerScript.pending_entry_position
+			$Actors/Player.facing = QuestManagerScript.pending_entry_facing
+			$Actors/Player/Camera2D.snap_to_target()
 		_sync_world_from_quest()
 	$Landscape.queue_redraw()
+	AudioManagerScript.play_global_region(get_tree(), "bellhaven")
+	$HUD.play_region_transition("BELLHAVEN VILLAGE", "PROLOGUE - THE THIRTEENTH TOLL")
 
 func _on_objective_completed(objective_id: String) -> void:
 	match objective_id:
@@ -183,4 +191,5 @@ func reset_new_game() -> void:
 func travel_to_briarwood() -> void:
 	if quest_manager != null and quest_manager.briarwood_unlocked and is_inside_tree():
 		QuestManagerScript.carry_prologue_completed = true
+		QuestManagerScript.pending_entry_pose = false
 		get_tree().change_scene_to_file("res://scenes/briarwood_forest.tscn")

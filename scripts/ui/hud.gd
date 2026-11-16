@@ -20,6 +20,8 @@ const CrestPuzzleScript = preload("res://scripts/ui/crest_puzzle.gd")
 const InventoryPanelScript = preload("res://scripts/ui/inventory_panel.gd")
 const TitleMenuScript = preload("res://scripts/ui/title_menu.gd")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
+const CinematicDirectorScript = preload("res://scripts/systems/cinematic_director.gd")
+const AudioManagerScript = preload("res://scripts/systems/audio_manager.gd")
 
 @onready var panel: Panel = $Message
 @onready var message_label: Label = $Message/Text
@@ -33,6 +35,14 @@ var sluice_puzzle: Panel
 var ledger_puzzle: Panel
 var crest_puzzle: Panel
 var stealth_status_label: Label
+var shortcut_hint_label: Label
+var cinematic_director: Control
+var transition_fade: ColorRect
+var region_banner: Panel
+var region_banner_title: Label
+var region_banner_sub: Label
+var _region_fade_alpha: float = 0.0
+var _region_banner_timer: float = 0.0
 var inventory_panel: Panel
 var title_menu: Panel
 var save_path: String = "user://ashvale_save.json"
@@ -119,6 +129,73 @@ func _ready() -> void:
 	title_menu.inventory_requested.connect(_on_menu_inventory_requested)
 	title_menu.menu_closed_signal.connect(_on_modal_closed)
 
+	shortcut_hint_label = Label.new()
+	shortcut_hint_label.name = "ShortcutHint"
+	shortcut_hint_label.text = "[M] MENU   [I] SATCHEL"
+	shortcut_hint_label.anchor_left = 1.0
+	shortcut_hint_label.anchor_right = 1.0
+	shortcut_hint_label.offset_left = -168
+	shortcut_hint_label.offset_top = 23
+	shortcut_hint_label.offset_right = -12
+	shortcut_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	shortcut_hint_label.add_theme_font_size_override("font_size", 8)
+	shortcut_hint_label.add_theme_color_override("font_color", Color("a89c80"))
+	shortcut_hint_label.add_theme_color_override("font_shadow_color", Color("120e0b"))
+	shortcut_hint_label.add_theme_constant_override("shadow_offset_x", 1)
+	shortcut_hint_label.add_theme_constant_override("shadow_offset_y", 1)
+	add_child(shortcut_hint_label)
+
+	cinematic_director = CinematicDirectorScript.new()
+	cinematic_director.name = "CinematicDirector"
+	cinematic_director.bound_hud = self
+	add_child(cinematic_director)
+
+	region_banner = Panel.new()
+	region_banner.name = "RegionBanner"
+	region_banner.visible = false
+	region_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	region_banner.anchor_left = 0.5
+	region_banner.anchor_right = 0.5
+	region_banner.offset_left = -140
+	region_banner.offset_right = 140
+	region_banner.offset_top = 46
+	region_banner.offset_bottom = 82
+	var rb_style := StyleBoxFlat.new()
+	rb_style.bg_color = Color(0.06, 0.05, 0.09, 0.90)
+	rb_style.border_width_left = 1
+	rb_style.border_width_top = 1
+	rb_style.border_width_right = 1
+	rb_style.border_width_bottom = 1
+	rb_style.border_color = Color(0.78, 0.62, 0.36, 0.92)
+	region_banner.add_theme_stylebox_override("panel", rb_style)
+	add_child(region_banner)
+
+	region_banner_title = Label.new()
+	region_banner_title.position = Vector2(8, 5)
+	region_banner_title.size = Vector2(264, 12)
+	region_banner_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	region_banner_title.add_theme_font_size_override("font_size", 8)
+	region_banner_title.add_theme_color_override("font_color", Color("f2deaa"))
+	region_banner.add_child(region_banner_title)
+
+	region_banner_sub = Label.new()
+	region_banner_sub.position = Vector2(8, 19)
+	region_banner_sub.size = Vector2(264, 12)
+	region_banner_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	region_banner_sub.add_theme_font_size_override("font_size", 8)
+	region_banner_sub.add_theme_color_override("font_color", Color("9cd6de"))
+	region_banner.add_child(region_banner_sub)
+
+	transition_fade = ColorRect.new()
+	transition_fade.name = "TransitionFade"
+	transition_fade.position = Vector2.ZERO
+	transition_fade.size = Vector2(640, 360)
+	transition_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	transition_fade.color = Color(0.03, 0.03, 0.06, 0.0)
+	add_child(transition_fade)
+
+	AudioManagerScript.ensure(get_tree())
+
 func bind_quest_manager(qm: Node) -> void:
 	quest_manager = qm
 	if quest_manager != null and not quest_manager.objective_changed.is_connected(_on_objective_changed):
@@ -138,10 +215,32 @@ func set_stealth_status(msg: String) -> void:
 		stealth_status_label.text = msg
 		stealth_status_label.visible = not _is_modal_open()
 
-func _is_modal_open() -> bool:
-	return panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (crest_puzzle != null and crest_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
+func play_region_transition(title_text: String, sub_text: String) -> void:
+	if transition_fade != null:
+		_region_fade_alpha = 0.50
+		transition_fade.color.a = _region_fade_alpha
+	if region_banner != null and region_banner_title != null and region_banner_sub != null:
+		region_banner_title.text = title_text
+		region_banner_sub.text = sub_text
+		_region_banner_timer = 2.2
+		region_banner.visible = not _is_modal_open()
 
-func _process(_delta: float) -> void:
+func start_story_cinematic(cin_id: String, focus_pos: Vector2, tint: Color = Color(0.55, 0.88, 1.0), sfx_id: String = "") -> void:
+	if cinematic_director != null and cinematic_director.has_method("start_story_cinematic"):
+		cinematic_director.start_story_cinematic(cin_id, focus_pos, tint, sfx_id)
+
+func _is_modal_open() -> bool:
+	var seq_open: bool = (cinematic_director != null and cinematic_director.active and cinematic_director.sequence_mode)
+	return seq_open or panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (crest_puzzle != null and crest_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
+
+func _process(delta: float) -> void:
+	if _region_fade_alpha > 0.0 and transition_fade != null:
+		_region_fade_alpha = maxf(0.0, _region_fade_alpha - delta * 4.5)
+		transition_fade.color.a = _region_fade_alpha
+	if _region_banner_timer > 0.0 and region_banner != null:
+		_region_banner_timer = maxf(0.0, _region_banner_timer - delta)
+		if _region_banner_timer <= 0.0 or _is_modal_open():
+			region_banner.visible = false
 	_update_selection()
 
 func _on_interactable_proximity_changed(_nearby: bool) -> void:
@@ -224,6 +323,7 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 				w_stage = quest_manager.get_current_objective_id()
 			if w_stage == "confront_last_warden":
 				lines = quest_manager.get_story_lines("warden_confrontation")
+				start_story_cinematic("ironwatch_warden_sacrifice", source.global_position + Vector2(0, -18), Color(0.62, 0.45, 0.92), "bell_toll")
 				cb = func(): quest_manager.complete_objective("confront_last_warden")
 		else:
 			cb = func(): quest_manager.record_npc_talked(npc_id)
@@ -244,7 +344,10 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 			show_dialogue("SEALED SURVEY CHEST", ["Master Caelen's locked survey chest rests beside the cottage door. Speak with the three villagers first."], source)
 		else:
 			var lines: Array[String] = quest_manager.get_story_lines("mothers_letter")
-			show_dialogue("MOTHER'S LETTER", lines, source, func(): quest_manager.complete_objective("find_mothers_letter"))
+			show_dialogue("MOTHER'S LETTER", lines, source, func():
+				AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
+				quest_manager.complete_objective("find_mothers_letter")
+			)
 		return
 	if role == 3:
 		var stage: String = quest_manager.get_current_objective_id()
@@ -269,6 +372,7 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 	# Default: Stone Rune Pedestal (role == 0)
 	var obj_id: String = quest_manager.get_current_objective_id()
 	if obj_id == "investigate_bell":
+		start_story_cinematic("prologue_thirteenth_bell", source.global_position + Vector2(0, -16), Color(0.56, 0.44, 0.94), "bell_toll")
 		show_dialogue("STONE RUNE PEDESTAL", [text], source, func(): quest_manager.complete_objective("investigate_bell"))
 	elif obj_id in ["speak_npcs", "find_mothers_letter"]:
 		show_dialogue("STONE RUNE PEDESTAL", ["Three concentric rune discs sit locked inside the stone altar. Learn their cipher from the villagers and Mother's notes first."], source)
@@ -282,6 +386,12 @@ func show_dialogue(speaker: String, lines: Array[String], source: StaticBody2D =
 		return
 	if source != null:
 		terminal = source
+		if player != null and player.has_method("face_toward"):
+			player.face_toward(source.global_position)
+		if source.has_method("face_toward") and player != null:
+			source.face_toward(player.global_position)
+	if is_inside_tree() and (cinematic_director == null or not cinematic_director.active):
+		AudioManagerScript.play_global_sfx(get_tree(), "dialogue_open")
 	dialogue_lines = lines.duplicate()
 	dialogue_index = 0
 	on_dialogue_complete = complete_cb
@@ -319,6 +429,8 @@ func _close_dialogue(trigger_completion: bool) -> void:
 		terminal.set_dialogue_open(false)
 	$Prompt.hide()
 	_update_selection()
+	if cinematic_director != null and cinematic_director.active and not cinematic_director.sequence_mode:
+		cinematic_director.finish_story_cinematic(cinematic_director.skipped_last)
 	if trigger_completion and cb.is_valid():
 		cb.call()
 
@@ -345,6 +457,7 @@ func _handle_briarwood_interaction(source: StaticBody2D) -> void:
 				var item_id: String = String(source.get("item_id"))
 				show_dialogue(title, [source.message], source, func():
 					if quest_manager.record_material_collected(item_id):
+						AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
 						source.set("collected", true)
 						source.queue_redraw()
 				)
@@ -385,6 +498,7 @@ func _handle_briarwood_interaction(source: StaticBody2D) -> void:
 			if not quest_manager.mirror_puzzle_solved:
 				show_dialogue(title, ["A luminous mirror-ward seals off the First Ancient Beacon. Align all three mirrors in Mirror Grove first."], source)
 			elif obj_id == "activate_first_beacon":
+				start_story_cinematic("briarwood_first_beacon", source.global_position + Vector2(0, -24), Color(0.45, 0.90, 0.96), "beacon_activate")
 				show_dialogue(title, quest_manager.get_story_lines("beacon_activation"), source, func(): quest_manager.complete_objective("activate_first_beacon"))
 			elif obj_id == "experience_elena_recording":
 				show_dialogue(title, quest_manager.get_story_lines("elena_recording"), source, func(): quest_manager.complete_objective("experience_elena_recording"))
@@ -393,6 +507,7 @@ func _handle_briarwood_interaction(source: StaticBody2D) -> void:
 		"hidden_relic":
 			var disc_id: String = String(source.get("item_id"))
 			show_dialogue(title, quest_manager.get_story_lines("ruined_camp_note"), source, func():
+				AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
 				quest_manager.record_optional_discovery(disc_id)
 				source.set("collected", true)
 				source.queue_redraw()
@@ -456,6 +571,7 @@ func _handle_floodmill_interaction(source: StaticBody2D) -> void:
 				var part_id: String = String(source.get("item_id"))
 				show_dialogue(title, [source.message], source, func():
 					if quest_manager.record_mill_part_collected(part_id):
+						AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
 						source.set("collected", true)
 						source.queue_redraw()
 				)
@@ -485,6 +601,7 @@ func _handle_floodmill_interaction(source: StaticBody2D) -> void:
 			elif obj_id == "reconstruct_village_ledger" and not quest_manager.archive_clues_found.has(clue_id):
 				show_dialogue(title, lines, source, func():
 					if quest_manager.record_archive_clue_found(clue_id):
+						AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
 						source.set("collected", true)
 						source.queue_redraw()
 				)
@@ -499,6 +616,7 @@ func _handle_floodmill_interaction(source: StaticBody2D) -> void:
 				else:
 					open_ledger_puzzle(source)
 			elif obj_id == "discover_villagers_truth":
+				start_story_cinematic("floodmill_ledger_truth", source.global_position + Vector2(0, -16), Color(0.70, 0.88, 0.96), "puzzle_solve")
 				show_dialogue("RESTORED VILLAGE LEDGER", quest_manager.get_story_lines("villagers_truth"), source, func(): quest_manager.complete_objective("discover_villagers_truth"))
 			else:
 				show_dialogue("RESTORED VILLAGE LEDGER", quest_manager.get_story_lines("villagers_truth"), source)
@@ -506,7 +624,10 @@ func _handle_floodmill_interaction(source: StaticBody2D) -> void:
 			if not quest_manager.villagers_truth_discovered:
 				show_dialogue(title, ["A quiet blue seal rests over the Second Ancient Beacon. Reconstruct the Forgotten Archive ledger and learn the villagers' fate first."], source)
 			elif obj_id == "restore_second_beacon":
-				show_dialogue(title, quest_manager.get_story_lines("second_beacon_activation"), source, func(): quest_manager.complete_objective("restore_second_beacon"))
+				show_dialogue(title, quest_manager.get_story_lines("second_beacon_activation"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "beacon_activate")
+					quest_manager.complete_objective("restore_second_beacon")
+				)
 			elif obj_id == "witness_elena_message":
 				show_dialogue(title, quest_manager.get_story_lines("elena_recording_ch2"), source, func(): quest_manager.complete_objective("witness_elena_message"))
 			else:
@@ -563,6 +684,7 @@ func _handle_ironwatch_interaction(source: StaticBody2D) -> void:
 		"barracks_keepsake":
 			var disc_id: String = String(source.get("item_id"))
 			show_dialogue(title, quest_manager.get_story_lines("barracks_keepsake_found"), source, func():
+				AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
 				quest_manager.record_optional_discovery(disc_id)
 				quest_manager.barracks_keepsake_found = true
 				source.set("collected", true)
@@ -576,6 +698,7 @@ func _handle_ironwatch_interaction(source: StaticBody2D) -> void:
 			elif obj_id == "find_crest_clues" and not quest_manager.crest_clues_found.has(cid):
 				show_dialogue(title, lines, source, func():
 					if quest_manager.record_crest_clue_found(cid):
+						AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
 						source.set("inspected", true)
 						source.queue_redraw()
 				)
@@ -599,13 +722,17 @@ func _handle_ironwatch_interaction(source: StaticBody2D) -> void:
 			if not quest_manager.warden_confronted:
 				show_dialogue(title, ["A sapphire travel notebook rests under a Warden crest. Confront the Last Bell Warden by the western steps first."], source)
 			elif quest_manager.can_read_elena_research():
-				show_dialogue(title, quest_manager.get_story_lines("elena_research_read"), source, func(): quest_manager.complete_objective("discover_elena_research"))
+				show_dialogue(title, quest_manager.get_story_lines("elena_research_read"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
+					quest_manager.complete_objective("discover_elena_research")
+				)
 			else:
 				show_dialogue(title, quest_manager.get_story_lines("elena_research_read"), source)
 		"third_beacon":
 			if not quest_manager.elena_research_found:
 				show_dialogue(title, ["The Third Ancient Beacon waits dormant inside its star mandala. Confront the Last Bell Warden and read Elena's research first."], source)
 			elif quest_manager.can_activate_third_beacon():
+				start_story_cinematic("ironwatch_beacon_awakens", source.global_position + Vector2(0, -26), Color(0.45, 0.92, 1.0), "beacon_activate")
 				show_dialogue(title, quest_manager.get_story_lines("third_beacon_restored"), source, func(): quest_manager.complete_objective("restore_third_beacon"))
 			else:
 				show_dialogue(title, ["All three Ancient Beacons—Briarwood, Floodmill, and Ironwatch—ring together in golden-sapphire harmony."], source)
@@ -692,6 +819,7 @@ func _open_modal_panel(modal_panel: Panel, source: StaticBody2D) -> void:
 	_update_selection()
 
 func _on_rune_puzzle_solved() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "puzzle_solve")
 	if quest_manager != null:
 		quest_manager.complete_objective("solve_rune_puzzle")
 		var lines: Array[String] = quest_manager.get_story_lines("beacon_revelation")
@@ -700,6 +828,7 @@ func _on_rune_puzzle_solved() -> void:
 		_on_modal_closed()
 
 func _on_bridge_repaired() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "puzzle_solve")
 	if quest_manager != null:
 		quest_manager.complete_objective("repair_bridge")
 		show_dialogue("OLD BRIDGE", ["Left beam locked, walkway planks seated, and hemp lashings pulled tight. The Old Bridge now holds firm!", "Lyra steps lightly onto the northern bank toward the erased village ruins and Mirror Grove."], terminal)
@@ -707,6 +836,7 @@ func _on_bridge_repaired() -> void:
 		_on_modal_closed()
 
 func _on_mirror_solved() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "puzzle_solve")
 	if quest_manager != null:
 		quest_manager.complete_objective("solve_mirror_puzzle")
 		show_dialogue("MIRROR GROVE", ["Three golden-cyan sunbeams lock across the mossy receptors and shatter the ward-barrier ahead!", "The sanctuary path into the First Beacon Shrine stands open."], terminal)
@@ -714,6 +844,7 @@ func _on_mirror_solved() -> void:
 		_on_modal_closed()
 
 func _on_watermill_repaired() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "puzzle_solve")
 	if quest_manager != null:
 		quest_manager.complete_objective("restore_watermill")
 		show_dialogue("OLD WATERMILL", ["Iron drive gear, bronze pinion, and oak coupling belt lock cleanly! The great waterwheel turns and sends pressure north to the Sluice Console."], terminal)
@@ -729,6 +860,7 @@ func _on_sluice_states_changed(states: Array[int]) -> void:
 		parent.get_node("Landscape").queue_redraw()
 
 func _on_sluice_solved() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "puzzle_solve")
 	if quest_manager != null:
 		quest_manager.sluice_gate_states.assign([2, 1, 3])
 		quest_manager.complete_objective("redirect_water_flow")
@@ -737,6 +869,7 @@ func _on_sluice_solved() -> void:
 		_on_modal_closed()
 
 func _on_ledger_solved() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "puzzle_solve")
 	if quest_manager != null:
 		quest_manager.complete_objective("reconstruct_village_ledger")
 		show_dialogue("FORGOTTEN ARCHIVE", ["With all three fragments fitted together, the faded parish ledger lies open upon the oak table—examine it closely to read the villagers' fate."], terminal)
@@ -744,6 +877,7 @@ func _on_ledger_solved() -> void:
 		_on_modal_closed()
 
 func _on_crest_solved() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "puzzle_solve")
 	if quest_manager != null:
 		quest_manager.crest_pillar_states.assign([1, 2, 3])
 		quest_manager.complete_objective("solve_crest_puzzle")
@@ -763,6 +897,7 @@ func _on_modal_closed() -> void:
 	_update_selection()
 
 func _finish_prologue() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "chapter_complete")
 	if quest_manager != null:
 		quest_manager.complete_objective("trigger_prologue_completion")
 	if prologue_banner != null:
@@ -775,6 +910,7 @@ func _finish_prologue() -> void:
 	_update_selection()
 
 func _finish_chapter1() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "chapter_complete")
 	if quest_manager != null:
 		quest_manager.complete_objective("complete_chapter1")
 	if prologue_banner != null:
@@ -790,6 +926,7 @@ func _finish_chapter1() -> void:
 	_update_selection()
 
 func _finish_chapter2() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "chapter_complete")
 	if quest_manager != null:
 		quest_manager.complete_objective("complete_chapter2")
 	if prologue_banner != null:
@@ -805,6 +942,7 @@ func _finish_chapter2() -> void:
 	_update_selection()
 
 func _finish_chapter3() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "chapter_complete")
 	if quest_manager != null:
 		quest_manager.complete_objective("complete_chapter3")
 	if prologue_banner != null:
@@ -857,6 +995,8 @@ func manual_save(custom_path: String = "") -> bool:
 	var target_path: String = save_path if custom_path == "" else custom_path
 	var err: Error = quest_manager.save_to_file(target_path)
 	var ok: bool = (err == OK)
+	if ok and is_inside_tree():
+		AudioManagerScript.play_global_sfx(get_tree(), "save_game")
 	if title_menu != null and title_menu.visible:
 		if ok:
 			title_menu.has_save = true
@@ -872,6 +1012,7 @@ func start_new_game() -> void:
 	if terminal != null:
 		terminal.set_dialogue_open(false)
 	QuestManagerScript.pending_load_path = ""
+	QuestManagerScript.pending_entry_pose = false
 	QuestManagerScript.carry_prologue_completed = false
 	QuestManagerScript.carry_chapter1_completed = false
 	QuestManagerScript.carry_chapter2_completed = false

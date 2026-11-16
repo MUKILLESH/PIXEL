@@ -34,6 +34,12 @@ func refresh_prompt(new_text: String) -> void:
 	if has_node("Indicator"):
 		$Indicator.text = new_text
 
+func face_toward(world_pos: Vector2) -> void:
+	var delta_vec: Vector2 = world_pos - global_position
+	if delta_vec.length_squared() > 4.0:
+		facing = posmod(roundi(delta_vec.angle() / (PI / 4.0)), 8)
+		queue_redraw()
+
 func _process(delta: float) -> void:
 	idle_time += delta
 	var next_frame: int = int(idle_time * 1.8) % 2
@@ -63,10 +69,7 @@ func set_selected(value: bool) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if selected and nearby_player != null and not dialogue_open and event.is_action_pressed("interact") and not event.is_echo():
-		var delta_x: float = nearby_player.global_position.x - global_position.x
-		if absf(delta_x) > 6.0:
-			facing = 0 if delta_x > 0.0 else 4
-			queue_redraw()
+		face_toward(nearby_player.global_position)
 		message_requested.emit("")
 		get_viewport().set_input_as_handled()
 
@@ -75,6 +78,11 @@ func _draw() -> void:
 	draw_rect(Rect2(-8, -2, 16, 4), Color(0.02, 0.03, 0.05, 0.38))
 	var bob: int = idle_frame
 	var side: int = 1 if facing in [0, 1, 7] else (-1 if facing in [3, 4, 5] else 0)
+	if dialogue_open:
+		# Subtle speech attention emblem above NPC head during conversation
+		var badge_y: float = -45.0 + float(bob)
+		draw_colored_polygon(PackedVector2Array([Vector2(0, badge_y - 4), Vector2(4, badge_y), Vector2(0, badge_y + 4), Vector2(-4, badge_y)]), Color("fae08c"))
+		draw_rect(Rect2(-1, badge_y - 1, 2, 2), Color("161924"))
 
 	match npc_id:
 		"caelen":

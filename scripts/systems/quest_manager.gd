@@ -11,6 +11,9 @@ const SAVE_VERSION := 3
 const CREST_SYMBOLS: Array[String] = ["IRON SWORD", "SILVER BELL", "SUNDERED SHIELD", "CROWNED FLAME"]
 
 static var pending_load_path: String = ""
+static var pending_entry_pose: bool = false
+static var pending_entry_position: Vector2 = Vector2.ZERO
+static var pending_entry_facing: int = 2
 static var carry_prologue_completed: bool = false
 static var carry_chapter1_completed: bool = false
 static var carry_chapter2_completed: bool = false

@@ -9,11 +9,15 @@ var shadow_passage_cleared: bool = false
 var third_beacon_activated: bool = false
 var active_checkpoint_id: String = "checkpoint_0"
 var _pulse_phase: float = 0.0
+var _redraw_accum: float = 0.0
 
 func _process(delta: float) -> void:
 	_pulse_phase = fmod(_pulse_phase + delta * 1.4, TAU)
 	if not Engine.is_editor_hint():
-		queue_redraw()
+		_redraw_accum += delta
+		if _redraw_accum >= 0.08:
+			_redraw_accum = 0.0
+			queue_redraw()
 
 func _draw() -> void:
 	var stone_dark := Color("1d202b")
@@ -23,9 +27,15 @@ func _draw() -> void:
 	var arcane_purple := Color("3b2759")
 	var gold_inlay := Color("c99c49")
 
-	# 1. Outer Fortress Foundation & Walkways connecting all 6 wings
-	draw_rect(Rect2(-340, -240, 680, 490), Color("12131c"))
+	# 1. Outer Mountain Precipice Backdrop & Fortress Walkways connecting all 6 wings
+	draw_rect(Rect2(-640, -420, 1280, 840), Color("11131f"))
+	draw_rect(Rect2(-420, -290, 840, 580), Color("161826"))
+	draw_rect(Rect2(-340, -240, 680, 490), Color("1a1d2b"))
 	draw_rect(Rect2(-315, -220, 630, 450), stone_dark)
+	# Subtle outer battlement stones around southern mountain rim so edges never crop sharply
+	for rx in range(-320, 320, 48):
+		draw_rect(Rect2(rx, 240, 26, 10), Color("242736"))
+		draw_rect(Rect2(rx + 12, -252, 24, 10), Color("1f2230"))
 
 	# Courtyard -> East Archives -> West Barracks -> North Hall of Crests paths
 	draw_polyline(PackedVector2Array([Vector2(185, 222), Vector2(120, 185), Vector2(18, 152), Vector2(-18, 25)]), road_trim, 32.0)
@@ -122,3 +132,25 @@ func _draw() -> void:
 	draw_rect(Rect2(-335, -238, 670, 16), Color("242736"))
 	draw_rect(Rect2(-335, 224, 670, 16), Color("242736"))
 	draw_rect(Rect2(-115, -72, 430, 16), Color("262938"))
+
+	# Cracked stonework seams, worn Warden banners, discarded gear & orange torch flicker
+	draw_polyline(PackedVector2Array([Vector2(66, 174), Vector2(76, 182), Vector2(88, 178)]), Color("161822"), 1.5)
+	draw_polyline(PackedVector2Array([Vector2(-74, 128), Vector2(-62, 134), Vector2(-54, 126)]), Color("161822"), 1.5)
+	# Discarded Warden heater shield & bent pike outside Abandoned Barracks
+	draw_colored_polygon(PackedVector2Array([Vector2(-248, 92), Vector2(-240, 92), Vector2(-241, 100), Vector2(-244, 103), Vector2(-247, 100)]), Color("5d677a"))
+	draw_line(Vector2(-254, 104), Vector2(-236, 94), Color("5c3f26"), 2.0)
+	# Tattered crimson-violet Warden banners along Keep walls
+	for bx in [-46, 8, 134, 210]:
+		draw_rect(Rect2(bx, 184, 7, 14), Color("4f2238"))
+		draw_rect(Rect2(bx + 2, 186, 3, 7), Color("d9a94e"))
+	# Flickering warm orange wall-torch pools across Gatehouse, Courtyard, Archives & Vault edges
+	var torch_flicker: float = 1.0 + sin(_pulse_phase * 4.5) * 0.14
+	for tp: Vector2 in [Vector2(178, 172), Vector2(72, 168), Vector2(-206, 118), Vector2(152, 34), Vector2(132, -172)]:
+		draw_circle(tp, 16.0 * torch_flicker, Color(0.98, 0.56, 0.20, 0.14))
+		draw_circle(tp, 3.0, Color("ff9e42"))
+		draw_circle(tp, 1.5, Color("fff0b8"))
+	# Sparse drifting fortress mist
+	for dm in range(4):
+		var dx: float = -240.0 + float(dm) * 140.0 + sin(_pulse_phase * 0.6 + float(dm)) * 18.0
+		var dy: float = 204.0 - float(dm % 2) * 180.0
+		draw_rect(Rect2(dx, dy, 54, 6), Color(0.62, 0.68, 0.84, 0.06))

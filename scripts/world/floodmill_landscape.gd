@@ -8,11 +8,15 @@ var sluice_solved: bool = false
 var ledger_solved: bool = false
 var second_beacon_activated: bool = false
 var _mist_phase: float = 0.0
+var _redraw_accum: float = 0.0
 
 func _process(delta: float) -> void:
 	_mist_phase = fmod(_mist_phase + delta * 0.45, TAU)
 	if not Engine.is_editor_hint():
-		queue_redraw()
+		_redraw_accum += delta
+		if _redraw_accum >= 0.08:
+			_redraw_accum = 0.0
+			queue_redraw()
 
 func _draw() -> void:
 	var stone_wet := Color("3b474a")
@@ -130,6 +134,17 @@ func _draw() -> void:
 	if second_beacon_activated:
 		draw_circle(Vector2(64, -208), 58.0, Color(0.45, 0.90, 0.96, 0.16))
 		draw_circle(Vector2(64, -208), 28.0, Color(1.0, 0.86, 0.50, 0.18))
+
+	# Environmental storytelling: erased villagers' sunken cart wheel, broken crate, clay amphora, and marsh reeds
+	draw_circle(Vector2(-106, 22), 7.0, Color("4a3220"))
+	draw_circle(Vector2(-106, 22), 4.0, Color("215a70"))
+	draw_rect(Rect2(-52, 84, 8, 6), Color("543924")) # Broken chair/stool
+	draw_rect(Rect2(24, 166, 5, 7), Color("7d634d")) # Clay storage jar
+	draw_rect(Rect2(32, 170, 7, 4), Color("8b969c")) # Abandoned washbasin
+	var reed_sway: float = sin(_mist_phase * 2.2) * 1.6
+	for rp: Vector2 in [Vector2(-128, 128), Vector2(-14, 124), Vector2(188, 108), Vector2(194, -4), Vector2(-180, -48)]:
+		draw_line(rp, rp + Vector2(-2 + reed_sway, -9), Color("3c634d"), 1.5)
+		draw_line(rp + Vector2(3, 0), rp + Vector2(4 + reed_sway, -8), Color("4f7d5f"), 1.5)
 
 	# Subtle animated swamp mist wisps across sunken regions
 	for m in range(6):

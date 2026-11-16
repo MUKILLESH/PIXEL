@@ -60,6 +60,7 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 - Progress is stored atomically at `user://ashvale_save.json` with `.tmp` staging and `.bak` backup rotation (`SAVE_VERSION := 3`, backwards compatible with Phase 2 `version == 1` and Phase 3 `version == 2` saves).
 - Saved state includes the active region scene (`sjt_exterior.tscn`, `briarwood_forest.tscn`, `floodmill_village.tscn`, or `ironwatch_keep.tscn`), Aren's exact position and facing direction, completed objectives, inventory/clues, bridge/mirror/watermill/sluice/ledger/crest/stealth checkpoint states, beacon activations, and NPC positions.
 - Corrupted primary saves or mismatched schemas are rejected cleanly and automatically fall back to `user://ashvale_save.json.bak` when valid.
+- **Audio & Cinematic Polish (Phase 4.5):** Procedural PCM16 regional ambience and 8 sound effects routed through `default_bus_layout.tres` (`Master`, `Music`, `SFX`, `Ambient`) with `TitleMenu` volume controls persisted to `user://ashvale_audio_settings.json`, skippable story cinematics (`CinematicDirector`, `[X] SKIP SCENE`) across Bellhaven, Briarwood, Floodmill, and Ironwatch Keep, regional arrival banners, and seamless forward/backward region entry poses.
 
 ## Running & Validation
 
@@ -67,8 +68,9 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 # Launch playable startup scene
 .\Godot_v4.7.2-stable_win64_console.exe
 
-# Run automated validation suites
+# Run automated validation suites (723 checks total across 9 suites + bus check)
 .\Godot_v4.7.2-stable_win64_console.exe --headless --import
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 300 -s .\.agents\skills\godot-audio\assets\check_audio_buses.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_sjt.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_zone.gd
@@ -77,12 +79,14 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase2_5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase3.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase4.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase4_5.gd
 
 # Generate screenshot captures
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_sjt.gd
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_briarwood.gd
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_floodmill.gd
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_ironwatch.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 240 -s res://tests/capture_phase4_5.gd -- --after
 ```
 
-See [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/FILES.md](docs/FILES.md), and [docs/VALIDATION.md](docs/VALIDATION.md) for architecture, file inventory, and manual QA steps.
+See [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md), [docs/ART_DIRECTION.md](docs/ART_DIRECTION.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/FILES.md](docs/FILES.md), and [docs/VALIDATION.md](docs/VALIDATION.md) for architecture, visual standards, file inventory, and manual QA steps.

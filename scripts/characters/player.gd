@@ -1,10 +1,21 @@
 extends CharacterBody2D
 ## Aren, apprentice mapmaker of Bellhaven Village. Native-pixel art; feet are physics/sorting origin.
+const AudioManagerScript = preload("res://scripts/systems/audio_manager.gd")
+
 @export var speed: float = 100.0
 var facing: int = 2
 var movement_locked: bool = false
 var stride: float = 0.0
 var walk_frame: int = 0
+var idle_time: float = 0.0
+var idle_bob: int = 0
+var step_timer: float = 0.16
+
+func face_toward(world_pos: Vector2) -> void:
+	var dir: Vector2 = world_pos - global_position
+	if dir.length_squared() > 4.0:
+		facing = posmod(roundi(dir.angle() / (PI / 4.0)), 8)
+		queue_redraw()
 
 func _physics_process(delta: float) -> void:
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -17,17 +28,27 @@ func _physics_process(delta: float) -> void:
 	if get_real_velocity().length() > 3.0:
 		stride += delta * 9.0
 		walk_frame = int(stride) % 4
+		idle_time = 0.0
+		idle_bob = 0
+		step_timer += delta
+		if step_timer >= 0.32:
+			step_timer = 0.0
+			if is_inside_tree():
+				AudioManagerScript.play_global_sfx(get_tree(), "footstep")
 	else:
 		stride = 0.0
 		walk_frame = 0
+		step_timer = 0.16
+		idle_time += delta
+		idle_bob = -1 if int(idle_time * 1.6) % 2 == 1 else 0
 	queue_redraw()
 
 func _draw() -> void:
-	# Ground shadow remains stationary at the feet while the stride bobs.
+	# Ground shadow remains stationary at the feet while the stride or idle breath bobs.
 	draw_rect(Rect2(-8,-2,16,4),Color(0.02,0.03,0.05,0.38))
 	draw_rect(Rect2(-6,-3,12,6),Color(0.02,0.03,0.05,0.28))
 	var step: int = [0,2,0,-2][walk_frame]
-	var bob: int = 1 if walk_frame == 1 or walk_frame == 3 else 0
+	var bob: int = (1 if walk_frame == 1 or walk_frame == 3 else 0) if (walk_frame != 0 or stride > 0.0) else idle_bob
 	var side: int = 1 if facing in [0,1,7] else (-1 if facing in [3,4,5] else 0)
 	var back: bool = facing in [5,6,7]
 	var profile: bool = facing in [0,4]

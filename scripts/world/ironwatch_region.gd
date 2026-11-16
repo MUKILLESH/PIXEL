@@ -9,6 +9,7 @@ const InteractableScript = preload("res://scripts/interactables/ironwatch_intera
 const SentinelScript = preload("res://scripts/world/shadow_sentinel.gd")
 const NpcScene = preload("res://scenes/characters/npc.tscn")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
+const AudioManagerScript = preload("res://scripts/systems/audio_manager.gd")
 
 const SAFE_ALCOVES := [
 	{"id": "checkpoint_0", "pos": Vector2(-160, -48), "radius": 22.0},
@@ -232,8 +233,15 @@ func _ready() -> void:
 		QuestManagerScript.pending_load_path = ""
 		apply_saved_state(load_p)
 	else:
+		if QuestManagerScript.pending_entry_pose:
+			QuestManagerScript.pending_entry_pose = false
+			$Actors/Player.position = QuestManagerScript.pending_entry_position
+			$Actors/Player.facing = QuestManagerScript.pending_entry_facing
+			$Actors/Player/Camera2D.snap_to_target()
 		_sync_world_from_quest()
 	$Landscape.queue_redraw()
+	AudioManagerScript.play_global_region(get_tree(), "ironwatch")
+	$HUD.play_region_transition("IRONWATCH KEEP", "CHAPTER 3 - THE KEEPER'S LIE")
 
 func _physics_process(delta: float) -> void:
 	if quest_manager == null or $Actors/Player == null:
@@ -512,4 +520,7 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 
 func travel_to_floodmill() -> void:
 	if is_inside_tree():
+		QuestManagerScript.pending_entry_pose = true
+		QuestManagerScript.pending_entry_position = Vector2(170, -172)
+		QuestManagerScript.pending_entry_facing = 4
 		get_tree().change_scene_to_file("res://scenes/floodmill_village.tscn")

@@ -5,6 +5,7 @@ const PropScript = preload("res://scripts/world/briarwood_prop.gd")
 const InteractableScript = preload("res://scripts/interactables/briarwood_interactable.gd")
 const NpcScene = preload("res://scenes/characters/npc.tscn")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
+const AudioManagerScript = preload("res://scripts/systems/audio_manager.gd")
 
 var quest_manager: Node
 var lyra: StaticBody2D
@@ -163,8 +164,15 @@ func _ready() -> void:
 		QuestManagerScript.pending_load_path = ""
 		apply_saved_state(load_p)
 	else:
+		if QuestManagerScript.pending_entry_pose:
+			QuestManagerScript.pending_entry_pose = false
+			$Actors/Player.position = QuestManagerScript.pending_entry_position
+			$Actors/Player.facing = QuestManagerScript.pending_entry_facing
+			$Actors/Player/Camera2D.snap_to_target()
 		_sync_world_from_quest()
 	$Landscape.queue_redraw()
+	AudioManagerScript.play_global_region(get_tree(), "briarwood")
+	$HUD.play_region_transition("BRIARWOOD FOREST", "CHAPTER 1 - WHISPERS OF BRIARWOOD")
 
 func _spawn_interactable(node_name: String, kind_name: String, item_key: String, speaker: String, prompt: String, pos: Vector2, prio: int, msg: String) -> StaticBody2D:
 	var obj := StaticBody2D.new()
@@ -299,6 +307,9 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 
 func travel_to_bellhaven() -> void:
 	if is_inside_tree():
+		QuestManagerScript.pending_entry_pose = true
+		QuestManagerScript.pending_entry_position = Vector2(-170, 168)
+		QuestManagerScript.pending_entry_facing = 0
 		get_tree().change_scene_to_file("res://scenes/sjt_exterior.tscn")
 
 func travel_to_floodmill() -> void:
@@ -306,4 +317,5 @@ func travel_to_floodmill() -> void:
 		QuestManagerScript.carry_prologue_completed = true
 		QuestManagerScript.carry_chapter1_completed = true
 		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
+		QuestManagerScript.pending_entry_pose = false
 		get_tree().change_scene_to_file("res://scenes/floodmill_village.tscn")

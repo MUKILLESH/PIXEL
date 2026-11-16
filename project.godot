@@ -6,6 +6,9 @@ run/main_scene="res://scenes/sjt_exterior.tscn"
 run/max_fps=60
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
+[autoload]
+AshvaleAudio="*res://scripts/systems/audio_manager.gd"
+
 [display]
 window/size/viewport_width=640
 window/size/viewport_height=360
