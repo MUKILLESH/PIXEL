@@ -158,6 +158,7 @@ func run() -> void:
 
 	var qm: Node = gb.get_node("QuestManager")
 	var hud: CanvasLayer = gb.get_node("HUD")
+	hud.save_path = POSTGAME_SAVE_PATH
 	var player: CharacterBody2D = gb.get_node("Actors/Player")
 	var cin: Control = hud.get_node("CinematicDirector")
 	hud._region_fade_alpha = 0.0
@@ -312,7 +313,8 @@ func run() -> void:
 	check(epi_full.contains("Of places?"), "Canonical Epilogue line 3 verbatim")
 	check(epi_full.contains("Of places. And of the people we almost forgot."), "Canonical Epilogue line 4 verbatim")
 	check(epi_full.contains("Briarwood Survey Compass") and epi_full.contains("Floodmill silver locket"), "Personalized memorial lines reflect optional discoveries")
-	check(qm.epilogue_completed and qm.elena_journal_placed and qm.get_current_objective_id() == "display_ending_credits", "Objective 13 completed: Epilogue complete & Elena's journal placed")
+	check(qm.epilogue_completed and qm.elena_journal_placed and qm.is_objective_completed("complete_final_epilogue") and qm.get_current_objective_id() == "completed", "Objective 13 completed and display_ending_credits cleared immediately on credits open")
+	check(hud.get_node("Objective").text == "Chapter 5 Complete - Ashvale Remembered.", "Objective HUD label no longer stuck on Display ending credits")
 
 	# Objective 14: EndingCredits modal appears automatically
 	var credits: Panel = hud.get_node("EndingCredits")

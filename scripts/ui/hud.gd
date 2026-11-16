@@ -147,6 +147,7 @@ func _ready() -> void:
 	title_menu.continue_requested.connect(continue_game)
 	title_menu.save_requested.connect(manual_save)
 	title_menu.inventory_requested.connect(_on_menu_inventory_requested)
+	title_menu.quit_requested.connect(quit_game)
 	title_menu.menu_closed_signal.connect(_on_modal_closed)
 
 	shortcut_hint_label = Label.new()
@@ -1433,6 +1434,10 @@ func open_ending_credits(source: StaticBody2D = null) -> void:
 		return
 	if source != null:
 		terminal = source
+	if quest_manager != null and quest_manager.get_current_objective_id() == "display_ending_credits":
+		AudioManagerScript.play_global_sfx(get_tree(), "chapter_complete")
+		quest_manager.complete_ending_credits()
+		quest_manager.save_to_file(save_path)
 	if player != null:
 		player.set("movement_locked", true)
 	if terminal != null:
@@ -1440,6 +1445,23 @@ func open_ending_credits(source: StaticBody2D = null) -> void:
 	$Prompt.hide()
 	ending_credits.open_credits(quest_manager)
 	_update_selection()
+
+func quit_game() -> void:
+	var audio_mgr := AudioManagerScript.ensure(get_tree()) if is_inside_tree() else null
+	if audio_mgr != null and audio_mgr.has_method("save_settings"):
+		audio_mgr.save_settings()
+	if title_menu != null:
+		title_menu.hide()
+	if is_inside_tree():
+		get_tree().quit(0)
+
+func toggle_fullscreen() -> bool:
+	if DisplayServer.get_name() == "headless" or not is_inside_tree():
+		return false
+	var cur_mode: DisplayServer.WindowMode = DisplayServer.window_get_mode()
+	var to_full: bool = (cur_mode != DisplayServer.WINDOW_MODE_FULLSCREEN and cur_mode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if to_full else DisplayServer.WINDOW_MODE_WINDOWED)
+	return to_full
 
 func _on_ending_credits_action(action: String) -> void:
 	if quest_manager != null and quest_manager.get_current_objective_id() == "display_ending_credits":
@@ -1532,6 +1554,11 @@ func _input(event: InputEvent) -> void:
 			return
 		elif event.keycode == KEY_F5:
 			manual_save()
+			if vp != null and is_inside_tree():
+				vp.set_input_as_handled()
+			return
+		elif event.keycode == KEY_F11:
+			toggle_fullscreen()
 			if vp != null and is_inside_tree():
 				vp.set_input_as_handled()
 			return

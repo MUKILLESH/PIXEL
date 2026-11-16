@@ -5,6 +5,7 @@ signal new_game_requested()
 signal continue_requested()
 signal save_requested()
 signal inventory_requested()
+signal quit_requested()
 signal menu_closed_signal()
 
 const AudioManagerScript = preload("res://scripts/systems/audio_manager.gd")
@@ -15,6 +16,7 @@ const OPTIONS := [
 	"SAVE PROGRESS",
 	"OPEN FIELD SATCHEL",
 	"RESUME EXPLORATION",
+	"QUIT TO DESKTOP",
 ]
 const AUDIO_BUSES := ["Master", "Music", "SFX", "Ambient"]
 const AUDIO_LABELS := ["MASTER", "MUSIC", "SFX", "AMBIENT"]
@@ -65,8 +67,8 @@ func _ready() -> void:
 	for i in range(OPTIONS.size()):
 		var btn := Button.new()
 		btn.name = "MenuButton%d" % i
-		btn.position = Vector2(36, 48 + i * 26)
-		btn.size = Vector2(376, 22)
+		btn.position = Vector2(36, 44 + i * 22)
+		btn.size = Vector2(376, 20)
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.add_theme_font_size_override("font_size", 8)
 		btn.pressed.connect(_on_button_pressed.bind(i))
@@ -136,7 +138,7 @@ func _ready() -> void:
 
 	var hint := Label.new()
 	hint.name = "HintLabel"
-	hint.text = "W/S SELECT   E/ENTER CONFIRM   ESC RESUME   F5 QUICK SAVE"
+	hint.text = "W/S SELECT   E/ENTER CONFIRM   F11 FULLSCREEN   ESC RESUME"
 	hint.position = Vector2(20, 282)
 	hint.add_theme_font_size_override("font_size", 8)
 	hint.add_theme_color_override("font_color", Color("9c937e"))
@@ -215,6 +217,8 @@ func _on_button_pressed(idx: int) -> void:
 			inventory_requested.emit()
 		4:
 			close_menu()
+		5:
+			quit_requested.emit()
 
 func _refresh_buttons() -> void:
 	for i in range(buttons.size()):

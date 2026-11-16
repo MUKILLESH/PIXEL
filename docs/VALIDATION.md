@@ -1,4 +1,4 @@
-# Validation & Playtesting — ASHVALE: THE THIRTEENTH BELL (Phases 0–6)
+# Validation & Playtesting — ASHVALE: THE THIRTEENTH BELL (Phases 0–7)
 
 ## Automated Suites
 
@@ -18,6 +18,8 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4_5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase6.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase7_release.gd
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 800 -s res://tests/profile_phase7.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 180
 ```
 
@@ -56,11 +58,20 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
   - Out-of-order progression lockouts, physical `SkybridgeBlocker` and `SanctuaryBlocker` collision gating, Whispering Cliffs checkpoint tracking (`cliff_cp_1`), predictable gale wind drift, non-destructive cliff precipice recovery, and all 4 optional mountain discoveries.
   - `SkybridgeRepair` ESC close, wrong-combo rejection, keyboard solve (`GRANITE WEIGHT`, `BRONZE PINION`, `TENSION CHAIN`), and physical north ravine crossing.
   - Pilgrim's Refuge murals, canonical 4-line Elena's Journal verbatim, all 3 Celestial Observatory pillars (`sun`, `moon`, `stars`), `CelestialPuzzle` (`FIRST BEACON DAWN`, `SECOND BEACON TIDE`, `THIRD BEACON CROWN`), Sanctuary stair physical ascent, Three-Beacon synchronization, canonical 6-line Sanctuary Revelation verbatim, Great Bell Gate unlock, non-duplicating `CHAPTER 4 COMPLETE — THE ROAD TO DAWNSPIRE` banner, Field Satchel Chapter 4 tracking, backward `Dawnspire -> Ironwatch` travel, `SAVE_VERSION = 4` resume, `v1`/`v2`/`v3` save compatibility, and `.bak` recovery.
-- **`tests/validate_phase6.gd` (72 checks, 0 failures — Total across all 11 suites: 908 checks, 0 failures):**
+- **`tests/validate_phase6.gd` (73 checks, 0 failures):**
   - `Dawnspire -> Great Bell Sanctum` gate gating pre/post Chapter 4, all 4 sanctum areas (Bell Antechamber, Hall of Forgotten Names, Heart of the Bell, Dawn Terrace), `HeartChamberBlocker` and `DawnTerraceBlocker` physical doorway gates, and all 16 approach positions free of solids.
   - Strict sequence gating across all 14 `chapter5_the_last_bell` objectives, all 3 Memory Fragments (**The Home**, **The Promise**, **The Sacrifice**), Bell Wardens' Complete Record, and canonical Elena Final Message verbatim lines (`"You already did, Aren. You remembered me."` / `"Let the thirteen tolls end here."`).
   - Three Beacon Conduits (`conduit_briarwood`, `conduit_floodmill`, `conduit_ironwatch`), replacement protective network stabilization, memory binding severance (`binding_severed = true`, `storm_resolved = true`), and skippable `last_bell_climax` cinematic (`[X]`).
-  - Dawn Terrace return, canonical Memorial Epilogue dialogue verbatim (`"Of places. And of the people we almost forgot."`) with optional discovery remembrances, Elena's journal placement, interactive `EndingCredits` (`ASHVALE: THE THIRTEENTH BELL` / `THE END`) closing cleanly without repeating ending loops, Sunrise Bellhaven (`sjt_exterior.tscn` morning lighting, `VillageMemorial`, `LyraBellhaven`, `DawnTerraceArch`, updated Caelen/Mira/Elara dialogue, and round-trip Dawn Terrace return), `SAVE_VERSION = 5` post-game `Continue` safety, `v1`–`v4` backwards compatibility, and `.bak` recovery.
+  - Dawn Terrace return, canonical Memorial Epilogue dialogue verbatim (`"Of places. And of the people we almost forgot."`) with optional discovery remembrances, Elena's journal placement, immediate clearing of `display_ending_credits` upon opening `EndingCredits` (`Chapter 5 Complete - Ashvale Remembered.`), Sunrise Bellhaven (`sjt_exterior.tscn` morning lighting, `VillageMemorial`, `LyraBellhaven`, `DawnTerraceArch`, updated Caelen/Mira/Elara dialogue, and round-trip Dawn Terrace return), `SAVE_VERSION = 5` post-game `Continue` safety, `v1`–`v4` backwards compatibility, and `.bak` recovery.
+- **`tests/validate_phase7_release.gd` (97 checks, 0 failures — Total across all 12 suites: 1,006 checks, 0 failures):**
+  - Full 6-scene & 6-quest JSON resource validation, uninterrupted Prologue -> Chapter 1 -> Chapter 2 -> Chapter 3 -> Chapter 4 -> Chapter 5 -> Epilogue -> Credits -> Sunrise Bellhaven transition chain, immediate clearing of `display_ending_credits`, auto-saved post-game chronicle, `TitleMenu` `QUIT TO DESKTOP` option & `[F11]` fullscreen safety, audio settings isolation, non-looping `Continue`, clean `New Game` flag reset, and `0` leaked orphan nodes.
+- **Windowed GPU Performance Profile (`tests/profile_phase7.gd` — OpenGL 3.3 Compatibility, RTX 4050 Laptop GPU):**
+  - `BellhavenVillage`: `steady_fps=60.0`, `avg_frame_ms=16.66 ms`, `physics_ms=0.42 ms`, `mem_mb=42.58 MB`, `orphans=0`
+  - `BriarwoodForest`: `steady_fps=60.0`, `avg_frame_ms=16.67 ms`, `physics_ms=0.52 ms`, `mem_mb=44.44 MB`, `orphans=0`
+  - `FloodmillVillage`: `steady_fps=60.0`, `avg_frame_ms=16.67 ms`, `physics_ms=0.60 ms`, `mem_mb=45.36 MB`, `orphans=0`
+  - `IronwatchKeep`: `steady_fps=60.0`, `avg_frame_ms=16.67 ms`, `physics_ms=0.55 ms`, `mem_mb=43.57 MB`, `orphans=0`
+  - `DawnspireMountain`: `steady_fps=60.0`, `avg_frame_ms=16.67 ms`, `physics_ms=0.38 ms`, `mem_mb=44.50 MB`, `orphans=0`
+  - `GreatBellSanctum`: `steady_fps=60.0`, `avg_frame_ms=16.67 ms`, `physics_ms=0.42 ms`, `mem_mb=44.73 MB`, `orphans=0`
 
 ## Visual Screenshot Captures
 

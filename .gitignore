@@ -1,7 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
 *.translation
-export_presets.cfg
 
 # Tool & temporary files
 *.tmp
@@ -12,3 +11,6 @@ Godot*.exe
 # OS files
 Thumbs.db
 .DS_Store
+
+# Distributable release builds (generated locally in dist/)
+dist/

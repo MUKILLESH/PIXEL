@@ -35,6 +35,7 @@ func capture() -> void:
 
 	var qm: Node = gb.get_node("QuestManager")
 	var hud: CanvasLayer = gb.get_node("HUD")
+	hud.save_path = "user://capture_phase6_tmp.json"
 	var player: CharacterBody2D = gb.get_node("Actors/Player")
 	var cam: Camera2D = gb.get_node("Actors/Player/Camera2D")
 	hud._region_fade_alpha = 0.0
@@ -92,4 +93,7 @@ func capture() -> void:
 	# 6. Interactive Ending Credits Screen
 	hud.open_ending_credits(gb.dawn_memorial)
 	await _snap_and_save(cam, "res://tests/verify_phase6_ending_credits.png")
+	for p in ["user://capture_phase6_tmp.json", "user://capture_phase6_tmp.json.bak", "user://capture_phase6_tmp.json.tmp"]:
+		if FileAccess.file_exists(p):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(p))
 	quit(0)

@@ -10,8 +10,10 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 - **Interact / Advance Dialogue / Confirm Puzzle:** `E`, `Enter`, or `Space`
 - **Dismiss / Cancel UI:** `Esc`
 - **Field Satchel (Inventory & Clues):** `I` or `Tab`
-- **Title / System Menu (New Game, Continue, Manual Save, Satchel):** `M` or `F10`
+- **Title / System Menu (New Game, Continue, Manual Save, Satchel, Audio, Quit):** `M` or `F10`
 - **Quick Save Progress:** `F5`
+- **Toggle Fullscreen / Windowed:** `F11`
+- **Skip Story Cinematic:** `X`
 - **In Minigames (`RunePuzzle`, `BridgeRepair`, `MirrorPuzzle`, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`, `CrestPuzzle`, `SkybridgeRepair`, `CelestialPuzzle`):** `W/S` or `Up/Down` selects rows, `A/D` or `Left/Right` cycles values, `E`/`Enter` verifies, `Esc` closes cleanly, or click UI buttons directly
 
 ## Playable Progression
@@ -85,7 +87,7 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 # Launch playable startup scene
 .\Godot_v4.7.2-stable_win64_console.exe
 
-# Run automated validation suites (908 checks total across 11 suites + bus check)
+# Run automated validation suites (1,006 checks total across 12 suites + bus check)
 .\Godot_v4.7.2-stable_win64_console.exe --headless --import
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 300 -s .\.agents\skills\godot-audio\assets\check_audio_buses.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate.gd
@@ -99,6 +101,10 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4_5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase5.gd
 .\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase6.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase7_release.gd
+
+# Run windowed GPU performance profiler
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 800 -s res://tests/profile_phase7.gd
 
 # Generate screenshot captures
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_sjt.gd
@@ -110,4 +116,4 @@ After the Great Bell of **Bellhaven Village** tolls a forbidden thirteenth time,
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 300 -s res://tests/capture_phase6.gd
 ```
 
-See [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md), [docs/ART_DIRECTION.md](docs/ART_DIRECTION.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/FILES.md](docs/FILES.md), and [docs/VALIDATION.md](docs/VALIDATION.md) for architecture, visual standards, file inventory, and manual QA steps.
+See [RELEASE_NOTES.md](RELEASE_NOTES.md), [PLAYER_GUIDE.md](PLAYER_GUIDE.md), [KNOWN_ISSUES.md](KNOWN_ISSUES.md), [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md), [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md), [docs/ART_DIRECTION.md](docs/ART_DIRECTION.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/FILES.md](docs/FILES.md), and [docs/VALIDATION.md](docs/VALIDATION.md) for release notes, player instructions, architecture, visual standards, file inventory, and manual QA steps.

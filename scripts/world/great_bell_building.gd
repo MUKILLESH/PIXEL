@@ -43,30 +43,68 @@ func _draw() -> void:
 			_draw_dawn_memorial()
 
 func _draw_sanctum_arch() -> void:
-	draw_rect(Rect2(-44, -44, 14, 44), Color("364056"))
-	draw_rect(Rect2(30, -44, 14, 44), Color("293142"))
-	draw_rect(Rect2(-48, -52, 96, 10), Color("485570"))
-	draw_rect(Rect2(-20, -49, 40, 4), Color("d9a94e"))
+	draw_rect(Rect2(-46, -48, 16, 48), Color("364056"))
+	draw_rect(Rect2(-44, -46, 5, 44), Color("4c5975"))
+	draw_rect(Rect2(30, -48, 16, 48), Color("293142"))
+	draw_rect(Rect2(41, -46, 5, 44), Color("1e2433"))
+	draw_rect(Rect2(-50, -56, 100, 12), Color("485570"))
+	draw_rect(Rect2(-48, -58, 96, 3), Color("677899"))
+	draw_rect(Rect2(-24, -52, 48, 4), Color("d9a94e"))
+	draw_rect(Rect2(-4, -55, 8, 6), Color("8be6f0"))
 
 func _draw_great_bell_monolith() -> void:
-	# Colossal Great Bell suspended from ancient bronze yoke above the Heart Chamber
-	draw_rect(Rect2(-26, -64, 52, 8), Color("3b332b"))
-	draw_rect(Rect2(-22, -60, 8, 20), Color("4f4338"))
-	draw_rect(Rect2(14, -60, 8, 20), Color("4f4338"))
-	# Bell dome & flared rim
-	var rim_col: Color = Color("c99a49") if storm_resolved else Color("6e5c48")
-	var body_col: Color = Color("a87e38") if storm_resolved else Color("4a3f38")
+	# Monumental obsidian-and-bronze belfry frame supporting the Great Bell
+	draw_rect(Rect2(-34, -80, 10, 62), Color("293142"))
+	draw_rect(Rect2(24, -80, 10, 62), Color("212838"))
+	draw_rect(Rect2(-32, -78, 3, 58), Color("475470"))
+	draw_rect(Rect2(24, -78, 3, 58), Color("3a455e"))
+	# Massive timber-and-bronze overhead yoke beam & crest
+	draw_rect(Rect2(-38, -86, 76, 10), Color("3b3026"))
+	draw_rect(Rect2(-36, -88, 72, 3), Color("6b543b"))
+	draw_rect(Rect2(-12, -94, 24, 6), Color("d9a94e") if storm_resolved else Color("6e6254"))
+	draw_rect(Rect2(-38, -86, 8, 10), Color("a67c3c"))
+	draw_rect(Rect2(30, -86, 8, 10), Color("a67c3c"))
+	# Heavy suspension bronze shaft
+	draw_rect(Rect2(-5, -78, 10, 14), Color("594836"))
+
+	# Colossal hammered-bronze Great Bell dome & flared rim
+	var dark_bronze: Color = Color("8c6629") if storm_resolved else Color("3d332c")
+	var mid_bronze: Color = Color("b88b3d") if storm_resolved else Color("54463b")
+	var high_bronze: Color = Color("e3b95c") if storm_resolved else Color("756250")
+	var core_glow: Color = Color("ffe68a") if storm_resolved else Color("6b564a")
 	draw_colored_polygon(PackedVector2Array([
-		Vector2(-12, -52), Vector2(12, -52), Vector2(22, -20), Vector2(-22, -20)
-	]), body_col)
-	draw_rect(Rect2(-24, -22, 48, 6), rim_col)
-	draw_rect(Rect2(-4, -16, 8, 6), Color("ffd978") if storm_resolved else Color("5c4a3e"))
-	# Subtle harmonic halo or dark curse chains
+		Vector2(-16, -66), Vector2(16, -66), Vector2(28, -22), Vector2(-28, -22)
+	]), dark_bronze)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-12, -64), Vector2(10, -64), Vector2(20, -24), Vector2(-20, -24)
+	]), mid_bronze)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-9, -62), Vector2(-1, -62), Vector2(-3, -26), Vector2(-14, -26)
+	]), high_bronze)
+	# Engraved horizontal rune waist bands
+	draw_rect(Rect2(-22, -46, 44, 3), Color("70d4e0") if network_stabilized or storm_resolved else Color("6e558a"))
+	draw_rect(Rect2(-25, -34, 50, 2), Color("fae08c") if storm_resolved else Color("453732"))
+	# Flared lower lip & bronze tongue clapper
+	draw_rect(Rect2(-32, -23, 64, 7), high_bronze)
+	draw_rect(Rect2(-32, -19, 64, 3), dark_bronze)
+	draw_rect(Rect2(-5, -16, 10, 7), core_glow)
+	draw_rect(Rect2(-3, -15, 6, 4), Color("ffffff") if storm_resolved else Color("332924"))
+
+	# Monumental energy aura vs dark binding chains
 	if network_stabilized or storm_resolved:
-		draw_arc(Vector2(0, -34), 28.0, 0.0, TAU, 24, Color(0.98, 0.88, 0.52, 0.55), 1.5)
+		draw_line(Vector2(0, -140), Vector2(0, -94), Color(0.98, 0.90, 0.56, 0.35), 8.0)
+		draw_arc(Vector2(0, -44), 36.0, 0.0, TAU, 32, Color(0.98, 0.88, 0.52, 0.58), 2.0)
+		draw_arc(Vector2(0, -44), 46.0, 0.0, TAU, 36, Color(0.55, 0.90, 0.98, 0.42), 1.5)
 	if not binding_severed:
-		draw_line(Vector2(-18, -36), Vector2(-24, -6), Color("261d33"), 3.0)
-		draw_line(Vector2(18, -36), Vector2(24, -6), Color("261d33"), 3.0)
+		for pair in [
+			[Vector2(-18, -56), Vector2(-34, -10)],
+			[Vector2(18, -56), Vector2(34, -10)],
+			[Vector2(-26, -32), Vector2(-22, -4)],
+			[Vector2(26, -32), Vector2(22, -4)],
+		]:
+			draw_line(pair[0], pair[1], Color("20162e"), 3.5)
+			draw_line(pair[0], pair[1], Color("8058ad"), 1.2)
+			draw_circle(pair[1], 3.0, Color("a478db"))
 
 func _draw_warden_stele() -> void:
 	draw_rect(Rect2(-11, -30, 22, 30), Color("364054"))

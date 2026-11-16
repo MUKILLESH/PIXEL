@@ -77,8 +77,8 @@ func _ready() -> void:
 
 	var sections := [
 		["CHRONICLE COMPLETE", "Prologue: Bellhaven  /  Ch 1: Briarwood  /  Ch 2: Floodmill\nCh 3: Ironwatch Keep  /  Ch 4: Dawnspire  /  Ch 5: The Last Bell"],
-		["DESIGN, NARRATIVE AND ENGINEERING", "Chronological Story Architecture, Isometric Puzzles, Cinematics,\nSave Persistence, and Complete World Simulation in Godot 4.7.2"],
-		["PROCEDURAL PIXEL ART AND AUDIO", "Handmade 2.5D Pixel Geometry, Dynamic Storm-to-Dawn Skies,\nFour-Bus Procedural Synth Score and Resonance Soundscape"],
+		["DESIGN, NARRATIVE AND ENGINEERING", "Original Story, Quest Engine, Isometric Puzzles, Cinematics,\nand Save Architecture Built with Godot Engine 4.7.2 (MIT)"],
+		["PROCEDURAL PIXEL ART AND AUDIO", "Handmade 2.5D Pixel Geometry, Dynamic Storm-to-Dawn Skies,\nand Four-Bus Procedural Synth Score (After Hours Pixel Font)"],
 	]
 	var cur_y: int = 50
 	for sec in sections:
