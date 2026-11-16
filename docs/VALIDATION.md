@@ -1,4 +1,4 @@
-# Validation & Playtesting — ASHVALE: THE THIRTEENTH BELL (Phases 0–4)
+# Validation & Playtesting — ASHVALE: THE THIRTEENTH BELL (Phases 0–5)
 
 ## Automated Suites
 
@@ -6,15 +6,18 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
 
 ```powershell
 .\Godot_v4.7.2-stable_win64_console.exe --headless --import
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate.gd
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_sjt.gd
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_zone.gd
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase1.gd
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase2.gd
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase2_5.gd
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase3.gd
-.\Godot_v4.7.2-stable_win64_console.exe --headless -s res://tests/validate_phase4.gd
-.\Godot_v4.7.2-stable_win64_console.exe --quit-after 300
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 300 -s .\.agents\skills\godot-audio\assets\check_audio_buses.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_sjt.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_zone.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase1.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase2.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 4800 -s res://tests/validate_phase2_5.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase3.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 2400 -s res://tests/validate_phase4_5.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 3600 -s res://tests/validate_phase5.gd
+.\Godot_v4.7.2-stable_win64_console.exe --headless --quit-after 180
 ```
 
 ### Coverage Summary
@@ -41,13 +44,17 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
   - Out-of-order progression lockouts, physical blockade of the northern Beacon Vault before solving Hall of Crests & clearing Shadowed Passage (`CrestPortcullisBlocker` / `PassageExitBlocker`), and all 13 chronological objectives in `chapter3_keepers_lie`.
   - Optional Warden's Tarnished Locket, 3 Watch Crest clues (`SILVER BELL`, `SUNDERED SHIELD`, `CROWNED FLAME`), `CrestPuzzle` `ESC` close, wrong-combo rejection, keyboard solve, and Shadowed Passage `checkpoint_1` + sentinel detection recovery without losing clues.
   - Canonical Last Bell Warden confrontation lines verbatim, Elena's Harmonic Lattice folio, Third Ancient Beacon triad illumination, `DawnspireGate` unlock, `CHAPTER 3 COMPLETE — THE KEEPER'S LIE` banner, Field Satchel Chapter 3 tracking, `SAVE_VERSION = 3` resume, `v1`/`v2` compatibility, and `.bak` recovery.
-- **Phase 4.5 Validation (`tests/validate_phase4_5.gd` — 44 checks, 0 failures; `check_audio_buses.gd` — 0 unknown buses; total across all 9 suites: 723 checks, 0 failures):**
+- **Phase 4.5 Validation (`tests/validate_phase4_5.gd` — 44 checks, 0 failures; `check_audio_buses.gd` — 0 unknown buses):**
   - `docs/ART_DIRECTION.md` and `default_bus_layout.tres` (`Master`, `Music`, `SFX`, `Ambient`) presence and bus registration.
   - Headless smoke boot (`--headless --quit-after 180`) verifies zero startup scene-tree errors and zero ObjectDB leaks with the `AshvaleAudio` autoload.
   - Aren idle breathing animation, walking footstep SFX trigger cadence, and Master Caelen 8-direction turn + dialogue badge.
-  - `TitleMenu` audio bus controls (`Music`, `SFX` mute at 0), independent `user://ashvale_audio_settings.json` persistence/reload, and clean test backup/restore without touching `Save v3`.
-  - All 4 skippable story cinematics (`prologue_thirteenth_bell`, `briarwood_beacon_awakens`, `floodmill_ledger_truth`, `ironwatch_warden_sacrifice`, `ironwatch_beacon_awakens`), letterbox framing, `PixelCamera` focus/restoration, and `KEY_X` skip callbacks.
-  - Region transition ambience switches, forward/backward regional entry spawns (`Ironwatch <-> Floodmill <-> Briarwood <-> Bellhaven`), and `12.5 Hz` landscape frame-time budgets across all 4 regions (`~15.97–15.98 ms/frame` at 3x `Engine.time_scale`, well under `40 ms`).
+  - `TitleMenu` audio bus controls (`Music`, `SFX` mute at 0), independent `user://ashvale_audio_settings.json` persistence/reload, and clean test backup/restore without touching saves.
+  - Skippable story cinematics, letterbox framing, `PixelCamera` focus/restoration, `KEY_X` skip callbacks, region transitions, and `12.5 Hz` landscape redraw throttling.
+- **`tests/validate_phase5.gd` (113 checks, 0 failures — Total across all 10 suites: 836 checks, 0 failures):**
+  - `Ironwatch -> Dawnspire` gate lockout pre-Chapter-3, two-step arming & transition post-Chapter-3, all 7 alpine areas, `Lyra`, `SkybridgeRepair`, `CelestialPuzzle`, and all 23 approach positions free of solids.
+  - Out-of-order progression lockouts, physical `SkybridgeBlocker` and `SanctuaryBlocker` collision gating, Whispering Cliffs checkpoint tracking (`cliff_cp_1`), predictable gale wind drift, non-destructive cliff precipice recovery, and all 4 optional mountain discoveries.
+  - `SkybridgeRepair` ESC close, wrong-combo rejection, keyboard solve (`GRANITE WEIGHT`, `BRONZE PINION`, `TENSION CHAIN`), and physical north ravine crossing.
+  - Pilgrim's Refuge murals, canonical 4-line Elena's Journal verbatim, all 3 Celestial Observatory pillars (`sun`, `moon`, `stars`), `CelestialPuzzle` (`FIRST BEACON DAWN`, `SECOND BEACON TIDE`, `THIRD BEACON CROWN`), Sanctuary stair physical ascent, Three-Beacon synchronization, canonical 6-line Sanctuary Revelation verbatim, Great Bell Gate unlock, non-duplicating `CHAPTER 4 COMPLETE — THE ROAD TO DAWNSPIRE` banner, Field Satchel Chapter 4 tracking, backward `Dawnspire -> Ironwatch` travel, `SAVE_VERSION = 4` resume, `v1`/`v2`/`v3` save compatibility, and `.bak` recovery.
 
 ## Visual Screenshot Captures
 
@@ -57,16 +64,17 @@ Run from the repository root (`d:\MUKI PROJECT\VIT_After_Hours`):
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_floodmill.gd
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 180 -s res://tests/capture_ironwatch.gd
 .\Godot_v4.7.2-stable_win64_console.exe --quit-after 240 -s res://tests/capture_phase4_5.gd -- --after
+.\Godot_v4.7.2-stable_win64_console.exe --quit-after 300 -s res://tests/capture_dawnspire.gd
 ```
 
-Inspected visual captures include `tests/briarwood_edge_lyra.png`, `tests/briarwood_bridge_repair.png`, `tests/briarwood_mirror_puzzle.png`, `tests/briarwood_beacon_complete.png`, `tests/briarwood_overview.png`, `tests/phase2_5_satchel.png`, `tests/phase2_5_menu.png`, `tests/floodmill_arrival_village.png`, `tests/floodmill_watermill_repair.png`, `tests/floodmill_sluice_puzzle.png`, `tests/floodmill_ledger_puzzle.png`, `tests/floodmill_second_beacon.png`, `tests/floodmill_overview.png`, `tests/verify_ironwatch_courtyard.png`, `tests/verify_ironwatch_archives.png`, `tests/verify_ironwatch_crest_puzzle.png`, `tests/verify_ironwatch_stealth.png`, `tests/verify_ironwatch_warden_vault.png`, `tests/verify_ironwatch_beacon_lit.png`, and Phase 4.5 before/after & cinematic captures (`tests/before_*.png`, `tests/after_*.png`, `tests/cinematic_bellhaven_toll.png`, `tests/cinematic_ironwatch_triad.png`).
+Inspected visual captures include `tests/briarwood_edge_lyra.png`, `tests/briarwood_bridge_repair.png`, `tests/briarwood_mirror_puzzle.png`, `tests/briarwood_beacon_complete.png`, `tests/briarwood_overview.png`, `tests/phase2_5_satchel.png`, `tests/phase2_5_menu.png`, `tests/floodmill_arrival_village.png`, `tests/floodmill_watermill_repair.png`, `tests/floodmill_sluice_puzzle.png`, `tests/floodmill_ledger_puzzle.png`, `tests/floodmill_second_beacon.png`, `tests/floodmill_overview.png`, `tests/verify_ironwatch_courtyard.png`, `tests/verify_ironwatch_archives.png`, `tests/verify_ironwatch_crest_puzzle.png`, `tests/verify_ironwatch_stealth.png`, `tests/verify_ironwatch_warden_vault.png`, `tests/verify_ironwatch_beacon_lit.png`, Phase 4.5 before/after & cinematic captures (`tests/before_*.png`, `tests/after_*.png`, `tests/cinematic_bellhaven_toll.png`, `tests/cinematic_ironwatch_triad.png`), and Phase 5 Dawnspire captures (`tests/verify_dawnspire_foothills.png`, `tests/verify_dawnspire_cliffs_skybridge.png`, `tests/verify_dawnspire_skybridge_puzzle.png`, `tests/verify_dawnspire_pilgrims_refuge.png`, `tests/verify_dawnspire_observatory_puzzle.png`, `tests/verify_dawnspire_sanctuary_gate.png`).
 
 ## Manual Playtesting Checklist (Interactive Verification)
 
 Because headless runs use the Dummy audio driver and cannot evaluate subjective audio balance, visual pacing, mouse hover/click ergonomics across OS window resizing, or process-restart persistence across separate OS launches, verify these manually in the windowed game (`.\Godot_v4.7.2-stable_win64_console.exe`):
 
 1. **Startup, Menu & Audio Mix Listening:** Launch the windowed game (with speakers/headphones), press `M` to open **System Menu**, adjust the **MASTER**, **MUSIC**, **SFX**, and **AMBIENT** volume steps, verify audible volume attenuation and mute at `[MUTE]`, inspect the **Field Satchel** (`I`), and confirm sharp bitmap typography and clean `Esc` dismissal.
-2. **Cinematics, Visual Polish & Skip Responsiveness:** Play through key story beats in Bellhaven, Briarwood, Floodmill, and Ironwatch Keep to verify letterbox framing, camera focus pans, subtle animated landscape details, `[X] SKIP SCENE` responsiveness, and smooth transition fades + region arrival banners.
-3. **Continuous Unassisted & Bidirectional Regional Travel:** Walk physically through Prologue Bellhaven, Briarwood Chapter 1, Floodmill Chapter 2, and Ironwatch Keep Chapter 3, plus backtrack through regional gates (`Ironwatch <-> Floodmill <-> Briarwood <-> Bellhaven`) to confirm natural facing and spawn positions.
-4. **True Process-Exit Save & Audio Settings Persistence:** Change audio levels in `TitleMenu` (`M`), press `F5` / **SAVE PROGRESS** in any region, completely exit and relaunch `.\Godot_v4.7.2-stable_win64_console.exe`, confirm saved audio sliders loaded automatically on startup, and press `M` -> **CONTINUE SAVED GAME** to verify exact region, pose, puzzle, NPC, and beacon resume.
-5. **Window Scaling & Mouse Controls:** Resize or maximize the 1280x720 window (pixel-integer scaling) and confirm mouse hover/clicks inside all seven minigame panels (`RunePuzzle`, `BridgeRepair`, `MirrorPuzzle`, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`, `CrestPuzzle`), `InventoryPanel`, and `TitleMenu` (including audio slider buttons) remain aligned and responsive.
+2. **Cinematics, Visual Polish & Skip Responsiveness:** Play through key story beats in Bellhaven, Briarwood, Floodmill, Ironwatch Keep, and Dawnspire Mountain to verify letterbox framing, camera focus pans, Whispering Cliffs gale gusts, subtle animated landscape details, `[X] SKIP SCENE` responsiveness, and smooth transition fades + region arrival banners.
+3. **Continuous Unassisted & Bidirectional Regional Travel:** Walk physically through Prologue Bellhaven, Briarwood Chapter 1, Floodmill Chapter 2, Ironwatch Keep Chapter 3, and Dawnspire Mountain Chapter 4, plus backtrack through regional gates (`Dawnspire <-> Ironwatch <-> Floodmill <-> Briarwood <-> Bellhaven`) to confirm natural facing and spawn positions.
+4. **True Process-Exit Save & Audio Settings Persistence:** Change audio levels in `TitleMenu` (`M`), press `F5` / **SAVE PROGRESS** across Bellhaven, Briarwood, Floodmill, Ironwatch, and Dawnspire Mountain, completely exit and relaunch `.\Godot_v4.7.2-stable_win64_console.exe`, confirm saved audio sliders loaded automatically on startup, and press `M` -> **CONTINUE SAVED GAME** to verify exact region, pose, puzzle, NPC, beacon, and Great Bell Gate resume.
+5. **Window Scaling & Mouse Controls:** Resize or maximize the 1280x720 window (pixel-integer scaling) and confirm mouse hover/clicks inside all nine minigame panels (`RunePuzzle`, `BridgeRepair`, `MirrorPuzzle`, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`, `CrestPuzzle`, `SkybridgeRepair`, `CelestialPuzzle`), `InventoryPanel`, and `TitleMenu` (including audio slider buttons) remain aligned and responsive.

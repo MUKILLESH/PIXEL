@@ -1,5 +1,5 @@
 extends Node
-## Data-driven chronological quest tracker supporting Prologue, Chapter 1, Chapter 2, Chapter 3, and atomic saves.
+## Data-driven chronological quest tracker supporting Prologue, Chapters 1–4, and atomic saves.
 
 signal objective_changed(objective_id: String, objective_text: String)
 signal objective_completed(objective_id: String)
@@ -7,8 +7,10 @@ signal quest_completed(quest_id: String)
 
 const QUEST_DATA_PATH := "res://data/prologue_quest.json"
 const CHAPTER3_DATA_PATH := "res://data/chapter3_quest.json"
-const SAVE_VERSION := 3
+const CHAPTER4_DATA_PATH := "res://data/chapter4_quest.json"
+const SAVE_VERSION := 4
 const CREST_SYMBOLS: Array[String] = ["IRON SWORD", "SILVER BELL", "SUNDERED SHIELD", "CROWNED FLAME"]
+const CELESTIAL_ALIGNMENTS: Array[String] = ["ECLIPSE SHADOW", "FIRST BEACON DAWN", "SECOND BEACON TIDE", "THIRD BEACON CROWN"]
 
 static var pending_load_path: String = ""
 static var pending_entry_pose: bool = false
@@ -17,6 +19,7 @@ static var pending_entry_facing: int = 2
 static var carry_prologue_completed: bool = false
 static var carry_chapter1_completed: bool = false
 static var carry_chapter2_completed: bool = false
+static var carry_chapter3_completed: bool = false
 static var carry_optional_discoveries: Dictionary = {}
 
 @export var quest_data_path: String = QUEST_DATA_PATH
@@ -78,6 +81,28 @@ var third_beacon_activated: bool = false
 var dawnspire_unlocked: bool = false
 var chapter3_completed: bool = false
 
+# Phase 5 (Chapter 4: The Road to Dawnspire) state
+var celestial_solution: Array[String] = ["FIRST BEACON DAWN", "SECOND BEACON TIDE", "THIRD BEACON CROWN"]
+var cliffs_navigated: bool = false
+var cliff_checkpoint_id: String = "cliff_cp_0"
+var cliff_checkpoint_pos: Vector2 = Vector2(30, 184)
+var cliff_resets_count: int = 0
+var skybridge_diagram_read: bool = false
+var skybridge_parts_collected: Dictionary = {}
+var skybridge_mechanism_discovered: bool = false
+var skybridge_repaired: bool = false
+var pilgrim_refuge_discovered: bool = false
+var elena_journal_read: bool = false
+var observatory_reached: bool = false
+var celestial_clues_found: Dictionary = {}
+var celestial_ring_states: Array[int] = [0, 0, 0]
+var observatory_solved: bool = false
+var sanctuary_entered: bool = false
+var beacons_synchronized: bool = false
+var sanctuary_revelation_witnessed: bool = false
+var great_bell_gate_unlocked: bool = false
+var chapter4_completed: bool = false
+
 # Saved region & player pose
 var saved_region_scene: String = ""
 var saved_player_position: Vector2 = Vector2.ZERO
@@ -108,6 +133,11 @@ func load_quest_data(path: String = "") -> void:
 		crest_solution = []
 		for cs in raw_crest_sol:
 			crest_solution.append(String(cs))
+	var raw_celestial_sol: Variant = data.get("celestial_solution", ["FIRST BEACON DAWN", "SECOND BEACON TIDE", "THIRD BEACON CROWN"])
+	if raw_celestial_sol is Array and raw_celestial_sol.size() == 3:
+		celestial_solution = []
+		for c_item in raw_celestial_sol:
+			celestial_solution.append(String(c_item))
 
 func reload_quest(path: String) -> void:
 	current_index = 0
@@ -153,11 +183,49 @@ func reload_quest(path: String) -> void:
 	third_beacon_activated = false
 	dawnspire_unlocked = false
 	chapter3_completed = false
+	cliffs_navigated = false
+	cliff_checkpoint_id = "cliff_cp_0"
+	cliff_checkpoint_pos = Vector2(30, 184)
+	cliff_resets_count = 0
+	skybridge_diagram_read = false
+	skybridge_parts_collected.clear()
+	skybridge_mechanism_discovered = false
+	skybridge_repaired = false
+	pilgrim_refuge_discovered = false
+	elena_journal_read = false
+	observatory_reached = false
+	celestial_clues_found.clear()
+	celestial_ring_states = [0, 0, 0]
+	observatory_solved = false
+	sanctuary_entered = false
+	beacons_synchronized = false
+	sanctuary_revelation_witnessed = false
+	great_bell_gate_unlocked = false
+	chapter4_completed = false
 	saved_region_scene = ""
 	saved_player_position = Vector2.ZERO
 	saved_player_facing = 2
 	has_saved_player_pose = false
 	load_quest_data(path)
+	objective_changed.emit(get_current_objective_id(), get_current_objective_text())
+
+func start_chapter4() -> void:
+	carry_prologue_completed = true
+	carry_chapter1_completed = true
+	carry_chapter2_completed = true
+	carry_chapter3_completed = true
+	reload_quest(CHAPTER4_DATA_PATH)
+	prologue_completed = true
+	briarwood_unlocked = true
+	chapter1_completed = true
+	floodmill_unlocked = true
+	beacon_activated = true
+	chapter2_completed = true
+	ironwatch_unlocked = true
+	second_beacon_activated = true
+	chapter3_completed = true
+	dawnspire_unlocked = true
+	third_beacon_activated = true
 	objective_changed.emit(get_current_objective_id(), get_current_objective_text())
 
 func start_chapter3() -> void:
@@ -181,6 +249,19 @@ func get_current_objective_id() -> String:
 	return "completed"
 
 func get_current_objective_text() -> String:
+	if quest_id == "chapter4_road_to_dawnspire":
+		if chapter4_completed or current_index >= objectives.size():
+			return "Chapter 4 Complete - Great Bell Gate Unlocked."
+		var ch4_id: String = get_current_objective_id()
+		if ch4_id == "discover_bridge_mechanism":
+			var diag_hint: String = "" if skybridge_diagram_read else " and inspect diagram"
+			return "Gather Skybridge components (%d/3)%s." % [skybridge_parts_collected.size(), diag_hint]
+		if ch4_id == "repair_skybridge" and skybridge_repaired:
+			return "Cross the repaired Skybridge north."
+		if ch4_id == "find_celestial_clues":
+			return "Find the celestial alignment clues (%d/3)." % celestial_clues_found.size()
+		return String(objectives[current_index].get("text", ""))
+
 	if quest_id == "chapter3_keepers_lie":
 		if chapter3_completed or current_index >= objectives.size():
 			return "Chapter 3 Complete - Dawnspire Road Unlocked."
@@ -222,6 +303,8 @@ func is_objective_completed(id: String) -> bool:
 func is_quest_completed(id: String = "prologue_thirteenth_toll") -> bool:
 	if id != quest_id:
 		return false
+	if quest_id == "chapter4_road_to_dawnspire":
+		return chapter4_completed
 	if quest_id == "chapter3_keepers_lie":
 		return chapter3_completed
 	if quest_id == "chapter2_drowned_village":
@@ -299,8 +382,53 @@ func can_activate_third_beacon() -> bool:
 func can_unlock_dawnspire() -> bool:
 	return get_current_objective_id() == "unlock_dawnspire_road" and not dawnspire_unlocked
 
+func set_cliff_checkpoint(cp_id: String, cp_pos: Vector2) -> void:
+	cliff_checkpoint_id = cp_id
+	cliff_checkpoint_pos = cp_pos
+
+func record_cliff_reset() -> void:
+	cliff_resets_count += 1
+
+func can_collect_skybridge_parts() -> bool:
+	return get_current_objective_id() == "discover_bridge_mechanism"
+
+func can_open_skybridge_repair() -> bool:
+	return get_current_objective_id() == "repair_skybridge" and not skybridge_repaired and skybridge_parts_collected.size() >= 3 and skybridge_diagram_read
+
+func mark_skybridge_repaired() -> void:
+	if skybridge_repaired:
+		return
+	skybridge_repaired = true
+	objective_changed.emit(get_current_objective_id(), get_current_objective_text())
+
+func can_read_elena_journal() -> bool:
+	return get_current_objective_id() == "read_elena_journal" and not elena_journal_read
+
+func can_collect_celestial_clues() -> bool:
+	return get_current_objective_id() == "find_celestial_clues"
+
+func can_open_celestial_puzzle() -> bool:
+	return get_current_objective_id() == "solve_observatory_puzzle" and not observatory_solved and celestial_clues_found.size() >= 3
+
+func check_celestial_combination(rings: Array) -> bool:
+	if rings.size() != celestial_solution.size():
+		return false
+	for i in range(celestial_solution.size()):
+		if String(rings[i]).strip_edges().to_upper() != celestial_solution[i].strip_edges().to_upper():
+			return false
+	return true
+
+func can_synchronize_beacons() -> bool:
+	return get_current_objective_id() == "synchronize_three_beacons" and not beacons_synchronized
+
+func can_witness_sanctuary_revelation() -> bool:
+	return get_current_objective_id() == "witness_sanctuary_revelation" and not sanctuary_revelation_witnessed
+
+func can_unlock_great_bell_gate() -> bool:
+	return get_current_objective_id() == "reach_great_bell_gate" and not great_bell_gate_unlocked
+
 func complete_objective(id: String) -> bool:
-	var active_quest_done: bool = chapter3_completed if quest_id == "chapter3_keepers_lie" else (chapter2_completed if quest_id == "chapter2_drowned_village" else (chapter1_completed if quest_id == "chapter1_whispers_of_briarwood" else prologue_completed))
+	var active_quest_done: bool = chapter4_completed if quest_id == "chapter4_road_to_dawnspire" else (chapter3_completed if quest_id == "chapter3_keepers_lie" else (chapter2_completed if quest_id == "chapter2_drowned_village" else (chapter1_completed if quest_id == "chapter1_whispers_of_briarwood" else prologue_completed)))
 	if active_quest_done or get_current_objective_id() != id or completed_objectives.has(id):
 		return false
 	completed_objectives[id] = true
@@ -347,10 +475,35 @@ func complete_objective(id: String) -> bool:
 			third_beacon_activated = true
 		"unlock_dawnspire_road":
 			dawnspire_unlocked = true
+		"navigate_whispering_cliffs":
+			cliffs_navigated = true
+		"discover_bridge_mechanism":
+			skybridge_mechanism_discovered = true
+		"repair_skybridge":
+			skybridge_repaired = true
+		"discover_pilgrims_refuge":
+			pilgrim_refuge_discovered = true
+		"read_elena_journal":
+			elena_journal_read = true
+		"reach_observatory":
+			observatory_reached = true
+		"solve_observatory_puzzle":
+			observatory_solved = true
+		"enter_dawnspire_sanctuary":
+			sanctuary_entered = true
+		"synchronize_three_beacons":
+			beacons_synchronized = true
+		"witness_sanctuary_revelation":
+			sanctuary_revelation_witnessed = true
+		"reach_great_bell_gate":
+			great_bell_gate_unlocked = true
 	current_index += 1
 	var reached_end: bool = (current_index >= objectives.size())
 	if reached_end:
-		if quest_id == "chapter3_keepers_lie":
+		if quest_id == "chapter4_road_to_dawnspire":
+			chapter4_completed = true
+			great_bell_gate_unlocked = true
+		elif quest_id == "chapter3_keepers_lie":
 			chapter3_completed = true
 			dawnspire_unlocked = true
 		elif quest_id == "chapter2_drowned_village":
@@ -438,11 +591,45 @@ func record_crest_clue_found(clue_id: String) -> bool:
 	objective_changed.emit("find_crest_clues", get_current_objective_text())
 	return true
 
+func record_skybridge_part_collected(part_id: String) -> bool:
+	if get_current_objective_id() != "discover_bridge_mechanism":
+		return false
+	if skybridge_parts_collected.has(part_id):
+		return false
+	skybridge_parts_collected[part_id] = true
+	if skybridge_parts_collected.size() >= 3 and skybridge_diagram_read:
+		return complete_objective("discover_bridge_mechanism")
+	objective_changed.emit("discover_bridge_mechanism", get_current_objective_text())
+	return true
+
+func record_skybridge_diagram_read() -> bool:
+	skybridge_diagram_read = true
+	if get_current_objective_id() == "discover_bridge_mechanism":
+		if skybridge_parts_collected.size() >= 3:
+			return complete_objective("discover_bridge_mechanism")
+		objective_changed.emit("discover_bridge_mechanism", get_current_objective_text())
+	return true
+
+func record_celestial_clue_found(clue_id: String) -> bool:
+	if get_current_objective_id() != "find_celestial_clues":
+		return false
+	if celestial_clues_found.has(clue_id):
+		return false
+	celestial_clues_found[clue_id] = true
+	if celestial_clues_found.size() >= 3:
+		return complete_objective("find_celestial_clues")
+	objective_changed.emit("find_celestial_clues", get_current_objective_text())
+	return true
+
 func get_npc_dialogue(npc_id: String) -> Array[String]:
 	var npcs: Dictionary = data.get("npcs", {})
 	var entry: Dictionary = npcs.get(npc_id, {})
 	var stage_key := "investigation"
-	if quest_id == "chapter3_keepers_lie":
+	if quest_id == "chapter4_road_to_dawnspire":
+		stage_key = get_current_objective_id()
+		if not entry.has(stage_key):
+			stage_key = "default"
+	elif quest_id == "chapter3_keepers_lie":
 		stage_key = get_current_objective_id()
 		if not entry.has(stage_key):
 			stage_key = "default"
@@ -530,7 +717,9 @@ func get_rune_solution() -> Array[String]:
 
 func capture_state() -> Dictionary:
 	var region_scene: String = "res://scenes/sjt_exterior.tscn"
-	if quest_id == "chapter3_keepers_lie":
+	if quest_id == "chapter4_road_to_dawnspire":
+		region_scene = "res://scenes/dawnspire_mountain.tscn"
+	elif quest_id == "chapter3_keepers_lie":
 		region_scene = "res://scenes/ironwatch_keep.tscn"
 	elif quest_id == "chapter2_drowned_village":
 		region_scene = "res://scenes/floodmill_village.tscn"
@@ -599,6 +788,26 @@ func capture_state() -> Dictionary:
 		"third_beacon_activated": third_beacon_activated,
 		"dawnspire_unlocked": dawnspire_unlocked,
 		"chapter3_completed": chapter3_completed,
+		"cliffs_navigated": cliffs_navigated,
+		"cliff_checkpoint_id": cliff_checkpoint_id,
+		"cliff_checkpoint_pos_x": cliff_checkpoint_pos.x,
+		"cliff_checkpoint_pos_y": cliff_checkpoint_pos.y,
+		"cliff_resets_count": cliff_resets_count,
+		"skybridge_diagram_read": skybridge_diagram_read,
+		"skybridge_parts_collected": skybridge_parts_collected.duplicate(),
+		"skybridge_mechanism_discovered": skybridge_mechanism_discovered,
+		"skybridge_repaired": skybridge_repaired,
+		"pilgrim_refuge_discovered": pilgrim_refuge_discovered,
+		"elena_journal_read": elena_journal_read,
+		"observatory_reached": observatory_reached,
+		"celestial_clues_found": celestial_clues_found.duplicate(),
+		"celestial_ring_states": celestial_ring_states.duplicate(),
+		"observatory_solved": observatory_solved,
+		"sanctuary_entered": sanctuary_entered,
+		"beacons_synchronized": beacons_synchronized,
+		"sanctuary_revelation_witnessed": sanctuary_revelation_witnessed,
+		"great_bell_gate_unlocked": great_bell_gate_unlocked,
+		"chapter4_completed": chapter4_completed,
 	}
 
 func apply_state(state: Dictionary) -> bool:
@@ -684,6 +893,41 @@ func apply_state(state: Dictionary) -> bool:
 	third_beacon_activated = bool(state.get("third_beacon_activated", false))
 	dawnspire_unlocked = bool(state.get("dawnspire_unlocked", false))
 	chapter3_completed = bool(state.get("chapter3_completed", false))
+
+	# Phase 5 fields (safely defaulted when migrating v1/v2/v3 saves)
+	cliffs_navigated = bool(state.get("cliffs_navigated", false))
+	cliff_checkpoint_id = String(state.get("cliff_checkpoint_id", "cliff_cp_0"))
+	cliff_checkpoint_pos = Vector2(
+		float(state.get("cliff_checkpoint_pos_x", 30.0)),
+		float(state.get("cliff_checkpoint_pos_y", 184.0))
+	)
+	cliff_resets_count = int(state.get("cliff_resets_count", 0))
+	skybridge_diagram_read = bool(state.get("skybridge_diagram_read", false))
+	var raw_sb_parts: Variant = state.get("skybridge_parts_collected", {})
+	skybridge_parts_collected = raw_sb_parts.duplicate() if raw_sb_parts is Dictionary else {}
+	skybridge_mechanism_discovered = bool(state.get("skybridge_mechanism_discovered", false))
+	skybridge_repaired = bool(state.get("skybridge_repaired", false))
+	pilgrim_refuge_discovered = bool(state.get("pilgrim_refuge_discovered", false))
+	elena_journal_read = bool(state.get("elena_journal_read", false))
+	observatory_reached = bool(state.get("observatory_reached", false))
+	var raw_cel_clues: Variant = state.get("celestial_clues_found", {})
+	celestial_clues_found = {}
+	if raw_cel_clues is Dictionary:
+		celestial_clues_found = raw_cel_clues.duplicate()
+	elif raw_cel_clues is Array:
+		for cc in raw_cel_clues:
+			celestial_clues_found[String(cc)] = true
+	var raw_cel_rings: Variant = state.get("celestial_ring_states", [0, 0, 0])
+	celestial_ring_states = [0, 0, 0]
+	if raw_cel_rings is Array and raw_cel_rings.size() == 3:
+		for ri in range(3):
+			celestial_ring_states[ri] = clampi(int(raw_cel_rings[ri]), 0, 3)
+	observatory_solved = bool(state.get("observatory_solved", false))
+	sanctuary_entered = bool(state.get("sanctuary_entered", false))
+	beacons_synchronized = bool(state.get("beacons_synchronized", false))
+	sanctuary_revelation_witnessed = bool(state.get("sanctuary_revelation_witnessed", false))
+	great_bell_gate_unlocked = bool(state.get("great_bell_gate_unlocked", false))
+	chapter4_completed = bool(state.get("chapter4_completed", false))
 
 	saved_region_scene = String(state.get("region_scene", ""))
 	has_saved_player_pose = bool(state.get("has_player_pose", false))

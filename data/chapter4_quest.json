@@ -1,0 +1,217 @@
+{
+  "quest_id": "chapter4_road_to_dawnspire",
+  "title": "Chapter 4: The Road to Dawnspire",
+  "celestial_solution": ["FIRST BEACON DAWN", "SECOND BEACON TIDE", "THIRD BEACON CROWN"],
+  "objectives": [
+    {
+      "id": "enter_foothills",
+      "text": "Enter the Dawnspire Foothills."
+    },
+    {
+      "id": "speak_lyra_foothills",
+      "text": "Speak with Lyra about the journey."
+    },
+    {
+      "id": "navigate_whispering_cliffs",
+      "text": "Navigate the Whispering Cliffs."
+    },
+    {
+      "id": "investigate_skybridge",
+      "text": "Investigate the Broken Skybridge."
+    },
+    {
+      "id": "discover_bridge_mechanism",
+      "text": "Discover the bridge repair mechanism and parts (0/3)."
+    },
+    {
+      "id": "repair_skybridge",
+      "text": "Repair and cross the Skybridge."
+    },
+    {
+      "id": "discover_pilgrims_refuge",
+      "text": "Discover Pilgrim's Refuge."
+    },
+    {
+      "id": "read_elena_journal",
+      "text": "Read Elena's preserved journal."
+    },
+    {
+      "id": "reach_observatory",
+      "text": "Reach the Celestial Observatory."
+    },
+    {
+      "id": "find_celestial_clues",
+      "text": "Find the celestial alignment clues (0/3)."
+    },
+    {
+      "id": "solve_observatory_puzzle",
+      "text": "Solve the Observatory puzzle."
+    },
+    {
+      "id": "enter_dawnspire_sanctuary",
+      "text": "Enter Dawnspire Sanctuary."
+    },
+    {
+      "id": "synchronize_three_beacons",
+      "text": "Synchronize the three ancient beacons."
+    },
+    {
+      "id": "witness_sanctuary_revelation",
+      "text": "Witness the sanctuary revelation."
+    },
+    {
+      "id": "reach_great_bell_gate",
+      "text": "Reach the Great Bell Gate."
+    },
+    {
+      "id": "complete_chapter4",
+      "text": "Complete Chapter 4."
+    }
+  ],
+  "npcs": {
+    "lyra": {
+      "speaker": "HISTORIAN LYRA",
+      "enter_foothills": [
+        "LYRA: \"Look up through the storm-clouds, Aren—that blackened spire above the snowline is Dawnspire Summit.\"",
+        "LYRA: \"Step up to the Foothill Road Marker so I can sight the distant bell tower against the three beacon lines.\""
+      ],
+      "speak_lyra_foothills": [
+        "LYRA: \"Every bell chime from up there rattles the stones beneath our boots. The Great Bell's binding is fraying faster than Elena feared.\"",
+        "AREN: \"Briarwood, Floodmill, and Ironwatch are all burning bright behind us now. Wait for us at the switchbacks—we finish what Mother started.\"",
+        "LYRA: \"All three Ancient Beacons are feeding upward toward the peak. Stay close to the stone wind-shelters once we climb into the Whispering Cliffs.\""
+      ],
+      "navigate_whispering_cliffs": [
+        "LYRA: \"Hear how the gale howls along the eastern ridge? Wait out sudden gusts beside the carved shelter cairns, then examine the Pilgrim Cairn above the cliffs.\""
+      ],
+      "investigate_skybridge": [
+        "LYRA: \"That collapsed span across the ravine must be the Ancient Skybridge. Inspect the south winch housing to see what counterweight gear it lost.\""
+      ],
+      "discover_bridge_mechanism": [
+        "LYRA: \"Briarwood's footbridge only needed timber; this ravine span balances on heavy mechanical counterweights. Read the stone engineering diagram and gather all three support components.\""
+      ],
+      "repair_skybridge": [
+        "LYRA: \"Everything fits the winch schematics! Engage the counterweight mechanism at the south anchor, then cross safely onto the northern ridge.\""
+      ],
+      "discover_pilgrims_refuge": [
+        "LYRA: \"A stone chapel weathered through centuries of storm... Old travelers rested in Pilgrim's Refuge before facing the final ascent. Examine the sanctuary murals ahead.\""
+      ],
+      "read_elena_journal": [
+        "LYRA: \"Wait—look by that vigil candle on the west stone bench. That oiled leather binding belongs to Elena.\"",
+        "AREN: \"It's Mother's travel journal. Hold a second, Lyra...\"",
+        "LYRA: \"Whatever truth she left in those pages, remember you walked every league of Ashvale to earn it.\""
+      ],
+      "reach_observatory": [
+        "LYRA: \"East of the Skybridge plaza rises the Celestial Observatory. If the three Beacons answer anywhere on this mountain, their lenses point there.\""
+      ],
+      "find_celestial_clues": [
+        "LYRA: \"Three carved astronomical pillars ring this terrace—Solar, Lunar, and Stellar. Read all three inscriptions so we know which Beacon powers each ring.\""
+      ],
+      "solve_observatory_puzzle": [
+        "LYRA: \"FIRST BEACON DAWN on the Sun, SECOND BEACON TIDE on the Moon, THIRD BEACON CROWN on the Stars! Step to the central astrolabe and align the three rings.\""
+      ],
+      "enter_dawnspire_sanctuary": [
+        "LYRA: \"Look northward, Aren! All three Beacon beams pierce straight past the unsealed stair into Dawnspire Sanctuary!\""
+      ],
+      "synchronize_three_beacons": [
+        "LYRA: \"The Summit Nexus waits before the overlook. Synchronize the three Ancient Beacons into one unbroken harmonic shield!\""
+      ],
+      "witness_sanctuary_revelation": [
+        "LYRA: \"The crystal conduit is humming with a familiar warmth... Touch the awakened Sanctuary Nexus, Aren. Someone left a memory inside it.\""
+      ],
+      "reach_great_bell_gate": [
+        "LYRA: \"Elena trusted us with the choice no Warden dared face alone. Approach the Great Bell Gate northeast and hear its seal break.\""
+      ],
+      "complete_chapter4": [
+        "LYRA: \"The outer storm-chains fell cleanly, Aren. Before we cross the threshold into the last chamber, stand with me a moment above Ashvale.\""
+      ],
+      "default": [
+        "LYRA: \"All three Ancient Beacons hold steady across the mountain below. Ready whenever you are to cross the Great Bell Gate.\""
+      ]
+    }
+  },
+  "story_events": {
+    "foothills_entry": [
+      "Far above the frozen evergreens, storm-clouds coil like iron smoke around Dawnspire's distant spire.",
+      "A low twelfth-and-thirteenth overtone vibrates faintly in the stone marker at the mountain's foot, answered from behind by golden-cyan sparks rising out of Ironwatch."
+    ],
+    "cliffs_navigated_text": [
+      "A stacked cairn of pilgrim stones stands sheltered behind a fractured cliff buttress, etched with faded tally marks and ribbon scraps.",
+      "INSCRIPTION: \"When the Whispering Cliffs howl, huddle behind stone shelters until the gale passes. Keep your footing back from the east precipice, and aim for the Skybridge.\""
+    ],
+    "skybridge_inspect": [
+      "Deep wind churns inside the gorge beneath shattered masonry piers and slack iron cable chains.",
+      "Only heavy granite counterweights, a brass drive pinion, and tension anchor chains can balance the Skybridge safely across the abyss."
+    ],
+    "skybridge_diagram_clue": [
+      "CARVED WINCH DIAGRAM (DAWNSPIRE MASONRY): \"Never haul stone on dry timber alone. Seat BAY 1: GRANITE COUNTERWEIGHT to anchor load, BAY 2: BRONZE PINION WHEEL to engage lift, BAY 3: TENSION ANCHOR CHAIN to lock the span level.\""
+    ],
+    "refuge_discovered_text": [
+      "Warm taper embers still glow inside a moss-draped stone chapel carved straight into the mountain shelf.",
+      "Faded murals depict early bell-pilgrims walking beside lantern-bearers—until later frescos chisel out their faces in hollow silver rings.",
+      "LYRA: \"Whole families climbed up here hoping to bargain their memories for safety... and not one painted figure returns down the road.\""
+    ],
+    "elena_journal_entry": [
+      "ELENA'S JOURNAL: \"I once believed saving someone meant keeping them from pain.\"",
+      "ELENA'S JOURNAL: \"But every name taken by the bell leaves another wound in the world.\"",
+      "ELENA'S JOURNAL: \"If Aren ever follows this road, I hope he understands that courage is not the absence of fear.\"",
+      "ELENA'S JOURNAL: \"It is choosing to do what is right, even when the cost is uncertain.\"",
+      "AREN: \"She knew the Bell wouldn't spare her either... yet she kept charting the beacons so someone could save Ashvale without erasing who we are.\"",
+      "LYRA: \"Then let us carry every truth she refused to let the kingdom forget—straight to the summit.\""
+    ],
+    "observatory_entry": [
+      "Stepping beneath ringed basalt arches, Aren enters an open-air mountain Observatory inlaid with brass ecliptic grooves and star charts pointing down at Briarwood, Floodmill, and Ironwatch."
+    ],
+    "celestial_clue_sun_text": [
+      "SOLAR ALIGNMENT PILLAR (1/3): \"Ring I — Sun awakens where green woods first parted at morning. Bind the SOLAR RING to FIRST BEACON DAWN.\""
+    ],
+    "celestial_clue_moon_text": [
+      "LUNAR ALIGNMENT PILLAR (2/3): \"Ring II — Moon governs floodwater and thirty-six remembered hearths beneath tranquil silver light. Bind the LUNAR RING to SECOND BEACON TIDE.\""
+    ],
+    "celestial_clue_stars_text": [
+      "STELLAR ALIGNMENT PILLAR (3/3): \"Ring III — Crowned Stars crown the fortress watch above Ironwatch Vault. Bind the STELLAR RING to THIRD BEACON CROWN.\""
+    ],
+    "observatory_solved_text": [
+      "Gold, silver-blue, and violet rays shoot skyward from the Observatory astrolabe, striking the summit stair and shattering the ward-seal across Dawnspire Sanctuary!",
+      "LYRA: \"All three Ancient Beacons are locked in celestial orbit—the path to Dawnspire Sanctuary stands open!\""
+    ],
+    "sanctuary_entry": [
+      "Mist parts around a quiet alpine sanctuary jutting over the clouds of Ashvale. Below, three distant pinpoints of golden-cyan fire glow across the kingdom like fixed stars."
+    ],
+    "beacons_synchronized_text": [
+      "Three radiant streams of Briarwood amber, Floodmill silver-blue, and Ironwatch violet-gold converge cleanly into Dawnspire's Summit Nexus!",
+      "Thunder rolls softly across the Veilstorm overhead as a steady dome of ancient beacon resonance anchors above the sanctuary."
+    ],
+    "sanctuary_revelation_echo": [
+      "ELENA'S ECHO: \"Aren, if you have reached Dawnspire, you have done what I could not.\"",
+      "ELENA'S ECHO: \"The beacons are ready. But the bell's binding remains.\"",
+      "ELENA'S ECHO: \"The final decision cannot be made by the Wardens, the kingdom, or even by me.\"",
+      "ELENA'S ECHO: \"It belongs to those who must live with what comes after.\"",
+      "AREN: \"Then I will make sure they have a future to remember.\"",
+      "LYRA: \"We've come this far. We finish it together.\""
+    ],
+    "great_bell_gate_opened": [
+      "Heavy storm-forged chains snap cleanly away as three-beacon resonance strikes the Great Bell Gate.",
+      "Deep from beyond the parted stone portal, a slow bronze hum trembles against the mountain stone—awaiting the final descent."
+    ],
+    "chapter4_finale_dialogue": [
+      "LYRA: \"Everything Briarwood sheltered, everything Floodmill paid, and everything Ironwatch concealed comes down to what waits beyond this threshold.\"",
+      "AREN: \"Mother held the line this far for us. Whatever comes next at the Last Bell, Ashvale will keep its own name.\""
+    ],
+    "optional_mountain_campsite": [
+      "A cold slate fire-ring, brass compass case, and shredded Warden oilskin coat lie wedged beside a stunted pine.",
+      "A damp scrap scribbled in margin shorthand reads: \"Left Ironwatch before first snow—two beacons answered, third remains chained beneath the Keeper's vault. Hope holds.\""
+    ],
+    "optional_pilgrim_letter": [
+      "Folded tightly inside an iron cairn tin rests an unmailed note addressed simply to 'My Sister in Bellhaven':",
+      "\"If you ever hear thirteen chimes and realize you cannot recall our father's song, forgive me. The Wardens promised the bell only trims grief—yet each climb feels lighter and emptier than before.\""
+    ],
+    "optional_pilgrim_memorial": [
+      "Forty small river stones sit stacked around a frost-blackened plaque jutting above the eastern drop:",
+      "MEMORIAL PLAQUE: \"For couriers, masons, and nameless climbers who carried memories up Dawnspire when the valley forgot their voices. Remembered now.\""
+    ],
+    "optional_hidden_overlook": [
+      "From this quiet western crag, Bellhaven's warm lantern cluster, Briarwood's canopy, Floodmill's silver basin, and Ironwatch's battlements lie mapped beneath a single sweep of clouds.",
+      "AREN: \"For the first time since the Thirteenth Toll, every road looks connected—not lost.\""
+    ]
+  }
+}

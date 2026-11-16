@@ -34,3 +34,8 @@
 - **Mood:** Foreboding mountain fortress of the Bell Wardens guarding dark secrets behind basalt walls and violet wards.
 - **Palette:** Obsidian & basalt blue-gray (`#12131c`, `#282c3a`, `#43495e`), aged crimson-violet Warden slate (`#4a3654`, `#3b2759`), antique brass (`#d9a94e`), warm orange torch pools (`#ff9e42`), cyan Ward Alcoves (`#8be6f0`), and spectral sentinel crimson (`#ff5c7c`).
 - **Details:** Crenellated basalt towers, ringed Warden statues, discarded barracks shields and spears, worn crimson/gold banners, cracked battlement stonework, flickering wall torches, Gothic lancet stained glass inside the cutaway Archives, glowing Safe Alcoves in the Shadowed Passage, and converging three-beacon harmonic rays.
+
+### Dawnspire Mountain (Chapter 4 — *The Road to Dawnspire*)
+- **Mood:** Storm-wrapped alpine ascent mixing cold granite loneliness with warm refuge embers and radiant golden-cyan beacon harmony.
+- **Palette:** Storm horizon indigo (`#101624`, `#162033`), blue-gray alpine stone (`#2a3245`, `#434d63`), frosted snow caps (`#dbe8f5`), evergreen mountain pine (`#203c36`), Pilgrim Refuge crimson frost foilage (`#992f3e`, `#c44b55`), warm shrine vigil light (`#f5c56b`), and three-beacon sanctuary gold/cyan/violet (`#ffe38f`, `#8ef5ff`, `#b994ff`).
+- **Details:** Drifting mountain storm clouds, snow-dusted foothill arches, glowing Whispering Cliffs shelter cairns, telegraphed wind-gust corridors, misty ravine Skybridge anchors and tension cables, cutaway Pilgrim's Refuge murals with crimson frost trees, rotating Celestial Observatory star-mandala, and Summit Sanctuary three-beacon convergence rays leading up to the Great Bell Gate.

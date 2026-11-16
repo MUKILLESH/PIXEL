@@ -17,6 +17,8 @@ const WatermillRepairScript = preload("res://scripts/ui/watermill_repair.gd")
 const SluicePuzzleScript = preload("res://scripts/ui/sluice_puzzle.gd")
 const LedgerPuzzleScript = preload("res://scripts/ui/ledger_puzzle.gd")
 const CrestPuzzleScript = preload("res://scripts/ui/crest_puzzle.gd")
+const SkybridgeRepairScript = preload("res://scripts/ui/skybridge_repair.gd")
+const CelestialPuzzleScript = preload("res://scripts/ui/celestial_puzzle.gd")
 const InventoryPanelScript = preload("res://scripts/ui/inventory_panel.gd")
 const TitleMenuScript = preload("res://scripts/ui/title_menu.gd")
 const QuestManagerScript = preload("res://scripts/systems/quest_manager.gd")
@@ -34,6 +36,8 @@ var watermill_repair: Panel
 var sluice_puzzle: Panel
 var ledger_puzzle: Panel
 var crest_puzzle: Panel
+var skybridge_repair: Panel
+var celestial_puzzle: Panel
 var stealth_status_label: Label
 var shortcut_hint_label: Label
 var cinematic_director: Control
@@ -106,6 +110,16 @@ func _ready() -> void:
 	add_child(crest_puzzle)
 	crest_puzzle.crest_solved_signal.connect(_on_crest_solved)
 	crest_puzzle.crest_closed_signal.connect(_on_modal_closed)
+	skybridge_repair = SkybridgeRepairScript.new()
+	skybridge_repair.name = "SkybridgeRepair"
+	add_child(skybridge_repair)
+	skybridge_repair.skybridge_repaired_signal.connect(_on_skybridge_repaired)
+	skybridge_repair.skybridge_closed_signal.connect(_on_modal_closed)
+	celestial_puzzle = CelestialPuzzleScript.new()
+	celestial_puzzle.name = "CelestialPuzzle"
+	add_child(celestial_puzzle)
+	celestial_puzzle.celestial_solved_signal.connect(_on_celestial_solved)
+	celestial_puzzle.celestial_closed_signal.connect(_on_modal_closed)
 	stealth_status_label = Label.new()
 	stealth_status_label.name = "StealthStatus"
 	stealth_status_label.visible = false
@@ -231,7 +245,7 @@ func start_story_cinematic(cin_id: String, focus_pos: Vector2, tint: Color = Col
 
 func _is_modal_open() -> bool:
 	var seq_open: bool = (cinematic_director != null and cinematic_director.active and cinematic_director.sequence_mode)
-	return seq_open or panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (crest_puzzle != null and crest_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
+	return seq_open or panel.visible or (rune_puzzle != null and rune_puzzle.visible) or (bridge_repair != null and bridge_repair.visible) or (mirror_puzzle != null and mirror_puzzle.visible) or (watermill_repair != null and watermill_repair.visible) or (sluice_puzzle != null and sluice_puzzle.visible) or (ledger_puzzle != null and ledger_puzzle.visible) or (crest_puzzle != null and crest_puzzle.visible) or (skybridge_repair != null and skybridge_repair.visible) or (celestial_puzzle != null and celestial_puzzle.visible) or (inventory_panel != null and inventory_panel.visible) or (title_menu != null and title_menu.visible) or (prologue_banner != null and prologue_banner.visible)
 
 func _process(delta: float) -> void:
 	if _region_fade_alpha > 0.0 and transition_fade != null:
@@ -304,7 +318,10 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 		var cb: Callable = Callable()
 		if npc_id == "lyra":
 			var stage_id: String = quest_manager.get_current_objective_id()
-			if quest_manager.quest_id == "chapter3_keepers_lie":
+			if quest_manager.quest_id == "chapter4_road_to_dawnspire":
+				if stage_id == "speak_lyra_foothills":
+					cb = func(): quest_manager.complete_objective("speak_lyra_foothills")
+			elif quest_manager.quest_id == "chapter3_keepers_lie":
 				cb = Callable()
 			elif quest_manager.quest_id == "chapter2_drowned_village":
 				if stage_id == "speak_lyra_arrival":
@@ -328,6 +345,9 @@ func _handle_story_interaction(text: String, source: StaticBody2D) -> void:
 		else:
 			cb = func(): quest_manager.record_npc_talked(npc_id)
 		show_dialogue(source.speaker_name, lines, source, cb)
+		return
+	if source.has_method("get_dawnspire_kind"):
+		_handle_dawnspire_interaction(source)
 		return
 	if source.has_method("get_ironwatch_kind"):
 		_handle_ironwatch_interaction(source)
@@ -746,8 +766,162 @@ func _handle_ironwatch_interaction(source: StaticBody2D) -> void:
 					"AREN: \"The First Watch suffered a disaster, and later keepers hid the beacons instead of ending the cycle. Mother proved there is another way.\"",
 					"LYRA: \"All three Ancient Beacons shine across Ashvale now, Aren. The mountain road to Dawnspire belongs to us.\""
 				], source, func(): _finish_chapter3())
+			elif quest_manager.chapter3_completed:
+				if source.get("ready_to_travel") == true and get_parent().has_method("travel_to_dawnspire"):
+					show_dialogue(title, ["Climbing the frozen mountain switchbacks beyond Ironwatch toward Dawnspire Summit..."], source, func(): get_parent().travel_to_dawnspire())
+				else:
+					show_dialogue(title, ["The Citadel Gate stands unlocked beneath the golden-sapphire beam pointing up toward Dawnspire Mountain."], source, func():
+						source.set("ready_to_travel", true)
+						if source.has_method("refresh_prompt"):
+							source.refresh_prompt("[E] ENTER DAWNSPIRE MOUNTAIN")
+					)
 			else:
 				show_dialogue(title, ["The Citadel Gate stands unlocked beneath the golden-sapphire beam pointing up toward Dawnspire."], source)
+
+func _handle_dawnspire_interaction(source: StaticBody2D) -> void:
+	var kind: String = source.get_dawnspire_kind()
+	var obj_id: String = quest_manager.get_current_objective_id()
+	var title: String = source.speaker_name if source.speaker_name != "" else "DAWNSPIRE MOUNTAIN"
+	match kind:
+		"ironwatch_return_gate":
+			if get_parent().has_method("travel_to_ironwatch"):
+				show_dialogue(title, ["Descending the alpine road back toward Ironwatch Keep..."], source, func(): get_parent().travel_to_ironwatch())
+			else:
+				show_dialogue(title, ["Ironwatch Keep lies down the frozen foothills trail."], source)
+		"foothills_entrance":
+			if obj_id == "enter_foothills":
+				start_story_cinematic("dawnspire_first_view", Vector2(0, -180), Color(0.58, 0.78, 0.98), "distant_thunder")
+				show_dialogue(title, quest_manager.get_story_lines("foothills_entry"), source, func(): quest_manager.complete_objective("enter_foothills"))
+			else:
+				show_dialogue(title, ["Storm clouds gather around Dawnspire Summit while Ironwatch lies below to the south."], source)
+		"cliff_marker":
+			if obj_id in ["enter_foothills", "speak_lyra_foothills"]:
+				show_dialogue(title, ["A stone wind cairn overlooks the eastern ridge. Speak with Historian Lyra at the Foothills road first."], source)
+			elif obj_id == "navigate_whispering_cliffs":
+				show_dialogue(title, quest_manager.get_story_lines("cliffs_navigated_text"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "mountain_wind")
+					quest_manager.complete_objective("navigate_whispering_cliffs")
+				)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("cliffs_navigated_text"), source)
+		"skybridge_console":
+			if obj_id in ["enter_foothills", "speak_lyra_foothills", "navigate_whispering_cliffs"]:
+				show_dialogue(title, ["Gale winds roar across a collapsed stone suspension span. Navigate the Whispering Cliffs first."], source)
+			elif obj_id == "investigate_skybridge":
+				show_dialogue(title, quest_manager.get_story_lines("skybridge_inspect"), source, func(): quest_manager.complete_objective("investigate_skybridge"))
+			elif obj_id == "discover_bridge_mechanism":
+				var diag_note: String = "Diagram read." if quest_manager.skybridge_diagram_read else "Inspect the Masonry Diagram east."
+				show_dialogue(title, ["Winch bays need 3 counterweight components (%d/3 gathered). %s" % [quest_manager.skybridge_parts_collected.size(), diag_note]], source)
+			elif quest_manager.can_open_skybridge_repair():
+				open_skybridge_repair(source)
+			elif quest_manager.skybridge_repaired and obj_id == "repair_skybridge":
+				show_dialogue(title, ["The Skybridge counterweights lock horizon-level! Walk straight north across the span onto the ridge."], source)
+			else:
+				show_dialogue(title, ["Balanced granite counterweights and anchor chains hold the Skybridge steady over the gorge."], source)
+		"skybridge_diagram":
+			if obj_id in ["enter_foothills", "speak_lyra_foothills", "navigate_whispering_cliffs", "investigate_skybridge"]:
+				show_dialogue(title, ["Chiseled engineering reliefs cover this stone slab. Inspect the Broken Skybridge winch housing first."], source)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("skybridge_diagram_clue"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "stone_movement")
+					quest_manager.record_skybridge_diagram_read()
+					source.set("inspected", true)
+					source.queue_redraw()
+				)
+		"skybridge_part":
+			if source.get("collected") == true:
+				show_dialogue(title, ["You already stowed this Skybridge counterweight component."], source)
+			elif not quest_manager.can_collect_skybridge_parts():
+				show_dialogue(title, ["Heavy bronze and stone winch fittings sit in the scree. Inspect the Broken Skybridge first so you know what fits."], source)
+			else:
+				var p_id: String = String(source.get("item_id"))
+				show_dialogue(title, [source.message], source, func():
+					if quest_manager.record_skybridge_part_collected(p_id):
+						AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
+						source.set("collected", true)
+						source.queue_redraw()
+				)
+		"refuge_mural":
+			if not quest_manager.skybridge_repaired:
+				show_dialogue(title, ["Weathered chapel arches rise north across the ravine."], source)
+			elif obj_id == "discover_pilgrims_refuge":
+				show_dialogue(title, quest_manager.get_story_lines("refuge_discovered_text"), source, func(): quest_manager.complete_objective("discover_pilgrims_refuge"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("refuge_discovered_text"), source)
+		"elena_journal":
+			if not quest_manager.pilgrim_refuge_discovered:
+				show_dialogue(title, ["An oiled leather satchel book rests by the chapel vigil lamp. Inspect the Pilgrim's Refuge murals first."], source)
+			elif quest_manager.can_read_elena_journal():
+				start_story_cinematic("dawnspire_elena_journal", source.global_position + Vector2(0, -16), Color(0.95, 0.80, 0.48), "item_pickup")
+				show_dialogue("ELENA'S PRESERVED JOURNAL", quest_manager.get_story_lines("elena_journal_entry"), source, func(): quest_manager.complete_objective("read_elena_journal"))
+			else:
+				show_dialogue("ELENA'S PRESERVED JOURNAL", quest_manager.get_story_lines("elena_journal_entry"), source)
+		"observatory_arch":
+			if not quest_manager.elena_journal_read:
+				show_dialogue(title, ["Frost-carved astrolabe rings tower ahead. Finish reading Elena's preserved journal inside Pilgrim's Refuge first."], source)
+			elif obj_id == "reach_observatory":
+				show_dialogue(title, quest_manager.get_story_lines("observatory_entry"), source, func():
+					AudioManagerScript.play_global_sfx(get_tree(), "observatory_activate")
+					quest_manager.complete_objective("reach_observatory")
+				)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("observatory_entry"), source)
+		"celestial_clue":
+			var c_id: String = String(source.get("item_id"))
+			var lines: Array[String] = quest_manager.get_story_lines("celestial_clue_" + c_id + "_text")
+			if not quest_manager.observatory_reached:
+				show_dialogue(title, ["Brass astronomical inscriptions encircle the stone dome. Step through the Celestial Observatory Arch first."], source)
+			elif obj_id == "find_celestial_clues" and not quest_manager.celestial_clues_found.has(c_id):
+				show_dialogue(title, lines, source, func():
+					if quest_manager.record_celestial_clue_found(c_id):
+						AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
+						source.set("inspected", true)
+						source.queue_redraw()
+				)
+			else:
+				show_dialogue(title, lines, source)
+		"celestial_mechanism":
+			if not quest_manager.observatory_reached or quest_manager.celestial_clues_found.size() < 3:
+				show_dialogue(title, ["Three interlocking celestial rings remain locked (%d/3 alignment pillars studied). Inspect Solar, Lunar, and Stellar pillars around this terrace first." % quest_manager.celestial_clues_found.size()], source)
+			elif quest_manager.can_open_celestial_puzzle():
+				open_celestial_puzzle(source)
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("observatory_solved_text"), source)
+		"sanctuary_threshold":
+			if not quest_manager.observatory_solved:
+				show_dialogue(title, ["A storm-ward seals the stairway upward toward Dawnspire Sanctuary. Solve the Celestial Observatory first."], source)
+			elif obj_id == "enter_dawnspire_sanctuary":
+				show_dialogue(title, quest_manager.get_story_lines("sanctuary_entry"), source, func(): quest_manager.complete_objective("enter_dawnspire_sanctuary"))
+			else:
+				show_dialogue(title, quest_manager.get_story_lines("sanctuary_entry"), source)
+		"sanctuary_nexus":
+			if not quest_manager.sanctuary_entered:
+				show_dialogue(title, ["The triple-socket crystal conduit waits at the center of Dawnspire Sanctuary. Step through the Sanctuary Arch first."], source)
+			elif quest_manager.can_synchronize_beacons():
+				start_story_cinematic("dawnspire_beacons_synchronized", source.global_position + Vector2(0, -24), Color(0.98, 0.88, 0.48), "sanctuary_awaken")
+				show_dialogue(title, quest_manager.get_story_lines("beacons_synchronized_text"), source, func(): quest_manager.complete_objective("synchronize_three_beacons"))
+			elif quest_manager.can_witness_sanctuary_revelation():
+				show_dialogue("SANCTUARY REVELATION - ELENA'S ECHO", quest_manager.get_story_lines("sanctuary_revelation_echo"), source, func(): quest_manager.complete_objective("witness_sanctuary_revelation"))
+			else:
+				show_dialogue(title, ["Three Ancient Beacons pulse steadily above the Veilstorm in one golden-cyan resonance."], source)
+		"great_bell_gate":
+			if not quest_manager.sanctuary_revelation_witnessed:
+				show_dialogue(title, ["Massive iron storm-chains bind the Great Bell Gate. Synchronize the three Ancient Beacons and hear Elena's Sanctuary revelation first."], source)
+			elif quest_manager.can_unlock_great_bell_gate():
+				start_story_cinematic("dawnspire_great_bell_gate", source.global_position + Vector2(0, -20), Color(0.98, 0.84, 0.44), "great_bell_resonance")
+				show_dialogue(title, quest_manager.get_story_lines("great_bell_gate_opened"), source, func(): quest_manager.complete_objective("reach_great_bell_gate"))
+			elif obj_id == "complete_chapter4":
+				show_dialogue(title, quest_manager.get_story_lines("chapter4_finale_dialogue"), source, func(): _finish_chapter4())
+			else:
+				show_dialogue(title, ["The Great Bell Gate stands unsealed above the clouds, awaiting the Final Chapter: The Last Bell."], source)
+		"optional_discovery":
+			var disc_key: String = String(source.get("item_id"))
+			show_dialogue(title, quest_manager.get_story_lines(source.message), source, func():
+				AudioManagerScript.play_global_sfx(get_tree(), "item_pickup")
+				quest_manager.record_optional_discovery(disc_key)
+				source.set("collected", true)
+				source.queue_redraw()
+			)
 
 func open_rune_puzzle(source: StaticBody2D) -> void:
 	if rune_puzzle == null or rune_puzzle.solved:
@@ -806,6 +980,33 @@ func open_crest_puzzle(source: StaticBody2D) -> void:
 	$Prompt.hide()
 	var clues_ok: bool = quest_manager != null and quest_manager.crest_clues_found.size() >= 3
 	crest_puzzle.open_puzzle(clues_ok)
+	_update_selection()
+
+func open_skybridge_repair(source: StaticBody2D) -> void:
+	if skybridge_repair == null or skybridge_repair.repaired:
+		return
+	terminal = source
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	var parts_ok: bool = quest_manager != null and quest_manager.skybridge_parts_collected.size() >= 3 and quest_manager.skybridge_diagram_read
+	skybridge_repair.open_puzzle(parts_ok)
+	_update_selection()
+
+func open_celestial_puzzle(source: StaticBody2D) -> void:
+	if celestial_puzzle == null or celestial_puzzle.solved:
+		return
+	terminal = source
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	var clues_ok: bool = quest_manager != null and quest_manager.celestial_clues_found.size() >= 3
+	var saved_rings: Array = quest_manager.celestial_ring_states if quest_manager != null else []
+	celestial_puzzle.open_puzzle(clues_ok, saved_rings)
 	_update_selection()
 
 func _open_modal_panel(modal_panel: Panel, source: StaticBody2D) -> void:
@@ -885,6 +1086,24 @@ func _on_crest_solved() -> void:
 	else:
 		_on_modal_closed()
 
+func _on_skybridge_repaired() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "bridge_mechanism")
+	if quest_manager != null:
+		quest_manager.complete_objective("repair_skybridge")
+		show_dialogue("ANCIENT SKYBRIDGE", ["Granite counterweight, bronze pinion, and tension anchor lock into balance! The Skybridge span holds level across the ravine—walk straight north to reach Pilgrim's Refuge."], terminal)
+	else:
+		_on_modal_closed()
+
+func _on_celestial_solved() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "celestial_align")
+	if quest_manager != null:
+		quest_manager.celestial_ring_states.assign([1, 2, 3])
+		quest_manager.complete_objective("solve_observatory_puzzle")
+		start_story_cinematic("dawnspire_observatory_activated", Vector2(24, -150), Color(0.55, 0.92, 1.0), "observatory_activate")
+		show_dialogue("CELESTIAL OBSERVATORY", quest_manager.get_story_lines("observatory_solved_text"), terminal)
+	else:
+		_on_modal_closed()
+
 func _on_rune_puzzle_closed() -> void:
 	_on_modal_closed()
 
@@ -957,6 +1176,22 @@ func _finish_chapter3() -> void:
 	$Prompt.hide()
 	_update_selection()
 
+func _finish_chapter4() -> void:
+	AudioManagerScript.play_global_sfx(get_tree(), "chapter_complete")
+	if quest_manager != null:
+		quest_manager.complete_objective("complete_chapter4")
+	if prologue_banner != null:
+		$PrologueComplete/BannerTitle.text = "CHAPTER 4 COMPLETE — THE ROAD TO DAWNSPIRE"
+		$PrologueComplete/Summary.text = "All three Ancient Beacons beat as one above the storm. Elena's echo and Lyra's resolve illuminate the unsealed threshold ahead.\n\nFINAL CHAPTER UNLOCKED: THE LAST BELL"
+		$PrologueComplete/ContinueHint.text = "[E] / [ESC] CONTINUE EXPLORING DAWNSPIRE"
+		prologue_banner.show()
+	if player != null:
+		player.set("movement_locked", true)
+	if terminal != null:
+		terminal.set_dialogue_open(true)
+	$Prompt.hide()
+	_update_selection()
+
 func set_nearby(value: bool) -> void:
 	nearby = value
 	$Prompt.hide()
@@ -1016,6 +1251,7 @@ func start_new_game() -> void:
 	QuestManagerScript.carry_prologue_completed = false
 	QuestManagerScript.carry_chapter1_completed = false
 	QuestManagerScript.carry_chapter2_completed = false
+	QuestManagerScript.carry_chapter3_completed = false
 	var parent := get_parent()
 	if parent != null and parent.has_method("reset_new_game"):
 		parent.reset_new_game()
@@ -1039,7 +1275,8 @@ func continue_game(custom_path: String = "") -> bool:
 	var same_bellhaven: bool = target_region.ends_with("sjt_exterior.tscn") and parent != null and parent.has_method("reset_new_game")
 	var same_floodmill: bool = target_region.ends_with("floodmill_village.tscn") and parent != null and parent.name == "FloodmillVillage"
 	var same_ironwatch: bool = target_region.ends_with("ironwatch_keep.tscn") and parent != null and parent.name == "IronwatchKeep"
-	if same_briarwood or same_bellhaven or same_floodmill or same_ironwatch:
+	var same_dawnspire: bool = target_region.ends_with("dawnspire_mountain.tscn") and parent != null and parent.name == "DawnspireMountain"
+	if same_briarwood or same_bellhaven or same_floodmill or same_ironwatch or same_dawnspire:
 		var loaded: bool = parent.apply_saved_state(target_path)
 		if loaded and player != null:
 			player.set("movement_locked", false)

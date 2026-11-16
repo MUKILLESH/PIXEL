@@ -4,7 +4,7 @@
 > **Perspective:** Isometric 2.5D Pixel Art (640×360 native viewport, 2:1 diamond projection, integer scaling)  
 > **Genre:** Medieval Fantasy Adventure, Exploration, Mystery, Story-Driven Puzzles  
 > **Core Themes:** Memory, Sacrifice, Truth, and Hope  
-> **Status:** Canonical Design Reference (Phase 3 — Playable Prologue, Chapter 1 & Chapter 2 Active)
+> **Status:** Canonical Design Reference (Phase 5 — Playable Prologue & Chapters 1–4 Active)
 
 ---
 
@@ -39,9 +39,9 @@ Ashvale spans **five interconnected regions**, traversed in strict chronological
    - **Atmosphere:** Ruined basalt gatehouse courtyard with four hooded Warden statues & supply wagon, Abandoned Barracks, cutaway Gothic lancet Fortress Archives lit by candle chandeliers, arcane Hall of Crests, stealth-patrolled Shadowed Passage with glowing Ward Alcoves, and violet/gold Beacon Vault.
    - **Role:** Exposing the first catastrophe sacrifice versus later Keepers' concealed memory harvest, solving the Hall of Crests (`CrestPuzzle`), crossing the Shadowed Passage, confronting the **Last Bell Warden**, recovering Elena's triad research, awakening the **Third Ancient Beacon**, and unsealing the **Dawnspire Citadel Gate**.
 
-5. **Dawnspire Mountain & The Summit Sanctum (Chapter 4 & Final Chapter — Planned)**
-   - **Atmosphere:** Wind-carved alpine switchbacks, frost-rimmed obelisks overlooking the churning Veilstorm, and the colossal Great Bell belfry.
-   - **Role:** Ascent to Dawnspire, channeling the connected triad of all three Ancient Beacons, discovering Elena's final sacrifice, and ending the Bell's curse.
+5. **Dawnspire Mountain & The Summit Sanctum (Chapter 4 Playable in Phase 5; Final Chapter Planned)**
+   - **Atmosphere:** Storm-wrapped alpine foothills, Whispering Cliffs wind zones & shelter cairns, deep ravine Skybridge, cutaway Pilgrim's Refuge chapel with crimson frost foliage, Celestial Observatory astrolabe, Dawnspire Sanctuary triad convergence plateau, and the unsealed Great Bell Gate.
+   - **Role:** Ascent to Dawnspire, counterweight Skybridge balance, discovering Elena's journal, celestial alignment of the three Beacons, synchronizing all three Ancient Beacons above the storm, witnessing Elena's Sanctuary Revelation, and opening the Great Bell Gate for the Final Chapter.
 
 ---
 
@@ -91,10 +91,10 @@ Progression follows a **strict chronological order**. Players explore freely wit
 ### Chapter 3: *The Keeper's Lie* (Ironwatch Keep — Phase 4 Playable)
 - Reaching the basalt fortress, Aren and Lyra explore the ruined courtyard and cutaway Fortress Archives (proving the original sacrifice of thirty-six volunteers saved ten thousand citizens during a genuine catastrophe) and the Abandoned Barracks (proving later High Keepers concealed the beacon alternative and silently consumed border towns like Floodmill). After gathering three historical crest clues, solving the **Hall of Crests** puzzle (`SILVER BELL`, `SUNDERED SHIELD`, `CROWNED FLAME`), and slipping through the **Shadowed Passage** past patrolling Shadow Sentinels, Aren confronts the **Last Bell Warden**, recovers Elena's Harmonic Lattice folio, restores the **Third Ancient Beacon**—linking Briarwood, Floodmill, and Ironwatch in harmonic resonance—and unseals the road to **Dawnspire**.
 
-### Chapter 4: *The Road to Dawnspire* (Alpine Ascent)
-- As the Veilstorm closes in and the 13th chime tolls faster, Aren and Lyra climb the shattered pilgrim switchbacks, piecing together Elena's final camp and map fragments.
+### Chapter 4: *The Road to Dawnspire* (Alpine Ascent — Phase 5 Playable)
+- Leaving Ironwatch Keep behind as the Veilstorm closes in, Aren and Lyra ascend the Dawnspire Foothills, navigate the gale-swept Whispering Cliffs using stone shelter cairns, restore the mechanical counterweight Skybridge (`GRANITE WEIGHT`, `BRONZE PINION`, `TENSION CHAIN`), rest at Pilgrim's Refuge to read Elena's preserved journal on choosing what is right, align the three Celestial Observatory rings (`FIRST BEACON DAWN`, `SECOND BEACON TIDE`, `THIRD BEACON CROWN`), synchronize all three restored Ancient Beacons at Dawnspire Sanctuary, witness Elena's Summit Echo delegating the kingdom's future to those who live with what comes after, and unlock the **Great Bell Gate**.
 
-### Final Chapter: *The Last Bell* (Dawnspire Mountain Summit)
+### Final Chapter: *The Last Bell* (Dawnspire Mountain Summit — Phase 6)
 - Channeling the unified triad light of the three Ancient Beacons alongside Lyra reveals Elena's final truth: she stayed behind in the Dawnspire Sanctum to hold the fracturing seal steady until someone worthy could align all three Beacons, shattering the memory-stealing pact and dispelling the Veilstorm cleanly so no one has to forget again.
 
 ---
@@ -109,15 +109,15 @@ Progression follows a **strict chronological order**. Players explore freely wit
    `WatermillRepair` (`IRON DRIVE GEAR`, `BRONZE PINION`, `OAK COUPLING BELT`), `SluicePuzzle` (`DIVERT`, `DRAIN`, `OPEN` lowering water depth to `0` cubits), and `LedgerPuzzle` (`THIRTY-SIX HEARTHS`, `MEMORY OFFERING`, `IRONWATCH SEAL`).
 4. **Hall of Crests & Shadowed Passage Stealth (Chapter 3 — Implemented in Phase 4):**  
    `CrestPuzzle` (`SILVER BELL`, `SUNDERED SHIELD`, `CROWNED FLAME`) and non-combat sentinel stealth in the **Shadowed Passage** with Ward Alcove checkpoints (`checkpoint_0`/`checkpoint_1`/`checkpoint_2`), warning indicators, and non-destructive reset.
-5. **Dawnspire Ascent & Final Chime Sequence (Chapters 4–5):**  
-   Harmonic Bell resonance and alpine beacon relays.
+5. **Dawnspire Ascent, Skybridge & Celestial Observatory (Chapter 4 — Implemented in Phase 5):**  
+   `SkybridgeRepair` counterweight equilibrium (`GRANITE WEIGHT`, `BRONZE PINION`, `TENSION CHAIN`), Whispering Cliffs gale zones & shelter cairns, and `CelestialPuzzle` astrolabe alignment (`FIRST BEACON DAWN`, `SECOND BEACON TIDE`, `THIRD BEACON CROWN`).
 
 ---
 
 ## 6. Quest & Progression Rules
 
-- **Strict Ordering:** Prologue, Chapter 1, Chapter 2, and Chapter 3 objectives advance only sequentially via unique quest IDs; out-of-order interactions show diegetic locked feedback without bypassing progression.
-- **No Repeat Farming / Exploits:** Unique story flags gate every NPC count (`talked_npcs`), item/part pickup (`materials_collected`, `mill_parts_collected`), archive/crest records (`archive_clues_found`, `crest_clues_found`), optional discoveries (`optional_discoveries`), and puzzle/chapter completion flags.
+- **Strict Ordering:** Prologue and Chapters 1–4 objectives advance only sequentially via unique quest IDs; out-of-order interactions show diegetic locked feedback without bypassing progression.
+- **No Repeat Farming / Exploits:** Unique story flags gate every NPC count (`talked_npcs`), item/part pickup (`materials_collected`, `mill_parts_collected`, `skybridge_parts_collected`), archive/crest/celestial records (`archive_clues_found`, `crest_clues_found`, `celestial_clues_found`), optional discoveries (`optional_discoveries`), and puzzle/chapter completion flags.
 - **Stage-Aware World & Dialogue:** Talking to Bellhaven NPCs, traveling historian Lyra, and the Last Bell Warden updates dynamically across every story milestone, ensuring players never become soft-locked if they revisit clues.
 
 ---
@@ -130,4 +130,5 @@ Progression follows a **strict chronological order**. Players explore freely wit
 - **Phase 3 (Completed):** Floodmill Wetlands / The Drowned Village (`scenes/floodmill_village.tscn`), 5 isometric buildings including rotating Old Watermill and cutaway Forgotten Archive Hall, `WatermillRepair`, `SluicePuzzle`, `LedgerPuzzle`, Second Ancient Beacon, `SAVE_VERSION = 2` with `v1` compatibility, and Ironwatch Keep gate unlock.
 - **Phase 4 (Completed):** Ironwatch Keep / The Keeper's Lie (`scenes/ironwatch_keep.tscn`), 6 fortress areas (Courtyard, Abandoned Barracks, cutaway Gothic Archives, Hall of Crests, Shadowed Passage stealth corridor, Warden's Chamber & Beacon Vault), `CrestPuzzle`, non-destructive `ShadowSentinel` stealth, Last Bell Warden confrontation, Elena's research, Third Ancient Beacon three-beacon connection, `SAVE_VERSION = 3` (`v1`/`v2` compatible), and Dawnspire Citadel Gate unlock.
 - **Phase 4.5 (Completed — The Living World):** Cohesive art direction (`docs/ART_DIRECTION.md`), environmental storytelling and throttled (`12.5 Hz`) landscape ambience across all 4 regions, Ironwatch precipice extension, Aren idle breathing & timed footstep cadence, NPC 8-direction turn + dialogue badge, procedural PCM16 audio & 4-bus mixer (`AudioManager`, `default_bus_layout.tres`, `TitleMenu` sliders saved to `user://ashvale_audio_settings.json`), `CinematicDirector` skippable cinematics with `PixelCamera` focus & framing, `RegionBanner` + `TransitionFade`, and forward/backward regional entry poses.
-- **Future Phases (Chapters 4–5):** Dawnspire Mountain ascent and Final Chapter climax with Elena & Great Bell resolution.
+- **Phase 5 (Completed — Chapter 4: The Road to Dawnspire):** Dawnspire Mountain (`scenes/dawnspire_mountain.tscn`), 7 alpine areas (Foothills, Whispering Cliffs gale hazards & shelter cairns, Broken Skybridge counterweight mechanism, cutaway Pilgrim's Refuge + Elena's preserved journal, Celestial Observatory astrolabe, Dawnspire Sanctuary three-beacon synchronization & Elena's echo, Great Bell Gate unlock), `SkybridgeRepair` & `CelestialPuzzle`, 5 skippable cinematics, 8 mountain/celestial/bell SFX cues, 4 optional remembrance discoveries, and `SAVE_VERSION = 4` (`v1`/`v2`/`v3` compatible).
+- **Future Phase (Chapter 5):** Final Chapter — *The Last Bell* inside the unsealed Dawnspire chamber and epilogue resolution.

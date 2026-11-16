@@ -77,6 +77,35 @@ func _build_items(qm: Node) -> Array[String]:
 	var items: Array[String] = []
 	if qm == null:
 		return items
+	if qm.quest_id == "chapter4_road_to_dawnspire":
+		if qm.chapter3_completed or qm.third_beacon_activated:
+			items.append("- THREE RESTORED BEACONS: BRIARWOOD, FLOODMILL, IRONWATCH")
+		if qm.skybridge_parts_collected.size() > 0 or qm.skybridge_diagram_read:
+			items.append("- SKYBRIDGE PARTS (%d/3)%s" % [qm.skybridge_parts_collected.size(), " [BALANCED]" if qm.skybridge_repaired else (" [DIAGRAM READY]" if qm.skybridge_diagram_read else "")])
+		if qm.pilgrim_refuge_discovered:
+			items.append("- PILGRIM'S REFUGE MURALS: RECORD OF FORGOTTEN CLIMBERS")
+		if qm.elena_journal_read:
+			items.append("- ELENA'S JOURNAL: COURAGE IS CHOOSING WHAT IS RIGHT")
+		if qm.celestial_clues_found.size() > 0:
+			items.append("- CELESTIAL PILLARS (%d/3): SUN DAWN, MOON TIDE, STARS CROWN" % qm.celestial_clues_found.size())
+		if qm.observatory_solved:
+			items.append("- OBSERVATORY ASTROLABE: CELESTIAL RINGS ALIGNED TO SANCTUARY")
+		if qm.beacons_synchronized:
+			items.append("- DAWNSPIRE NEXUS: ALL THREE ANCIENT BEACONS SYNCHRONIZED")
+		if qm.great_bell_gate_unlocked:
+			items.append("- GREAT BELL GATE SEAL: OPENED FOR THE LAST BELL")
+		var opt_tags: Array[String] = []
+		if qm.optional_discoveries.has("dawnspire_campsite"):
+			opt_tags.append("CAMPSITE")
+		if qm.optional_discoveries.has("dawnspire_pilgrim_letter"):
+			opt_tags.append("LETTER")
+		if qm.optional_discoveries.has("dawnspire_memorial"):
+			opt_tags.append("MEMORIAL")
+		if qm.optional_discoveries.has("dawnspire_hidden_overlook"):
+			opt_tags.append("OVERLOOK")
+		if not opt_tags.is_empty():
+			items.append("- MOUNTAIN REMEMBRANCES: " + ", ".join(opt_tags))
+		return items
 	if qm.quest_id == "chapter3_keepers_lie":
 		if qm.prologue_completed or qm.chapter1_completed or qm.chapter2_completed:
 			items.append("- BRIARWOOD AND FLOODMILL: TWO ANCIENT BEACONS RESTORED")

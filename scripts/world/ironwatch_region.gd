@@ -471,6 +471,8 @@ func _sync_world_from_quest() -> void:
 		dawnspire_gate.unlocked = quest_manager.dawnspire_unlocked
 		if quest_manager.get_current_objective_id() == "complete_chapter3":
 			dawnspire_gate.refresh_prompt("[E] COMPLETE CHAPTER 3")
+		elif quest_manager.chapter3_completed:
+			dawnspire_gate.refresh_prompt("[E] ENTER DAWNSPIRE MOUNTAIN" if dawnspire_gate.get("ready_to_travel") == true else "[E] APPROACH DAWNSPIRE PASS")
 		elif quest_manager.dawnspire_unlocked:
 			dawnspire_gate.refresh_prompt("[E] EXAMINE DAWNSPIRE ROAD")
 		else:
@@ -524,3 +526,16 @@ func travel_to_floodmill() -> void:
 		QuestManagerScript.pending_entry_position = Vector2(170, -172)
 		QuestManagerScript.pending_entry_facing = 4
 		get_tree().change_scene_to_file("res://scenes/floodmill_village.tscn")
+
+func travel_to_dawnspire() -> void:
+	if quest_manager != null:
+		QuestManagerScript.carry_prologue_completed = true
+		QuestManagerScript.carry_chapter1_completed = true
+		QuestManagerScript.carry_chapter2_completed = true
+		QuestManagerScript.carry_chapter3_completed = quest_manager.chapter3_completed
+		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
+	if is_inside_tree():
+		QuestManagerScript.pending_entry_pose = true
+		QuestManagerScript.pending_entry_position = Vector2(-190, 212)
+		QuestManagerScript.pending_entry_facing = 0
+		get_tree().change_scene_to_file("res://scenes/dawnspire_mountain.tscn")

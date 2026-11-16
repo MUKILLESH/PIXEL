@@ -10,6 +10,7 @@ var walk_frame: int = 0
 var idle_time: float = 0.0
 var idle_bob: int = 0
 var step_timer: float = 0.16
+var external_wind_velocity: Vector2 = Vector2.ZERO
 
 func face_toward(world_pos: Vector2) -> void:
 	var dir: Vector2 = world_pos - global_position
@@ -24,6 +25,8 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector2.ZERO:
 		facing = posmod(roundi(direction.angle() / (PI / 4.0)), 8)
 	velocity = direction * speed
+	if not movement_locked:
+		velocity += external_wind_velocity
 	move_and_slide()
 	if get_real_velocity().length() > 3.0:
 		stride += delta * 9.0

@@ -256,6 +256,9 @@ func _synth_pad_or_ambience(key: String, dur: float) -> PackedByteArray:
 		"mus_ironwatch", "amb_ironwatch":
 			base_freq = 130.81
 			fifth_freq = 196.0
+		"mus_dawnspire", "amb_dawnspire":
+			base_freq = 164.81
+			fifth_freq = 246.94
 	for i in range(count):
 		var t: float = float(i) / float(SAMPLE_RATE)
 		var sample_f: float = 0.0
@@ -318,6 +321,46 @@ func _synth_sfx(key: String) -> PackedByteArray:
 			f1 = 196.0
 			f2 = 392.0
 			dur = 0.65
+			amp = 0.22
+		"sfx_mountain_wind":
+			f1 = 210.0
+			f2 = 155.0
+			dur = 0.34
+			amp = 0.11
+		"sfx_distant_thunder":
+			f1 = 98.0
+			f2 = 72.0
+			dur = 0.52
+			amp = 0.16
+		"sfx_stone_movement":
+			f1 = 138.0
+			f2 = 116.0
+			dur = 0.26
+			amp = 0.14
+		"sfx_bridge_mechanism":
+			f1 = 246.94
+			f2 = 329.63
+			dur = 0.38
+			amp = 0.16
+		"sfx_observatory_activate":
+			f1 = 392.0
+			f2 = 659.25
+			dur = 0.44
+			amp = 0.18
+		"sfx_celestial_align":
+			f1 = 440.0
+			f2 = 880.0
+			dur = 0.42
+			amp = 0.18
+		"sfx_sanctuary_awaken":
+			f1 = 293.66
+			f2 = 587.33
+			dur = 0.56
+			amp = 0.20
+		"sfx_great_bell_resonance":
+			f1 = 146.83
+			f2 = 293.66
+			dur = 0.68
 			amp = 0.22
 	var count: int = int(dur * SAMPLE_RATE)
 	var buf := PackedByteArray()
