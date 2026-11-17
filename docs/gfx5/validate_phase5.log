@@ -1,0 +1,123 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+--- STAGE 1: IRONWATCH TO DAWNSPIRE TRANSITION ---
+PASS: Ironwatch Keep scene loads for Phase 5 transition check
+PASS: Ironwatch exposes travel_to_dawnspire()
+PASS: Dawnspire Gate locked before Chapter 3 completion
+PASS: Completed Ironwatch DawnspireGate arms ready_to_travel
+PASS: Transition from Ironwatch loads DawnspireMountain cleanly
+PASS: Dawnspire loads chapter4_road_to_dawnspire at Objective 1
+PASS: Prologue through Chapter 3 flags carried cleanly into Dawnspire
+PASS: HUD header reflects Chapter 4 in Dawnspire Mountain
+PASS: Dawnspire structure exists: FoothillsArch
+PASS: Dawnspire structure exists: CliffShelter1
+PASS: Dawnspire structure exists: SkybridgeAnchors
+PASS: Dawnspire structure exists: PilgrimChapel
+PASS: Dawnspire structure exists: ObservatoryDome
+PASS: Dawnspire structure exists: DawnspireSanctum
+PASS: Dawnspire structure exists: GreatBellPortal
+PASS: Lyra, SkybridgeRepair, and CelestialPuzzle exist in Dawnspire
+PASS: Dawnspire approach spot 0 (-224.0, 212.0) clear of solids
+PASS: Dawnspire approach spot 1 (-158.0, 198.0) clear of solids
+PASS: Dawnspire approach spot 2 (-94.0, 202.0) clear of solids
+PASS: Dawnspire approach spot 3 (-262.0, 166.0) clear of solids
+PASS: Dawnspire approach spot 4 (-44.0, 210.0) clear of solids
+PASS: Dawnspire approach spot 5 (232.0, 118.0) clear of solids
+PASS: Dawnspire approach spot 6 (144.0, 68.0) clear of solids
+PASS: Dawnspire approach spot 7 (-12.0, 26.0) clear of solids
+PASS: Dawnspire approach spot 8 (28.0, 34.0) clear of solids
+PASS: Dawnspire approach spot 9 (78.0, 38.0) clear of solids
+PASS: Dawnspire approach spot 10 (-90.0, 54.0) clear of solids
+PASS: Dawnspire approach spot 11 (-174.0, 48.0) clear of solids
+PASS: Dawnspire approach spot 12 (-126.0, -78.0) clear of solids
+PASS: Dawnspire approach spot 13 (-204.0, -76.0) clear of solids
+PASS: Dawnspire approach spot 14 (-264.0, -76.0) clear of solids
+PASS: Dawnspire approach spot 15 (80.0, -86.0) clear of solids
+PASS: Dawnspire approach spot 16 (130.0, -104.0) clear of solids
+PASS: Dawnspire approach spot 17 (248.0, -72.0) clear of solids
+PASS: Dawnspire approach spot 18 (154.0, -58.0) clear of solids
+PASS: Dawnspire approach spot 19 (188.0, -94.0) clear of solids
+PASS: Dawnspire approach spot 20 (26.0, -162.0) clear of solids
+PASS: Dawnspire approach spot 21 (-12.0, -184.0) clear of solids
+PASS: Dawnspire approach spot 22 (74.0, -184.0) clear of solids
+--- STAGE 2: OUT-OF-ORDER GUARDS, FOOTHILLS & WHISPERING CLIFFS ---
+PASS: QuestManager blocks out-of-order synchronize_three_beacons
+PASS: SkybridgeBlocker and SanctuaryBlocker start active
+PASS: Speaking to Lyra early does not skip enter_foothills
+PASS: Foothills triggers dawnspire_first_view cinematic
+PASS: Skipping Foothills cinematic restores control and unlocks speak_lyra_foothills
+PASS: Optional Mountain Campsite recorded cleanly
+PASS: Objective 2 completed: Lyra journey conversation unlocks Whispering Cliffs
+PASS: Optional Pilgrim's Letter collected without altering active objective
+PASS: Reaching Mid-Cliff shelter stone updates checkpoint to cliff_cp_1
+PASS: Active Whispering Cliffs wind gust applies predictable eastward wind drift
+PASS: Cliff hazard returns Aren safely to active checkpoint cliff_cp_1
+PASS: Hazard reset preserves all collected discoveries
+PASS: Optional Pilgrim Memorial collected cleanly
+PASS: Objective 3 completed: Whispering Cliffs cairn unlocks Broken Skybridge
+--- STAGE 3: BROKEN SKYBRIDGE MINIGAME A & RAVINE CROSSING ---
+PASS: Skybridge parts locked before investigating Broken Skybridge
+PASS: Objective 4 completed: Broken Skybridge inspected
+PASS: Skybridge Masonry Diagram read cleanly
+PASS: Skybridge part 1 collected once without duplicate farm
+PASS: Objective 5 completed after 3 parts + diagram -> unlocks repair_skybridge
+PASS: SkybridgeRepair panel opens and locks movement
+PASS: ESC closes SkybridgeRepair cleanly without softlock
+PASS: SkybridgeRepair rejects unbalanced combination cleanly
+PASS: Objective 6 completed via keyboard solve and SkybridgeBlocker disabled
+PASS: Player physically crosses repaired Skybridge across the ravine (y < -46)
+--- STAGE 4: PILGRIM'S REFUGE & ELENA'S JOURNAL ---
+PASS: Elena's journal blocked until Refuge murals inspected
+PASS: Objective 7 completed: Pilgrim's Refuge discovered
+PASS: Optional Hidden Overlook discovered cleanly
+PASS: Elena's journal triggers dawnspire_elena_journal cinematic
+PASS: Elena Journal canonical line 1 verbatim
+PASS: Elena Journal canonical line 2 verbatim
+PASS: Elena Journal canonical line 3 verbatim
+PASS: Elena Journal canonical line 4 verbatim
+PASS: Objective 8 completed: Elena's journal read
+--- STAGE 5: CELESTIAL OBSERVATORY MINIGAME B ---
+PASS: Celestial astrolabe blocked before entering Observatory Arch
+PASS: Objective 9 completed: Celestial Observatory entered
+PASS: Objective 10 completed on 3/3 celestial alignment clues -> solve_observatory_puzzle
+PASS: CelestialPuzzle opens and locks movement
+PASS: ESC closes CelestialPuzzle cleanly
+PASS: CelestialPuzzle rejects unaligned celestial rings cleanly
+PASS: Observatory solve triggers dawnspire_observatory_activated cinematic
+PASS: Objective 11 completed and SanctuaryBlocker unsealed
+--- STAGE 6: DAWNSPIRE SANCTUARY, REVELATION & GREAT BELL GATE ---
+PASS: Player physically ascends Sanctuary stair past y = -150
+PASS: Objective 12 completed: Dawnspire Sanctuary entered
+PASS: Great Bell Gate sealed prior to Three-Beacon Synchronization
+PASS: Sanctuary Nexus triggers dawnspire_beacons_synchronized cinematic
+PASS: Objective 13 completed: All 3 Beacons synchronized at Sanctuary Nexus
+PASS: Sanctuary Echo line 1 verbatim
+PASS: Sanctuary Echo line 2 verbatim
+PASS: Sanctuary Echo line 3 verbatim
+PASS: Sanctuary Echo line 4 verbatim
+PASS: Sanctuary Aren line verbatim
+PASS: Sanctuary Lyra line verbatim
+PASS: Objective 14 completed: Sanctuary Revelation unlocks Great Bell Gate approach
+PASS: Great Bell Gate triggers dawnspire_great_bell_gate cinematic
+PASS: Objective 15 completed: Great Bell Gate unlocked
+PASS: Objective 16 completed and Chapter 4 marked complete
+PASS: Exact Chapter 4 completion banner shown
+PASS: Dismissing Chapter 4 banner restores free exploration
+PASS: Re-interacting post-Chapter 4 does not re-trigger banner
+PASS: Field Satchel tracks all Chapter 4 milestones & relics
+--- STAGE 7: SAVE V4, LEGACY COMPAT & RETURN TRANSITION ---
+PASS: Save v4 writes Chapter 4 Dawnspire progress
+PASS: Second Save v4 rotates .bak backup cleanly
+PASS: Backward Dawnspire -> Ironwatch spawns Aren cleanly at Dawnspire Citadel Gate
+PASS: Returned to Bellhaven startup to verify Continue -> DawnspireMountain
+PASS: Continue initiated toward Dawnspire v4 save
+PASS: Continue transitions automatically to DawnspireMountain
+PASS: All Chapter 4 Dawnspire flags survived Save v4 reload
+PASS: Optional discoveries & exact Great Bell Gate pose restored
+PASS: Resumed Dawnspire blockers & synchronized beacon state synced visually
+PASS: Legacy save v1 loads cleanly with Chapter 4 defaults
+PASS: Legacy save v2 loads cleanly with Chapter 4 defaults
+PASS: Legacy save v3 loads cleanly with Chapter 4 defaults
+PASS: Corrupted primary v4 save automatically recovers from .bak
+PASS: Phase 5 suite completed
+PHASE 5 RESULT: 113 checks, 0 failures

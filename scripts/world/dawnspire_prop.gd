@@ -31,10 +31,7 @@ func _ready() -> void:
 func _draw() -> void:
 	match kind:
 		"mountain_pine":
-			draw_rect(Rect2(-3, -10, 6, 10), Color("4a3222"))
-			draw_colored_polygon(PackedVector2Array([Vector2(-14, -8), Vector2(0, -28), Vector2(14, -8)]), Color("203c36"))
-			draw_colored_polygon(PackedVector2Array([Vector2(-11, -18), Vector2(0, -38), Vector2(11, -18)]), Color("2a4d44"))
-			draw_colored_polygon(PackedVector2Array([Vector2(-8, -28), Vector2(0, -44), Vector2(8, -28)]), Color("d7e6f2"))
+			preload("res://scripts/world/dawnspire_art.gd").pine(self,Vector2.ZERO)
 		"crimson_frost_tree":
 			draw_rect(Rect2(-3, -12, 6, 12), Color("473126"))
 			draw_circle(Vector2(-7, -24), 10.0, Color("992f3e"))

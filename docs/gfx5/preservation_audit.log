@@ -1,0 +1,4 @@
+scripts/world/dawnspire_building.gd collision setup unchanged: True
+scripts/world/dawnspire_prop.gd collision setup unchanged: True
+Interactable behavior unchanged: True
+Wind/checkpoint drawing unchanged: True

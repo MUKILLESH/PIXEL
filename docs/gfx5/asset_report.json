@@ -1,0 +1,205 @@
+{
+  "ok": true,
+  "assets": [
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/chapel_interior.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 1212,
+      "color_count": 10,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 78662,
+      "content_bounds": [
+        74,
+        219,
+        182,
+        273
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/cliff_shelter_0.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 1608,
+      "color_count": 14,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 77731,
+      "content_bounds": [
+        89,
+        162,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/dawnspire_sanctum_0.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 2410,
+      "color_count": 18,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 66272,
+      "content_bounds": [
+        68,
+        77,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/dawnspire_sanctum_1.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 2514,
+      "color_count": 20,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 66272,
+      "content_bounds": [
+        68,
+        77,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/foothills_arch_0.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 2129,
+      "color_count": 18,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 73414,
+      "content_bounds": [
+        81,
+        135,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/great_bell_portal_0.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 3259,
+      "color_count": 20,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 66932,
+      "content_bounds": [
+        76,
+        74,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/great_bell_portal_1.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 3353,
+      "color_count": 22,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 66932,
+      "content_bounds": [
+        76,
+        74,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/observatory_dome_0.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 3443,
+      "color_count": 24,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 73638,
+      "content_bounds": [
+        82,
+        114,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/pilgrim_chapel_0.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 3745,
+      "color_count": 27,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 68066,
+      "content_bounds": [
+        63,
+        114,
+        197,
+        248
+      ],
+      "problems": []
+    },
+    {
+      "path": "D:/MUKI PROJECT/VIT_After_Hours/assets/dawnspire/skybridge_anchors_0.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 256,
+      "height": 320,
+      "bytes": 1969,
+      "color_count": 16,
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 77354,
+      "content_bounds": [
+        70,
+        172,
+        197,
+        248
+      ],
+      "problems": []
+    }
+  ]
+}

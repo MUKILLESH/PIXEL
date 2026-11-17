@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS reachable: IronwatchReturnGate
+PASS reachable: FoothillsEntrance
+PASS reachable: CliffCairn
+PASS reachable: SkybridgeConsole
+PASS reachable: SkybridgeDiagram
+PASS reachable: SkybridgePart1
+PASS reachable: SkybridgePart2
+PASS reachable: SkybridgePart3
+PASS reachable: RefugeMural
+PASS reachable: ElenaJournal
+PASS reachable: ObservatoryArch
+PASS reachable: CelestialClue1
+PASS reachable: CelestialClue2
+PASS reachable: CelestialClue3
+PASS reachable: CelestialMechanism
+PASS reachable: SanctuaryThreshold
+PASS reachable: SanctuaryNexus
+PASS reachable: GreatBellGate
+PASS reachable: OptMountainCamp
+PASS reachable: OptPilgrimLetter
+PASS reachable: OptPilgrimMemorial
+PASS reachable: OptHiddenOverlook
+PASS reachable: Lyra
+GFX5 REACHABILITY: 23/23, 2903 cells visited; 0 failures
+GFX5 ART: 11 textures; total failures=0

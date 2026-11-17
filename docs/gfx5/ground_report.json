@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "assets": [
+    {
+      "path": "assets/dawnspire/ground.png",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 2048,
+      "height": 1280,
+      "bytes": 69017,
+      "color_count": 72,
+      "has_alpha": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "transparent_pixels": 0,
+      "content_bounds": [
+        0,
+        0,
+        2048,
+        1280
+      ],
+      "problems": []
+    }
+  ]
+}

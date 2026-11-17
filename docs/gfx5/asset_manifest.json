@@ -1,0 +1,176 @@
+{
+  "collision": "All added art is non-blocking. Original building/prop collision shapes unchanged.",
+  "palette": "Cool blue-gray stone, violet shadows, evergreen, weathered bronze, amber/cyan/gold",
+  "region": "Dawnspire Mountain",
+  "assets": [
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/chapel_interior.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/cliff_shelter_0.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/dawnspire_sanctum_0.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/dawnspire_sanctum_1.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/foothills_arch_0.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/great_bell_portal_0.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/great_bell_portal_1.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/ground.png",
+      "transparency": "opaque background coverage",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_ground.gd",
+      "pivot": [
+        1024,
+        640
+      ],
+      "size": [
+        2048,
+        1280
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/observatory_dome_0.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/pilgrim_chapel_0.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    },
+    {
+      "technical_checks_passed": true,
+      "path": "res://assets/dawnspire/skybridge_anchors_0.png",
+      "transparency": "RGBA transparent margins",
+      "license": "Original project artwork; no external asset license",
+      "source": "scripts/world/dawnspire_art.gd",
+      "pivot": [
+        128,
+        224
+      ],
+      "size": [
+        256,
+        320
+      ]
+    }
+  ],
+  "filtering": "nearest",
+  "source": "Original local GDScript geometry in dawnspire_art.gd and dawnspire_ground.gd, rasterized with Godot 4.7.2",
+  "native_resolution": "640x360",
+  "provenance": "No third-party reference pixels or downloads. User images were visual inspiration only."
+}

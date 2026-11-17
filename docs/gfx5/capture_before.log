@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+GFX5 before cliffs uncapped=false mean=16.66 p95=16.69 max=16.72 ms n=240
+GFX5 before observatory uncapped=false mean=16.66 p95=16.69 max=16.85 ms n=240
+GFX5 before sanctuary uncapped=false mean=16.66 p95=16.69 max=16.72 ms n=240
+GFX5 before cliffs uncapped=true mean=0.71 p95=0.82 max=0.95 ms n=240
+GFX5 before observatory uncapped=true mean=0.84 p95=1.17 max=1.84 ms n=240
+GFX5 before sanctuary uncapped=true mean=0.78 p95=0.91 max=1.17 ms n=240
+GFX5 CAPTURES COMPLETE: before 10/10

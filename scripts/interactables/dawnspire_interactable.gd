@@ -202,3 +202,20 @@ func _draw() -> void:
 				draw_circle(Vector2(0, -14), 3.5, Color("8be6f0"))
 			else:
 				draw_rect(Rect2(-6, -8, 12, 8), Color("343742"))
+
+	# GFX-5 material and heraldic overlays; no interaction or puzzle state is changed.
+	var art = preload("res://scripts/world/dawnspire_art.gd")
+	if kind == "celestial_clue":
+		draw_rect(Rect2(-7,-24,14,23),Color("30384c"))
+		art.emblem(self,Vector2(0,-14),["sun","moon","stars"].find(item_id))
+		for y in [-6,-3]: draw_line(Vector2(-5,y),Vector2(5,y),Color("97896a"))
+	elif kind == "celestial_mechanism":
+		art.ring(self,Vector2(0,-26),17,9,"d5b879")
+		art.ring(self,Vector2(0,-26),9,17,"9e8558")
+		for x in [-15,15]: draw_line(Vector2(x,-10),Vector2(x,-26),Color("b49b6c"),2)
+		draw_line(Vector2(-15,-37),Vector2(15,-15),Color("f0d398"))
+	elif kind == "sanctuary_nexus":
+		art.poly(self,[Vector2(-7,-36),Vector2(0,-54),Vector2(0,-28)],"c1f7f1" if activated else "f0cf80")
+		art.poly(self,[Vector2(0,-54),Vector2(7,-36),Vector2(0,-28)],"56a8bd" if activated else "957552")
+		for x in [-12,0,12]:
+			draw_rect(Rect2(x-2,-13,4,5),Color(["dcb575","8fd5dc","b49add"][x/12+1]) if activated else Color("626b83"))
