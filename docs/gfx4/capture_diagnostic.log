@@ -1,0 +1,132 @@
+WorkerThreadPool: 20 threads, 6 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Native OpenGL API detected: 3.3: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+NVAPI: Init OK!
+NVAPI: Application not found in profile, creating...
+NVAPI: Error creating application: NVAPI_EXECUTABLE_ALREADY_IN_USE(code -167)
+Accessibility: window 0 adapter created.
+SDL: Init OK!
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderGLES3' SHA256: b06d4a18b3a29a2fd43123982ef30c16de79136d1d66a7265a61dc83cf4893ef
+Shader 'SkeletonShaderGLES3' SHA256: 9d21498a33724b93a481655fc5c18498a637416318f45b3d7890e289bf0125c6
+Shader 'ParticlesShaderGLES3' SHA256: dc9a1f0e2bf850ca749618cde5a487bee91f6014979e855007b9edd9b284da0f
+Shader 'ParticlesCopyShaderGLES3' SHA256: 7748668fa02dd91d7200d510445e3b8b17b34246f2dd73cc0862c8b6bc4b7d87
+Shader 'CopyShaderGLES3' SHA256: 493ed6cb93b65c48291f2812bf230c7bb6a52444b26eb3336fec0cb656299f7d
+Shader 'CubemapFilterShaderGLES3' SHA256: b0c7e381519e45a87deaa82dd2f3d82a3232fed69829683d3827f8fe0815bef6
+Shader 'GlowShaderGLES3' SHA256: 1ad07de54c7a2f9daa0326ee1b9472189650e13d65ecfb6043f9a49dcc2bf3ea
+Shader 'PostShaderGLES3' SHA256: f59af547e4ac217571f39d99cab256f50ac511ff138f0afbfe1aaba350a810df
+Shader 'FeedShaderGLES3' SHA256: 1d8d5d20808f7928282b0dd991b7aefd07aa5b5fed35e55e76d368f4babb17d5
+Shader 'CanvasShaderGLES3' SHA256: 3a13597b233f935dfc4cc80fe5d30835731a1ca25a9048fad05859f85d4b11d3
+Shader 'CanvasOcclusionShaderGLES3' SHA256: 5011c6af5a72af8663283bae2db0001eecff82368a3a36e6afdc5c5082845935
+Shader 'SceneShaderGLES3' SHA256: e1f7cc4031f92db3313f566461cd039811207981fb5f0b0658afa302323276ac
+Shader 'SkyShaderGLES3' SHA256: 68fa72bd6c57cf4d0eaddba73ced2976f8391a797591bb3614a9c1d40372edcb
+Shader 'TexBlitShaderGLES3' SHA256: 16d56a72278c0a61598f7a148602a9122e5bd516713f137eaf44e68bad295079
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+WASAPI: Activated output_device using IAudioClient3 interface
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 48000
+WASAPI: nAvgBytesPerSec = 384000
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: mix_rate = 48000
+WASAPI: fundamental_period_frames = 480
+WASAPI: min_period_frames = 480
+WASAPI: max_period_frames = 480
+WASAPI: selected a period frame size of 480
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 480 calculated latency: 10ms
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+Loading resource: res://assets/fonts/pixel_theme.tres remapped: res://assets/fonts/pixel_theme.tres
+Loading resource: res://assets/fonts/after_hours.tres remapped: res://assets/fonts/after_hours.tres
+Completed load for: 'res://assets/fonts/after_hours.tres' remapped 'res://assets/fonts/after_hours.tres' at thread -1
+Completed load for: 'res://assets/fonts/pixel_theme.tres' remapped 'res://assets/fonts/pixel_theme.tres' at thread -1
+Loading resource: res://default_bus_layout.tres remapped: res://default_bus_layout.tres
+Completed load for: 'res://default_bus_layout.tres' remapped 'res://default_bus_layout.tres' at thread -1
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/capture_gfx4.gd remapped: res://tests/capture_gfx4.gd
+Completed load for: 'res://tests/capture_gfx4.gd' remapped 'res://tests/capture_gfx4.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: res://scripts/systems/audio_manager.gd remapped: res://scripts/systems/audio_manager.gd
+Completed load for: 'res://scripts/systems/audio_manager.gd' remapped 'res://scripts/systems/audio_manager.gd' at thread -1
+Loaded system CA certificates
+Loading resource: res://scenes/ironwatch_keep.tscn remapped: res://scenes/ironwatch_keep.tscn
+Loading resource: res://scripts/world/ironwatch_region.gd remapped: res://scripts/world/ironwatch_region.gd
+Loading resource: res://scenes/characters/npc.tscn remapped: res://scenes/characters/npc.tscn
+Loading resource: res://scripts/characters/npc.gd remapped: res://scripts/characters/npc.gd
+Completed load for: 'res://scripts/characters/npc.gd' remapped 'res://scripts/characters/npc.gd' at thread -1
+Completed load for: 'res://scenes/characters/npc.tscn' remapped 'res://scenes/characters/npc.tscn' at thread -1
+Completed load for: 'res://scripts/world/ironwatch_region.gd' remapped 'res://scripts/world/ironwatch_region.gd' at thread -1
+Loading resource: res://assets/tiles/courtyard.tres remapped: res://assets/tiles/courtyard.tres
+Completed load for: 'res://assets/tiles/courtyard.tres' remapped 'res://assets/tiles/courtyard.tres' at thread -1
+Loading resource: res://scenes/characters/player.tscn remapped: res://scenes/characters/player.tscn
+Loading resource: res://scripts/characters/player.gd remapped: res://scripts/characters/player.gd
+Completed load for: 'res://scripts/characters/player.gd' remapped 'res://scripts/characters/player.gd' at thread -1
+Loading resource: res://scripts/characters/pixel_camera.gd remapped: res://scripts/characters/pixel_camera.gd
+Completed load for: 'res://scripts/characters/pixel_camera.gd' remapped 'res://scripts/characters/pixel_camera.gd' at thread -1
+Completed load for: 'res://scenes/characters/player.tscn' remapped 'res://scenes/characters/player.tscn' at thread -1
+Loading resource: res://scenes/ui/hud.tscn remapped: res://scenes/ui/hud.tscn
+Loading resource: res://scripts/ui/hud.gd remapped: res://scripts/ui/hud.gd
+Completed load for: 'res://scripts/ui/hud.gd' remapped 'res://scripts/ui/hud.gd' at thread -1
+Loading resource: res://scripts/ui/rune_puzzle.gd remapped: res://scripts/ui/rune_puzzle.gd
+Completed load for: 'res://scripts/ui/rune_puzzle.gd' remapped 'res://scripts/ui/rune_puzzle.gd' at thread -1
+Completed load for: 'res://scenes/ui/hud.tscn' remapped 'res://scenes/ui/hud.tscn' at thread -1
+Loading resource: res://scripts/world/ironwatch_landscape.gd remapped: res://scripts/world/ironwatch_landscape.gd
+Completed load for: 'res://scripts/world/ironwatch_landscape.gd' remapped 'res://scripts/world/ironwatch_landscape.gd' at thread -1
+Completed load for: 'res://scenes/ironwatch_keep.tscn' remapped 'res://scenes/ironwatch_keep.tscn' at thread -1
+Loading resource: res://assets/ironwatch/ground.png remapped: res://assets/ironwatch/ground.png
+Loading resource: res://.godot/imported/ground.png-0214cb8682a898b782aae23404330241.ctex remapped: res://.godot/imported/ground.png-0214cb8682a898b782aae23404330241.ctex
+Completed load for: 'res://assets/ironwatch/ground.png' remapped 'res://assets/ironwatch/ground.png' at thread -1
+Loading resource: res://assets/ironwatch/gatehouse_bastion_0.png remapped: res://assets/ironwatch/gatehouse_bastion_0.png
+Loading resource: res://.godot/imported/gatehouse_bastion_0.png-a755af281c2ee0959e0f2983b6ed219a.ctex remapped: res://.godot/imported/gatehouse_bastion_0.png-a755af281c2ee0959e0f2983b6ed219a.ctex
+Completed load for: 'res://assets/ironwatch/gatehouse_bastion_0.png' remapped 'res://assets/ironwatch/gatehouse_bastion_0.png' at thread -1
+Loading resource: res://assets/ironwatch/ruined_barracks_0.png remapped: res://assets/ironwatch/ruined_barracks_0.png
+Loading resource: res://.godot/imported/ruined_barracks_0.png-a64cbad33226ecb5df11eb554c16a513.ctex remapped: res://.godot/imported/ruined_barracks_0.png-a64cbad33226ecb5df11eb554c16a513.ctex
+Completed load for: 'res://assets/ironwatch/ruined_barracks_0.png' remapped 'res://assets/ironwatch/ruined_barracks_0.png' at thread -1
+Loading resource: res://assets/ironwatch/cutaway_archives_0.png remapped: res://assets/ironwatch/cutaway_archives_0.png
+Loading resource: res://.godot/imported/cutaway_archives_0.png-5d9acde7e073aa794374685fe96c0f04.ctex remapped: res://.godot/imported/cutaway_archives_0.png-5d9acde7e073aa794374685fe96c0f04.ctex
+Completed load for: 'res://assets/ironwatch/cutaway_archives_0.png' remapped 'res://assets/ironwatch/cutaway_archives_0.png' at thread -1
+Loading resource: res://assets/ironwatch/archives_interior.png remapped: res://assets/ironwatch/archives_interior.png
+Loading resource: res://.godot/imported/archives_interior.png-6dd3d6ca7277aa582afe7c0a5962ff29.ctex remapped: res://.godot/imported/archives_interior.png-6dd3d6ca7277aa582afe7c0a5962ff29.ctex
+Completed load for: 'res://assets/ironwatch/archives_interior.png' remapped 'res://assets/ironwatch/archives_interior.png' at thread -1
+Loading resource: res://assets/ironwatch/hall_of_crests_0.png remapped: res://assets/ironwatch/hall_of_crests_0.png
+Loading resource: res://.godot/imported/hall_of_crests_0.png-cd258a9079911430fbfdf83e2e2f127c.ctex remapped: res://.godot/imported/hall_of_crests_0.png-cd258a9079911430fbfdf83e2e2f127c.ctex
+Completed load for: 'res://assets/ironwatch/hall_of_crests_0.png' remapped 'res://assets/ironwatch/hall_of_crests_0.png' at thread -1
+Loading resource: res://assets/ironwatch/shadow_colonnade_0.png remapped: res://assets/ironwatch/shadow_colonnade_0.png
+Loading resource: res://.godot/imported/shadow_colonnade_0.png-93a6df566918e4e40e0dbd3840b8363a.ctex remapped: res://.godot/imported/shadow_colonnade_0.png-93a6df566918e4e40e0dbd3840b8363a.ctex
+Completed load for: 'res://assets/ironwatch/shadow_colonnade_0.png' remapped 'res://assets/ironwatch/shadow_colonnade_0.png' at thread -1
+Loading resource: res://assets/ironwatch/beacon_vault_sanctum_0.png remapped: res://assets/ironwatch/beacon_vault_sanctum_0.png
+Loading resource: res://.godot/imported/beacon_vault_sanctum_0.png-736b2cee462c16b26f557168f19871b1.ctex remapped: res://.godot/imported/beacon_vault_sanctum_0.png-736b2cee462c16b26f557168f19871b1.ctex
+Completed load for: 'res://assets/ironwatch/beacon_vault_sanctum_0.png' remapped 'res://assets/ironwatch/beacon_vault_sanctum_0.png' at thread -1
+Loading resource: res://assets/ironwatch/decor_curtain.png remapped: res://assets/ironwatch/decor_curtain.png
+Loading resource: res://.godot/imported/decor_curtain.png-e8976dc0ab2680afdfd41f9daa059f63.ctex remapped: res://.godot/imported/decor_curtain.png-e8976dc0ab2680afdfd41f9daa059f63.ctex
+Completed load for: 'res://assets/ironwatch/decor_curtain.png' remapped 'res://assets/ironwatch/decor_curtain.png' at thread -1
+Loading resource: res://assets/ironwatch/decor_retaining.png remapped: res://assets/ironwatch/decor_retaining.png
+Loading resource: res://.godot/imported/decor_retaining.png-35058a4b35bc0423f30041e0d4a06a40.ctex remapped: res://.godot/imported/decor_retaining.png-35058a4b35bc0423f30041e0d4a06a40.ctex
+Completed load for: 'res://assets/ironwatch/decor_retaining.png' remapped 'res://assets/ironwatch/decor_retaining.png' at thread -1
+Loading resource: res://assets/ironwatch/decor_low_wall.png remapped: res://assets/ironwatch/decor_low_wall.png
+Loading resource: res://.godot/imported/decor_low_wall.png-4d7fc028e571c7f3db0e5451e0f2224a.ctex remapped: res://.godot/imported/decor_low_wall.png-4d7fc028e571c7f3db0e5451e0f2224a.ctex
+Completed load for: 'res://assets/ironwatch/decor_low_wall.png' remapped 'res://assets/ironwatch/decor_low_wall.png' at thread -1
+Loading resource: res://assets/ironwatch/decor_tower.png remapped: res://assets/ironwatch/decor_tower.png
+Loading resource: res://.godot/imported/decor_tower.png-51f49b6720c65f2e8ed1bb6d0e1a043d.ctex remapped: res://.godot/imported/decor_tower.png-51f49b6720c65f2e8ed1bb6d0e1a043d.ctex
+Completed load for: 'res://assets/ironwatch/decor_tower.png' remapped 'res://assets/ironwatch/decor_tower.png' at thread -1
+Loading resource: res://assets/ironwatch/decor_throne.png remapped: res://assets/ironwatch/decor_throne.png
+Loading resource: res://.godot/imported/decor_throne.png-1e0a64d5c0752de3347cc271e86d9a2f.ctex remapped: res://.godot/imported/decor_throne.png-1e0a64d5c0752de3347cc271e86d9a2f.ctex
+Completed load for: 'res://assets/ironwatch/decor_throne.png' remapped 'res://assets/ironwatch/decor_throne.png' at thread -1
+Loading resource: res://assets/ironwatch/decor_armor.png remapped: res://assets/ironwatch/decor_armor.png
+Loading resource: res://.godot/imported/decor_armor.png-967c73976130c599cf32965199f1c14d.ctex remapped: res://.godot/imported/decor_armor.png-967c73976130c599cf32965199f1c14d.ctex
+Completed load for: 'res://assets/ironwatch/decor_armor.png' remapped 'res://assets/ironwatch/decor_armor.png' at thread -1
+Loading resource: res://assets/ironwatch/beacon_vault_sanctum_1.png remapped: res://assets/ironwatch/beacon_vault_sanctum_1.png
+Loading resource: res://.godot/imported/beacon_vault_sanctum_1.png-d30e6119172aa7de7f34b1c56a85852d.ctex remapped: res://.godot/imported/beacon_vault_sanctum_1.png-d30e6119172aa7de7f34b1c56a85852d.ctex
+Completed load for: 'res://assets/ironwatch/beacon_vault_sanctum_1.png' remapped 'res://assets/ironwatch/beacon_vault_sanctum_1.png' at thread -1
+GFX4 CAPTURES COMPLETE: after
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Accessibility: window 0 adapter destroyed.

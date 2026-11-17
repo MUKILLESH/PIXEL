@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+GFX4 courtyard: mean_ms=16.66 p95_ms=16.70 max_ms=16.79 frames=240 native=640x360 window=1280x720
+GFX4 passage: mean_ms=16.66 p95_ms=16.70 max_ms=16.74 frames=240 native=640x360 window=1280x720
+GFX4 vault: mean_ms=16.66 p95_ms=16.70 max_ms=16.78 frames=240 native=640x360 window=1280x720
+GFX4 CAPTURES COMPLETE: after

@@ -11,70 +11,27 @@ var active_checkpoint_id: String = "checkpoint_0"
 var _pulse_phase: float = 0.0
 var _redraw_accum: float = 0.0
 
+func _ready() -> void:
+	if "--bake-ironwatch" in OS.get_cmdline_user_args(): return
+	var floor_sprite := Sprite2D.new()
+	floor_sprite.texture = load("res://assets/ironwatch/ground.png")
+	floor_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	floor_sprite.show_behind_parent = true
+	add_child(floor_sprite)
+	var air := Node2D.new()
+	air.set_script(preload("res://scripts/world/ironwatch_air.gd"))
+	air.z_index = 2
+	add_child(air)
+
 func _process(delta: float) -> void:
-	_pulse_phase = fmod(_pulse_phase + delta * 1.4, TAU)
-	if not Engine.is_editor_hint():
-		_redraw_accum += delta
-		if _redraw_accum >= 0.08:
-			_redraw_accum = 0.0
-			queue_redraw()
+	_pulse_phase = fmod(_pulse_phase+delta*1.4,TAU)
+	_redraw_accum += delta
+	if _redraw_accum >= 0.1:
+		_redraw_accum = 0
+		queue_redraw()
 
 func _draw() -> void:
-	var stone_dark := Color("1d202b")
-	var basalt := Color("282c3a")
-	var basalt_light := Color("363c4f")
-	var road_trim := Color("43495e")
-	var arcane_purple := Color("3b2759")
-	var gold_inlay := Color("c99c49")
-
-	# 1. Outer Mountain Precipice Backdrop & Fortress Walkways connecting all 6 wings
-	draw_rect(Rect2(-640, -420, 1280, 840), Color("11131f"))
-	draw_rect(Rect2(-420, -290, 840, 580), Color("161826"))
-	draw_rect(Rect2(-340, -240, 680, 490), Color("1a1d2b"))
-	draw_rect(Rect2(-315, -220, 630, 450), stone_dark)
-	# Subtle outer battlement stones around southern mountain rim so edges never crop sharply
-	for rx in range(-320, 320, 48):
-		draw_rect(Rect2(rx, 240, 26, 10), Color("242736"))
-		draw_rect(Rect2(rx + 12, -252, 24, 10), Color("1f2230"))
-
-	# Courtyard -> East Archives -> West Barracks -> North Hall of Crests paths
-	draw_polyline(PackedVector2Array([Vector2(185, 222), Vector2(120, 185), Vector2(18, 152), Vector2(-18, 25)]), road_trim, 32.0)
-	draw_polyline(PackedVector2Array([Vector2(185, 222), Vector2(120, 185), Vector2(18, 152), Vector2(-18, 25)]), basalt, 24.0)
-	draw_polyline(PackedVector2Array([Vector2(18, 152), Vector2(-185, 130)]), basalt, 24.0)
-	draw_polyline(PackedVector2Array([Vector2(18, 152), Vector2(185, 52)]), basalt, 24.0)
-	draw_polyline(PackedVector2Array([Vector2(-18, 25), Vector2(-160, 12), Vector2(-160, -32)]), basalt, 22.0)
-
-	# 2. Fortress Courtyard (Warden Statue Circle Plaza)
-	draw_circle(Vector2(18, 152), 54.0, basalt_light)
-	draw_circle(Vector2(18, 152), 46.0, basalt)
-	for cx in range(-22, 60, 16):
-		for cy in range(118, 186, 14):
-			draw_rect(Rect2(cx, cy, 12, 10), Color("323747"))
-	draw_arc(Vector2(18, 152), 26.0, 0.0, TAU, 32, Color("d4a448"), 1.5)
-
-	# 3. Abandoned Barracks Stone Floor (South-West Wing)
-	draw_rect(Rect2(-285, 86, 175, 118), Color("232733"))
-	for bx in range(-278, -118, 18):
-		for by in range(92, 198, 16):
-			draw_rect(Rect2(bx, by, 14, 12), Color("2c303f"))
-
-	# 4. Cutaway Fortress Archives Floor (East Wing)
-	draw_rect(Rect2(138, -22, 150, 116), Color("242836"))
-	for ax in range(144, 280, 16):
-		for ay in range(-16, 86, 14):
-			draw_rect(Rect2(ax, ay, 12, 10), Color("2e3345"))
-	# Warm candle pool on Archive floor
-	draw_circle(Vector2(204, 34), 34.0, Color(0.92, 0.72, 0.34, 0.14))
-
-	# 5. Hall of Crests Arcane Mandala (Center Plaza)
-	draw_rect(Rect2(-96, -34, 178, 86), arcane_purple)
-	draw_rect(Rect2(-90, -28, 166, 74), Color("241e38"))
-	draw_arc(Vector2(-18, 16), 28.0, 0.0, TAU, 32, Color("8be6f0") if crest_puzzle_solved else gold_inlay, 1.5)
-	draw_arc(Vector2(-18, 16), 16.0, 0.0, TAU, 24, Color("7b52c9"), 1.5)
-
-	# 6. Shadowed Passage Stealth Corridor (West North-South Lane)
-	draw_rect(Rect2(-206, -188, 92, 164), Color("161524"))
-	draw_rect(Rect2(-198, -182, 76, 154), Color("1d1c30"))
+	var dais_center := Vector2(70,-148)
 	# Crimson patrol lane stone strips along sentinel heights
 	if not shadow_passage_cleared:
 		draw_line(Vector2(-196, -82), Vector2(-124, -82), Color(0.75, 0.24, 0.42, 0.35), 4.0)
@@ -101,21 +58,6 @@ func _draw() -> void:
 	var exit_col := Color("7be6f0") if shadow_passage_cleared else Color("b84444")
 	draw_rect(Rect2(-118, -180, 6, 36), exit_col)
 
-	# 7. Warden's Chamber & Beacon Vault (North Celestial Dais)
-	draw_rect(Rect2(-102, -218, 304, 134), Color("1e1a30"))
-	draw_rect(Rect2(-94, -210, 288, 118), Color("282242"))
-	draw_polyline(PackedVector2Array([Vector2(-150, -164), Vector2(-45, -150), Vector2(70, -148), Vector2(152, -162)]), Color("373059"), 22.0)
-
-	# Star Mandala Dais beneath Third Ancient Beacon
-	var dais_center := Vector2(70, -148)
-	draw_circle(dais_center, 44.0, Color("312952"))
-	draw_arc(dais_center, 42.0, 0.0, TAU, 36, gold_inlay, 2.0)
-	draw_arc(dais_center, 28.0, 0.0, TAU, 32, Color("8be6ff") if third_beacon_activated else Color("7b58bd"), 1.5)
-	for star_i in range(8):
-		var a1: float = float(star_i) * PI * 0.25
-		var a2: float = a1 + PI * 0.75
-		draw_line(dais_center + Vector2(cos(a1), sin(a1)) * 28.0, dais_center + Vector2(cos(a2), sin(a2)) * 28.0, Color(0.88, 0.72, 0.34, 0.55), 1.0)
-
 	# 8. Connected Three-Beacon Harmonic Lattice Beams (when Third Beacon ignites!)
 	if third_beacon_activated:
 		var pulse_w: float = 2.6 + 0.8 * sin(_pulse_phase)
@@ -128,29 +70,10 @@ func _draw() -> void:
 		draw_line(dais_center, dawnspire_apex, Color(0.80, 0.95, 1.0, 0.78), pulse_w + 1.0)
 		draw_circle(dais_center, 48.0, Color(0.48, 0.90, 1.0, 0.14))
 
-	# Flanking battlements & northern curtain walls
-	draw_rect(Rect2(-335, -238, 670, 16), Color("242736"))
-	draw_rect(Rect2(-335, 224, 670, 16), Color("242736"))
-	draw_rect(Rect2(-115, -72, 430, 16), Color("262938"))
-
-	# Cracked stonework seams, worn Warden banners, discarded gear & orange torch flicker
-	draw_polyline(PackedVector2Array([Vector2(66, 174), Vector2(76, 182), Vector2(88, 178)]), Color("161822"), 1.5)
-	draw_polyline(PackedVector2Array([Vector2(-74, 128), Vector2(-62, 134), Vector2(-54, 126)]), Color("161822"), 1.5)
-	# Discarded Warden heater shield & bent pike outside Abandoned Barracks
-	draw_colored_polygon(PackedVector2Array([Vector2(-248, 92), Vector2(-240, 92), Vector2(-241, 100), Vector2(-244, 103), Vector2(-247, 100)]), Color("5d677a"))
-	draw_line(Vector2(-254, 104), Vector2(-236, 94), Color("5c3f26"), 2.0)
-	# Tattered crimson-violet Warden banners along Keep walls
-	for bx in [-46, 8, 134, 210]:
-		draw_rect(Rect2(bx, 184, 7, 14), Color("4f2238"))
-		draw_rect(Rect2(bx + 2, 186, 3, 7), Color("d9a94e"))
-	# Flickering warm orange wall-torch pools across Gatehouse, Courtyard, Archives & Vault edges
-	var torch_flicker: float = 1.0 + sin(_pulse_phase * 4.5) * 0.14
-	for tp: Vector2 in [Vector2(178, 172), Vector2(72, 168), Vector2(-206, 118), Vector2(152, 34), Vector2(132, -172)]:
-		draw_circle(tp, 16.0 * torch_flicker, Color(0.98, 0.56, 0.20, 0.14))
-		draw_circle(tp, 3.0, Color("ff9e42"))
-		draw_circle(tp, 1.5, Color("fff0b8"))
-	# Sparse drifting fortress mist
-	for dm in range(4):
-		var dx: float = -240.0 + float(dm) * 140.0 + sin(_pulse_phase * 0.6 + float(dm)) * 18.0
-		var dy: float = 204.0 - float(dm % 2) * 180.0
-		draw_rect(Rect2(dx, dy, 54, 6), Color(0.62, 0.68, 0.84, 0.06))
+	if crest_puzzle_solved:
+		draw_polyline(PackedVector2Array([Vector2(-53,11),Vector2(-18,-6),Vector2(17,11),Vector2(-18,28),Vector2(-53,11)]),Color("93d8de"),1)
+	# Warm torchlight is bounded to the original five positions.
+	for p: Vector2 in [Vector2(178,172),Vector2(72,168),Vector2(-206,118),Vector2(152,34),Vector2(132,-172)]:
+		draw_colored_polygon(PackedVector2Array([p+Vector2(-18,0),p+Vector2(0,-10),p+Vector2(18,0),p+Vector2(0,10)]),Color(0.98,0.58,0.25,0.14))
+		draw_rect(Rect2(p+Vector2(-2,-5),Vector2(4,7)),Color("d69c58"))
+		draw_rect(Rect2(p+Vector2(-1,-4-int(sin(_pulse_phase*4))),Vector2(2,5)),Color("ffe8ad"))

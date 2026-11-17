@@ -1,0 +1,8 @@
+scripts/world/ironwatch_building.gd func _ready() unchanged: True
+scripts/world/ironwatch_prop.gd func _ready() unchanged: True
+scripts/interactables/ironwatch_interactable.gd func _ready() unchanged: True
+scripts/world/ironwatch_region.gd func _build_ironwatch_world unchanged: True
+scripts/world/ironwatch_region.gd func _physics_process unchanged: True
+scripts/world/ironwatch_region.gd func _build_boundaries unchanged: True
+scripts/world/ironwatch_region.gd func _sync_world_from_quest unchanged: True
+scripts/world/ironwatch_landscape.gd # Crimson patrol unchanged: True

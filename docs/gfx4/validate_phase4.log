@@ -1,0 +1,113 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+--- STAGE 1: FLOODMILL TO IRONWATCH TRANSITION ---
+PASS: Floodmill scene loads for Phase 4 transition check
+PASS: Floodmill exposes travel_to_ironwatch()
+PASS: Ironwatch Gate locked before Chapter 2 completion
+PASS: Chapter 2 completion unlocks Ironwatch Gate
+PASS: Ironwatch Gate visual state unlocks in Floodmill
+PASS: First post-unlock gate interact announces Ironwatch Keep readiness
+PASS: Floodmill IronwatchGate arms ready_to_travel after dismiss
+PASS: Transition from Floodmill loads IronwatchKeep cleanly
+PASS: Ironwatch loads chapter3_keepers_lie at Objective 1
+PASS: Prologue, Ch1, and Ch2 flags carried cleanly into Ironwatch
+PASS: HUD header reflects Chapter 3 in Ironwatch Keep
+PASS: Ironwatch structure exists: GatehouseBastion
+PASS: Ironwatch structure exists: RuinedBarracks
+PASS: Ironwatch structure exists: CutawayArchives
+PASS: Ironwatch structure exists: HallOfCrests
+PASS: Ironwatch structure exists: ShadowColonnade
+PASS: Ironwatch structure exists: BeaconVaultSanctum
+PASS: Both Lyra and LastWarden NPCs exist in Ironwatch
+PASS: Both ShadowSentinel patrolling hazards exist
+PASS: CrestPuzzle UI panel exists on HUD
+PASS: Ironwatch approach spot 0 (120.0, 198.0) is clear of solids
+PASS: Ironwatch approach spot 1 (185.0, 206.0) is clear of solids
+PASS: Ironwatch approach spot 2 (18.0, 176.0) is clear of solids
+PASS: Ironwatch approach spot 3 (185.0, 62.0) is clear of solids
+PASS: Ironwatch approach spot 4 (-195.0, 154.0) is clear of solids
+PASS: Ironwatch approach spot 5 (-120.0, 156.0) is clear of solids
+PASS: Ironwatch approach spot 6 (216.0, 76.0) is clear of solids
+PASS: Ironwatch approach spot 7 (-164.0, 56.0) is clear of solids
+PASS: Ironwatch approach spot 8 (44.0, 22.0) is clear of solids
+PASS: Ironwatch approach spot 9 (-18.0, 36.0) is clear of solids
+PASS: Ironwatch approach spot 10 (-160.0, -150.0) is clear of solids
+PASS: Ironwatch approach spot 11 (18.0, -98.0) is clear of solids
+PASS: Ironwatch approach spot 12 (70.0, -120.0) is clear of solids
+PASS: Ironwatch approach spot 13 (152.0, -134.0) is clear of solids
+PASS: Ironwatch approach spot 14 (-35.0, -118.0) is clear of solids
+--- STAGE 2: STRUCTURAL & OUT-OF-ORDER GUARDS ---
+PASS: QuestManager blocks out-of-order restore_third_beacon
+PASS: CrestPortcullisBlocker starts active before Hall of Crests
+PASS: PassageExitBlocker starts active before Shadowed Passage
+PASS: Inspecting courtyard early does not skip enter_ironwatch
+PASS: Objective 1 completed: enter_ironwatch
+PASS: Objective 2 completed: investigate_courtyard
+PASS: Barracks Roster blocked until Archives records read
+PASS: Walked cleanly into Cutaway Fortress Archives
+PASS: Objective 3 completed: Archives reveal first catastrophe sacrifice
+PASS: Objective 4 unlocked: explore_barracks
+PASS: Walked cleanly to Abandoned Barracks Roster
+PASS: Objective 4 completed: Barracks reveal concealed generations
+PASS: Optional Warden's Tarnished Locket collected cleanly
+PASS: Optional locket preserves active objective find_crest_clues
+PASS: CrestPuzzle blocked before finding 3 crest clues
+PASS: Collected Crest Clue 1/3 (Silver Bell)
+PASS: Duplicate crest clue cannot be farmed
+PASS: Collected Crest Clue 2/3 (Sundered Shield)
+PASS: Objective 5 completed on 3/3 crest clues
+PASS: Objective 6 unlocked: solve_crest_puzzle
+--- STAGE 3: HALL OF CRESTS MINIGAME ---
+PASS: CrestPuzzle opens and locks player movement
+PASS: ESC closes CrestPuzzle without softlock
+PASS: CrestPuzzle reopens cleanly
+PASS: Incorrect heraldic crest combination rejected
+PASS: CrestPuzzle solved via keyboard inputs
+PASS: Objective 6 completed and CrestPortcullisBlocker unlocked
+PASS: Objective 7 unlocked: navigate_shadowed_passage
+--- STAGE 4: SHADOWED PASSAGE STEALTH ---
+PASS: Entered Shadowed Passage South Ward Alcove
+PASS: Walked physically into Shadowed Passage Mid Safe Alcove
+PASS: Entering mid-passage alcove updates stealth checkpoint to checkpoint_1
+PASS: Shadow Sentinel proximity triggers detection event
+PASS: Detection safely returns Aren to active checkpoint_1 without losing clues
+PASS: Detection reset preserves all clues and Hall of Crests unlock
+PASS: Walked safely to North Ward Lantern inside North Safe Alcove
+PASS: ShadowWardSwitch calms sentinels and opens Vault exit doorway
+PASS: Objective 7 completed: navigate_shadowed_passage
+PASS: Mid-chapter Save v3 writes cleanly in Ironwatch Keep
+PASS: Crossed northeast exit into Warden's Chamber and Beacon Vault
+PASS: Objective 8 completed automatically upon entering Warden's Chamber
+PASS: Elena's research locked until Last Bell Warden confronted
+--- STAGE 5: LAST BELL WARDEN & THIRD BEACON ---
+PASS: Canonical Warden line 1 delivered verbatim
+PASS: Canonical Aren confrontation line delivered verbatim
+PASS: Canonical Warden burden line delivered verbatim
+PASS: Canonical Lyra closing line delivered verbatim
+PASS: Objective 9 completed: confront_last_warden
+PASS: Objective 10 unlocked: discover_elena_research
+PASS: Objective 10 completed: Elena's harmonic triad research uncovered
+PASS: Objective 11 unlocked: restore_third_beacon
+PASS: Dawnspire Gate locked until Third Ancient Beacon restored
+PASS: Objective 11 completed: Third Ancient Beacon restored & triad illuminated
+PASS: Objective 12 unlocked: unlock_dawnspire_road
+PASS: Objective 12 completed: Dawnspire road unlocked
+PASS: Objective 13 unlocked: complete_chapter3
+PASS: Objective 13 completed and Chapter 3 marked finished
+PASS: Exact Chapter 3 completion banner shown
+PASS: Dismissing Chapter 3 banner restores free exploration
+PASS: Field Satchel tracks all Chapter 3 documents, crests, testimony, and triad beacon
+--- STAGE 6: SAVE V3 & BACKWARD COMPATIBILITY ---
+PASS: Second Save v3 rotates .bak backup cleanly
+PASS: Returned to Bellhaven startup to verify Continue -> Ironwatch Keep
+PASS: Continue initiated toward completed Ironwatch Keep v3 save
+PASS: Continue transitions automatically to IronwatchKeep
+PASS: All Chapter 3 completion flags survived Save v3 reload
+PASS: Resumed Ironwatch player restores saved Vault pose
+PASS: Resumed Ironwatch doors, stealth state, and three-beacon triad synced visually
+PASS: Phase 2 (v1) save remains accepted by Save v3 validator
+PASS: Phase 3 (v2) save loads cleanly with Save v3
+PASS: Loaded v2 save preserves Ch2 completion and defaults Ch3 state
+PASS: Corrupted primary v3 save automatically recovers from .bak
+PASS: Phase 4 suite completed
+PHASE 4 RESULT: 104 checks, 0 failures

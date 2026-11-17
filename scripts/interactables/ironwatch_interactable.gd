@@ -199,15 +199,7 @@ func _draw() -> void:
 			draw_rect(Rect2(-6, -20, 12, 5), Color("fff1c7"))
 			draw_circle(Vector2(0, -24), 2.0, Color("8be6ff") if inspected else Color("ffd86b"))
 		"third_beacon":
-			if activated:
-				draw_colored_polygon(PackedVector2Array([Vector2(-26, 0), Vector2(0, -14), Vector2(26, 0), Vector2(0, 14)]), Color(0.45, 0.92, 1.0, 0.30))
-			draw_rect(Rect2(-14, -15, 28, 15), Color("3a3357"))
-			draw_rect(Rect2(-10, -36, 20, 21), Color("4f4678"))
-			draw_rect(Rect2(4, -36, 6, 21), Color("2d2747"))
-			var crystal := Color("8ef5ff") if activated else Color("6f5999")
-			var core := Color("ffffff") if activated else Color("c79eff")
-			draw_colored_polygon(PackedVector2Array([Vector2(-7, -38), Vector2(0, -56), Vector2(7, -38), Vector2(0, -30)]), crystal)
-			draw_rect(Rect2(-2, -48, 4, 8), core)
+			preload("res://scripts/world/ironwatch_art.gd").beacon(self,activated)
 		"dawnspire_gate":
 			if unlocked:
 				draw_colored_polygon(PackedVector2Array([Vector2(-18, 0), Vector2(0, -10), Vector2(18, 0), Vector2(0, 10)]), Color(0.95, 0.84, 0.44, 0.28))

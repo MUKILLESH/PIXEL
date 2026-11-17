@@ -60,3 +60,28 @@ func _draw() -> void:
 			draw_colored_polygon(PackedVector2Array([Vector2(-2, -14), Vector2(0, -30), Vector2(2, -14)]), Color("82e9ff"))
 		_:
 			draw_rect(Rect2(-10, -12, 20, 12), Color("3a3f4d"))
+	# Material highlights and wear on existing physical props.
+	match kind:
+		"supply_wagon":
+			for x in [-9,9]:
+				var rim := PackedVector2Array()
+				for i in range(9): rim.append(Vector2(x,1)+Vector2(cos(i*TAU/8)*6,sin(i*TAU/8)*6).round())
+				draw_polyline(rim,Color("b6a07a"),1)
+				draw_line(Vector2(x-5,1),Vector2(x+5,1),Color("aa8b63"),1)
+				draw_line(Vector2(x,-4),Vector2(x,6),Color("aa8b63"),1)
+			for x in [-9,0,9]:
+				draw_line(Vector2(x,-25),Vector2(x,-14),Color("67645d"),1)
+			for y in [-10,-5]:
+				draw_line(Vector2(-12,y),Vector2(12,y),Color("957d5b"),1)
+		"weapon_rack":
+			for x in [-6,0,6]:
+				draw_line(Vector2(x-3,-5),Vector2(x+3,-5),Color("b4a078"),1)
+			preload("res://scripts/world/ironwatch_art.gd").crest(self,Vector2(16,-8),1)
+		"archive_desk":
+			draw_line(Vector2(-10,-9),Vector2(10,-9),Color("9c8563"),1)
+			draw_rect(Rect2(-4,-17,3,1),Color("72614b"))
+			draw_rect(Rect2(5,-24,1,2),Color("fff0c8"))
+		"arcane_obelisk":
+			draw_line(Vector2(-5,-10),Vector2(0,-32),Color("b1d1d8"),1)
+			draw_rect(Rect2(-5,-5,2,2),Color("b69c6a"))
+			draw_rect(Rect2(3,-5,2,2),Color("b69c6a"))

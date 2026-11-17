@@ -179,6 +179,7 @@ func _build_ironwatch_world() -> void:
 
 func _ready() -> void:
 	_build_ironwatch_world()
+	_add_visual_dressing()
 
 	quest_manager = QuestManagerScript.new()
 	quest_manager.name = "QuestManager"
@@ -539,3 +540,19 @@ func travel_to_dawnspire() -> void:
 		QuestManagerScript.pending_entry_position = Vector2(-190, 212)
 		QuestManagerScript.pending_entry_facing = 0
 		get_tree().change_scene_to_file("res://scenes/dawnspire_mountain.tscn")
+
+func _add_visual_dressing() -> void:
+	var specs: Array = []
+	for x in range(-300,301,60): specs.append(["curtain",Vector2(x,-225)])
+	for x in range(-85,276,60): specs.append(["retaining",Vector2(x,-68)])
+	for x in range(-285,286,60): specs.append(["low_wall",Vector2(x,246)])
+	specs.append(["tower",Vector2(-302,-225)])
+	specs.append(["tower",Vector2(290,-225)])
+	specs.append(["throne",Vector2(-43,-183)])
+	specs.append(["armor",Vector2(-286,177)])
+	for spec: Array in specs:
+		var node := Node2D.new()
+		node.set_script(preload("res://scripts/world/ironwatch_dressing.gd"))
+		node.kind = spec[0]
+		node.position = spec[1]
+		$Actors.add_child(node)

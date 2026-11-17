@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS reachable: CourtyardArch
+PASS reachable: FloodmillReturnGate
+PASS reachable: CourtyardMonument
+PASS reachable: WardenRecords
+PASS reachable: BarracksLog
+PASS reachable: BarracksKeepsake
+PASS reachable: CrestClue1
+PASS reachable: CrestClue2
+PASS reachable: CrestClue3
+PASS reachable: CrestAltar
+PASS reachable: ShadowWardSwitch
+PASS reachable: ElenaResearch
+PASS reachable: ThirdBeacon
+PASS reachable: DawnspireGate
+PASS reachable: LastWarden
+PASS reachable: Lyra
+GFX4 REACHABILITY: 16/16, 2917 cells visited; 0 failures
+GFX4 RASTER CONTRACT: 15 files checked; total failures=0
+GFX4 DECOR: 32 pieces; total failures=0
