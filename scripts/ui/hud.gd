@@ -225,6 +225,10 @@ func bind_quest_manager(qm: Node) -> void:
 
 func _on_objective_changed(_objective_id: String, objective_text: String) -> void:
 	$Objective.text = objective_text
+	if is_inside_tree() and quest_manager != null:
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("sync_quest_music_state"):
+			audio_mgr.sync_quest_music_state(quest_manager)
 
 func set_stealth_status(msg: String) -> void:
 	if stealth_status_label == null:
@@ -441,8 +445,14 @@ func show_dialogue(speaker: String, lines: Array[String], source: StaticBody2D =
 			player.face_toward(source.global_position)
 		if source.has_method("face_toward") and player != null:
 			source.face_toward(player.global_position)
-	if is_inside_tree() and (cinematic_director == null or not cinematic_director.active):
-		AudioManagerScript.play_global_sfx(get_tree(), "dialogue_open")
+	if is_inside_tree():
+		if cinematic_director == null or not cinematic_director.active:
+			AudioManagerScript.play_global_sfx(get_tree(), "dialogue_open")
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_dialogue_ducking"):
+			var upper_sp: String = speaker.to_upper()
+			var is_emotional: bool = (upper_sp.contains("ELENA") or upper_sp.contains("MOTHER") or upper_sp.contains("MEMORIAL") or upper_sp.contains("WARDEN") or upper_sp.contains("LAST BELL") or upper_sp.contains("ECHO"))
+			audio_mgr.set_dialogue_ducking(true, is_emotional)
 	dialogue_lines = lines.duplicate()
 	dialogue_index = 0
 	on_dialogue_complete = complete_cb
@@ -480,6 +490,10 @@ func _close_dialogue(trigger_completion: bool) -> void:
 		terminal.set_dialogue_open(false)
 	$Prompt.hide()
 	_update_selection()
+	if is_inside_tree():
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_dialogue_ducking"):
+			audio_mgr.set_dialogue_ducking(false, false)
 	if cinematic_director != null and cinematic_director.active and not cinematic_director.sequence_mode:
 		cinematic_director.finish_story_cinematic(cinematic_director.skipped_last)
 	if trigger_completion and cb.is_valid():
@@ -1398,6 +1412,10 @@ func open_inventory() -> void:
 func _on_menu_inventory_requested() -> void:
 	if title_menu != null:
 		title_menu.hide()
+	if is_inside_tree():
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_menu_ducking"):
+			audio_mgr.set_menu_ducking(false)
 	open_inventory()
 
 func open_title_menu(status_text: String = "") -> void:
@@ -1452,6 +1470,8 @@ func quit_game() -> void:
 		audio_mgr.save_settings()
 	if title_menu != null:
 		title_menu.hide()
+	if audio_mgr != null and audio_mgr.has_method("set_menu_ducking"):
+		audio_mgr.set_menu_ducking(false)
 	if is_inside_tree():
 		get_tree().quit(0)
 
@@ -1487,6 +1507,10 @@ func start_new_game() -> void:
 		ending_credits.hide()
 	if title_menu != null:
 		title_menu.hide()
+	if is_inside_tree():
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_menu_ducking"):
+			audio_mgr.set_menu_ducking(false)
 	if terminal != null:
 		terminal.set_dialogue_open(false)
 	QuestManagerScript.pending_load_path = ""
@@ -1516,6 +1540,10 @@ func continue_game(custom_path: String = "") -> bool:
 		return false
 	if title_menu != null:
 		title_menu.hide()
+	if is_inside_tree():
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_menu_ducking"):
+			audio_mgr.set_menu_ducking(false)
 	var target_region: String = String(summary.get("region_scene", "res://scenes/sjt_exterior.tscn"))
 	var parent := get_parent()
 	var same_briarwood: bool = target_region.ends_with("briarwood_forest.tscn") and parent != null and parent.name == "BriarwoodForest"

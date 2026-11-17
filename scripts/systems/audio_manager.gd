@@ -1,13 +1,46 @@
 extends Node
 class_name AudioManager
-## Lightweight procedural audio manager with Master, Music, SFX, and Ambient buses.
-## Generates soft PCM16 AudioStreamWAV assets in memory (no external unlicensed files).
+## Adaptive soundtrack, natural ambience, and SFX mixer for ASHVALE: THE THIRTEENTH BELL.
+## Routes audio through Master <- (MusicDuck <- Music), SFX, Ambient, and Cinematic buses
+## with seamless crossfades, dialogue/revelation ducking, and Master hard limiting.
 
 const SETTINGS_PATH := "user://ashvale_audio_settings.json"
-const BUS_NAMES := ["Master", "Music", "SFX", "Ambient"]
+const BUS_NAMES := ["Master", "MusicDuck", "Music", "SFX", "Ambient", "Cinematic"]
 const SAMPLE_RATE := 22050
 
-var _cached_waves: Dictionary = {}
+const MUSIC_BASE_DB := -2.5
+const AMBIENT_BASE_DB := -6.5
+const SFX_BASE_DB := -4.0
+const CINEMATIC_BASE_DB := -3.0
+
+const REGION_MUSIC_PATHS := {
+	"bellhaven": "res://assets/audio/music/mus_bellhaven.ogg",
+	"briarwood": "res://assets/audio/music/mus_briarwood.ogg",
+	"floodmill": "res://assets/audio/music/mus_floodmill.ogg",
+	"ironwatch": "res://assets/audio/music/mus_ironwatch.ogg",
+	"dawnspire": "res://assets/audio/music/mus_dawnspire.ogg",
+	"great_bell": "res://assets/audio/music/mus_great_bell.ogg",
+	"great_bell_climax": "res://assets/audio/music/mus_great_bell_climax.ogg",
+	"epilogue_dawn": "res://assets/audio/music/mus_epilogue_dawn.ogg",
+}
+
+const REGION_AMBIENCE_PATHS := {
+	"bellhaven": "res://assets/audio/ambience/amb_bellhaven.ogg",
+	"briarwood": "res://assets/audio/ambience/amb_briarwood.ogg",
+	"floodmill": "res://assets/audio/ambience/amb_floodmill.ogg",
+	"ironwatch": "res://assets/audio/ambience/amb_ironwatch.ogg",
+	"dawnspire": "res://assets/audio/ambience/amb_dawnspire.ogg",
+	"great_bell": "res://assets/audio/ambience/amb_great_bell.ogg",
+	"epilogue_dawn": "res://assets/audio/ambience/amb_epilogue_dawn.ogg",
+}
+
+const CINEMATIC_SFX_IDS := [
+	"bell_toll", "great_bell_resonance", "binding_sever", "beacon_activate",
+	"observatory_activate", "sanctuary_awaken", "ritual_stabilize",
+	"chapter_complete", "dawn_chord", "storm_recede", "distant_thunder",
+]
+
+var _stream_cache: Dictionary = {}
 
 var master_volume: float = 0.85
 var music_volume: float = 0.70
@@ -15,12 +48,32 @@ var sfx_volume: float = 0.80
 var ambient_volume: float = 0.75
 
 var active_region_id: String = ""
+var active_music_key: String = ""
 var last_played_sfx: String = ""
 
+# Primary exposed player refs (always point to currently foreground A/B deck)
 var music_player: AudioStreamPlayer
 var ambient_player: AudioStreamPlayer
 var sfx_players: Array[AudioStreamPlayer] = []
+
+var _music_decks: Array[AudioStreamPlayer] = []
+var _ambient_decks: Array[AudioStreamPlayer] = []
+var _music_deck_idx: int = 0
+var _ambient_deck_idx: int = 0
 var _sfx_cursor: int = 0
+
+var _music_fade_tween: Tween
+var _ambient_fade_tween: Tween
+var _duck_tween: Tween
+
+# Adaptive mix state
+var _dialogue_ducking: bool = false
+var _emotional_silence: bool = false
+var _menu_ducking: bool = false
+var _cinematic_id: String = ""
+var _intensity_boost_db: float = 0.0
+var _duck_bus_db: float = 0.0
+
 
 static func ensure(tree: SceneTree) -> Node:
 	if tree == null or tree.root == null:
@@ -41,38 +94,69 @@ static func ensure(tree: SceneTree) -> Node:
 		tree.root.add_child.call_deferred(mgr)
 	return mgr
 
+
 static func play_global_sfx(tree: SceneTree, sfx_id: String) -> void:
 	var mgr := ensure(tree)
 	if mgr != null and mgr.has_method("play_sfx"):
 		mgr.play_sfx(sfx_id)
+
 
 static func play_global_region(tree: SceneTree, region_id: String) -> void:
 	var mgr := ensure(tree)
 	if mgr != null and mgr.has_method("play_region_ambience"):
 		mgr.play_region_ambience(region_id)
 
+
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_ensure_audio_buses()
 	_build_players()
 	load_settings()
 	_apply_all_volumes()
+	_preload_core_sfx()
+
 
 func stop_all() -> void:
-	if music_player != null:
-		music_player.stop()
-		music_player.stream = null
-	if ambient_player != null:
-		ambient_player.stop()
-		ambient_player.stream = null
+	_kill_tween(_music_fade_tween)
+	_kill_tween(_ambient_fade_tween)
+	_kill_tween(_duck_tween)
+	_music_fade_tween = null
+	_ambient_fade_tween = null
+	_duck_tween = null
+
+	for p in _music_decks:
+		if p != null:
+			p.stop()
+			p.stream = null
+	for p in _ambient_decks:
+		if p != null:
+			p.stop()
+			p.stream = null
 	for p in sfx_players:
 		if p != null:
 			p.stop()
 			p.stream = null
+
 	active_region_id = ""
+	active_music_key = ""
+	_dialogue_ducking = false
+	_emotional_silence = false
+	_menu_ducking = false
+	_cinematic_id = ""
+	_intensity_boost_db = 0.0
+	_duck_bus_db = 0.0
+	_set_music_duck_db(0.0)
+
 
 func _exit_tree() -> void:
 	stop_all()
-	_cached_waves.clear()
+	_stream_cache.clear()
+
+
+func _kill_tween(tw: Tween) -> void:
+	if tw != null and is_instance_valid(tw):
+		tw.kill()
+
 
 func _ensure_audio_buses() -> void:
 	for bname in BUS_NAMES:
@@ -82,34 +166,65 @@ func _ensure_audio_buses() -> void:
 			var idx: int = AudioServer.bus_count
 			AudioServer.add_bus(idx)
 			AudioServer.set_bus_name(idx, bname)
-			AudioServer.set_bus_send(idx, "Master")
+			var send_target: String = "MusicDuck" if bname == "Music" else "Master"
+			AudioServer.set_bus_send(idx, send_target)
+	# Ensure Music -> MusicDuck routing even if bus layout had flat send
+	var mus_idx: int = AudioServer.get_bus_index("Music")
+	var duck_idx: int = AudioServer.get_bus_index("MusicDuck")
+	if mus_idx != -1 and duck_idx != -1 and AudioServer.get_bus_send(mus_idx) != &"MusicDuck":
+		AudioServer.set_bus_send(mus_idx, &"MusicDuck")
+
+	# Safety peak limiter on Master so layered audio never clips digitally
+	var master_idx: int = AudioServer.get_bus_index("Master")
+	if master_idx != -1 and AudioServer.get_bus_effect_count(master_idx) == 0:
+		var limiter := AudioEffectHardLimiter.new()
+		limiter.ceiling_db = -1.0
+		limiter.release = 0.1
+		AudioServer.add_bus_effect(master_idx, limiter)
+
 
 func _build_players() -> void:
-	if music_player == null:
-		music_player = AudioStreamPlayer.new()
-		music_player.name = "MusicPlayer"
-		music_player.bus = &"Music"
-		music_player.volume_db = -10.0
-		add_child(music_player)
-	if ambient_player == null:
-		ambient_player = AudioStreamPlayer.new()
-		ambient_player.name = "AmbientPlayer"
-		ambient_player.bus = &"Ambient"
-		ambient_player.volume_db = -8.0
-		add_child(ambient_player)
+	if _music_decks.is_empty():
+		for i in range(2):
+			var mp := AudioStreamPlayer.new()
+			mp.name = "MusicPlayer" if i == 0 else "MusicPlayerAlt"
+			mp.bus = &"Music"
+			mp.volume_db = MUSIC_BASE_DB
+			add_child(mp)
+			_music_decks.append(mp)
+		music_player = _music_decks[0]
+
+	if _ambient_decks.is_empty():
+		for i in range(2):
+			var ap := AudioStreamPlayer.new()
+			ap.name = "AmbientPlayer" if i == 0 else "AmbientPlayerAlt"
+			ap.bus = &"Ambient"
+			ap.volume_db = AMBIENT_BASE_DB
+			add_child(ap)
+			_ambient_decks.append(ap)
+		ambient_player = _ambient_decks[0]
+
 	if sfx_players.is_empty():
-		for i in range(4):
+		for i in range(6):
 			var p := AudioStreamPlayer.new()
 			p.name = "SfxPlayer%d" % i
 			p.bus = &"SFX"
-			p.volume_db = -4.0
-			p.max_polyphony = 2
+			p.volume_db = SFX_BASE_DB
+			p.max_polyphony = 3
 			add_child(p)
 			sfx_players.append(p)
 
+
+func _normalize_bus_key(bus_name: String) -> String:
+	if bus_name == "Ambience":
+		return "Ambient"
+	return bus_name
+
+
 func set_bus_linear(bus_name: String, linear_val: float) -> void:
+	var key := _normalize_bus_key(bus_name)
 	var clamped: float = clampf(linear_val, 0.0, 1.0)
-	match bus_name:
+	match key:
 		"Master":
 			master_volume = clamped
 		"Music":
@@ -120,10 +235,14 @@ func set_bus_linear(bus_name: String, linear_val: float) -> void:
 			ambient_volume = clamped
 		_:
 			return
-	_apply_bus_volume(bus_name, clamped)
+	_apply_bus_volume(key, clamped)
+	if key == "SFX":
+		_apply_bus_volume("Cinematic", clamped)
+
 
 func get_bus_linear(bus_name: String) -> float:
-	match bus_name:
+	var key := _normalize_bus_key(bus_name)
+	match key:
 		"Master":
 			return master_volume
 		"Music":
@@ -134,35 +253,222 @@ func get_bus_linear(bus_name: String) -> float:
 			return ambient_volume
 	return 1.0
 
+
 func _apply_all_volumes() -> void:
 	_apply_bus_volume("Master", master_volume)
 	_apply_bus_volume("Music", music_volume)
 	_apply_bus_volume("SFX", sfx_volume)
+	_apply_bus_volume("Cinematic", sfx_volume)
 	_apply_bus_volume("Ambient", ambient_volume)
+
 
 func _apply_bus_volume(bus_name: String, value_0_to_1: float) -> void:
 	var idx: int = AudioServer.get_bus_index(bus_name)
 	if idx == -1:
 		return
-	AudioServer.set_bus_mute(idx, value_0_to_1 <= 0.001)
-	if value_0_to_1 > 0.001:
-		AudioServer.set_bus_volume_linear(idx, value_0_to_1)
+	var clamped: float = clampf(value_0_to_1, 0.0, 1.0)
+	AudioServer.set_bus_mute(idx, clamped <= 0.001)
+	if clamped > 0.001:
+		# Squared taper spreads perceptible loudness evenly across all 10 slider steps
+		AudioServer.set_bus_volume_linear(idx, clamped * clamped)
 
-func play_region_ambience(region_id: String) -> void:
-	if region_id == "" or region_id == active_region_id:
+
+func play_region_ambience(region_id: String, crossfade_s: float = 1.8) -> void:
+	if region_id == "":
 		return
-	active_region_id = region_id
 	_ensure_audio_buses()
 	_build_players()
+
+	if region_id == active_region_id and active_music_key != "":
+		return
+
+	active_region_id = region_id
+	var amb_stream := _get_ambience_stream(region_id)
+	var mus_key := region_id
+	if _cinematic_id == "last_bell_climax":
+		mus_key = "great_bell_climax"
+	var mus_stream := _get_music_stream(mus_key)
 	var can_play: bool = (DisplayServer.get_name() != "headless")
-	if ambient_player != null:
-		ambient_player.stream = _get_or_make_stream("amb_" + region_id)
-		if can_play:
-			ambient_player.play()
-	if music_player != null:
-		music_player.stream = _get_or_make_stream("mus_" + region_id)
-		if can_play:
-			music_player.play()
+
+	_crossfade_ambient(amb_stream, minf(crossfade_s, 1.4), can_play)
+	if mus_key != active_music_key or music_player == null or (can_play and not music_player.playing):
+		active_music_key = mus_key
+		_crossfade_music(mus_stream, crossfade_s, can_play)
+
+
+func transition_music_track(music_key: String, crossfade_s: float = 1.8) -> void:
+	if music_key == "" or music_key == active_music_key:
+		return
+	_ensure_audio_buses()
+	_build_players()
+	active_music_key = music_key
+	var mus_stream := _get_music_stream(music_key)
+	var can_play: bool = (DisplayServer.get_name() != "headless")
+	_crossfade_music(mus_stream, crossfade_s, can_play)
+
+
+func _crossfade_music(stream: AudioStream, secs: float, can_play: bool) -> void:
+	if _music_decks.size() < 2:
+		return
+	var old_deck: AudioStreamPlayer = _music_decks[_music_deck_idx]
+	_music_deck_idx = 1 - _music_deck_idx
+	var new_deck: AudioStreamPlayer = _music_decks[_music_deck_idx]
+	music_player = new_deck
+
+	new_deck.stream = stream
+	_kill_tween(_music_fade_tween)
+
+	if not can_play:
+		old_deck.stop()
+		new_deck.volume_db = MUSIC_BASE_DB
+		return
+
+	if not old_deck.playing or secs <= 0.05:
+		old_deck.stop()
+		new_deck.volume_db = MUSIC_BASE_DB if not old_deck.playing else -36.0
+		new_deck.play()
+		if old_deck.playing:
+			pass
+		else:
+			# Gentle fade-in on fresh startup so music swells in warmly
+			new_deck.volume_db = -24.0
+			_music_fade_tween = create_tween()
+			_music_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+			_music_fade_tween.tween_property(new_deck, "volume_db", MUSIC_BASE_DB, minf(1.2, maxf(0.4, secs)))
+		return
+
+	new_deck.volume_db = -40.0
+	new_deck.play()
+	_music_fade_tween = create_tween()
+	_music_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_music_fade_tween.set_parallel(true)
+	_music_fade_tween.tween_property(old_deck, "volume_db", -42.0, secs)
+	_music_fade_tween.tween_property(new_deck, "volume_db", MUSIC_BASE_DB, secs)
+	_music_fade_tween.chain().tween_callback(old_deck.stop)
+
+
+func _crossfade_ambient(stream: AudioStream, secs: float, can_play: bool) -> void:
+	if _ambient_decks.size() < 2:
+		return
+	var old_deck: AudioStreamPlayer = _ambient_decks[_ambient_deck_idx]
+	_ambient_deck_idx = 1 - _ambient_deck_idx
+	var new_deck: AudioStreamPlayer = _ambient_decks[_ambient_deck_idx]
+	ambient_player = new_deck
+
+	new_deck.stream = stream
+	_kill_tween(_ambient_fade_tween)
+
+	if not can_play:
+		old_deck.stop()
+		new_deck.volume_db = AMBIENT_BASE_DB
+		return
+
+	if not old_deck.playing or secs <= 0.05:
+		old_deck.stop()
+		new_deck.volume_db = -28.0
+		new_deck.play()
+		_ambient_fade_tween = create_tween()
+		_ambient_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		_ambient_fade_tween.tween_property(new_deck, "volume_db", AMBIENT_BASE_DB, 1.0)
+		return
+
+	new_deck.volume_db = -40.0
+	new_deck.play()
+	_ambient_fade_tween = create_tween()
+	_ambient_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_ambient_fade_tween.set_parallel(true)
+	_ambient_fade_tween.tween_property(old_deck, "volume_db", -42.0, secs)
+	_ambient_fade_tween.tween_property(new_deck, "volume_db", AMBIENT_BASE_DB, secs)
+	_ambient_fade_tween.chain().tween_callback(old_deck.stop)
+
+
+func set_dialogue_ducking(active: bool, emotional_silence: bool = false) -> void:
+	_dialogue_ducking = active
+	_emotional_silence = active and emotional_silence
+	_refresh_ducking(0.55 if _emotional_silence else (0.30 if active else 0.85))
+
+
+func set_menu_ducking(active: bool) -> void:
+	_menu_ducking = active
+	_refresh_ducking(0.25)
+
+
+func set_cinematic_context(cinematic_id: String, active: bool) -> void:
+	_cinematic_id = cinematic_id if active else ""
+	if active:
+		if cinematic_id == "last_bell_climax":
+			transition_music_track("great_bell_climax", 1.6)
+		elif cinematic_id in ["elena_final_message", "dawnspire_elena_journal", "prologue_thirteenth_bell"]:
+			_emotional_silence = true
+	else:
+		_emotional_silence = false
+		if active_region_id == "great_bell" and active_music_key == "great_bell_climax":
+			# Climax transitions calmly back only when storm resolves or epilogue begins; keep energy if unfinished
+			pass
+	_refresh_ducking(0.50)
+
+
+func sync_quest_music_state(quest_manager: Node) -> void:
+	if quest_manager == null:
+		return
+	var region_now := active_region_id
+	if region_now == "great_bell":
+		var storm_done: bool = bool(quest_manager.get("storm_resolved"))
+		var epi_done: bool = bool(quest_manager.get("epilogue_completed"))
+		var terrace_ret: bool = bool(quest_manager.get("dawn_terrace_returned"))
+		var binding_sev: bool = bool(quest_manager.get("binding_severed"))
+		var net_stab: bool = bool(quest_manager.get("protective_network_stabilized"))
+		var conduits_lit: int = quest_manager.get_activated_beacon_conduit_count() if quest_manager.has_method("get_activated_beacon_conduit_count") else 0
+
+		if storm_done or epi_done or terrace_ret:
+			_intensity_boost_db = 0.0
+			transition_music_track("epilogue_dawn", 2.2)
+		elif binding_sev:
+			_intensity_boost_db = 1.5
+			transition_music_track("great_bell_climax", 1.5)
+		elif net_stab or conduits_lit >= 2:
+			_intensity_boost_db = 1.2
+			if active_music_key == "":
+				transition_music_track("great_bell", 1.6)
+		else:
+			_intensity_boost_db = float(conduits_lit) * 0.4
+	else:
+		_intensity_boost_db = 0.0
+	_refresh_ducking(0.65)
+
+
+func _refresh_ducking(fade_s: float = 0.4) -> void:
+	var target_db: float = _intensity_boost_db
+	if _emotional_silence:
+		target_db = minf(target_db, -10.5)
+	elif _dialogue_ducking:
+		target_db -= 4.2
+	if _menu_ducking:
+		target_db -= 3.8
+	if _cinematic_id in ["briarwood_first_beacon", "floodmill_beacon_awakens", "ironwatch_beacon_awakens", "dawnspire_beacons_synchronized", "dawnspire_observatory_activated"]:
+		target_db = maxf(target_db, 1.0)
+	target_db = clampf(target_db, -16.0, 2.0)
+
+	if not is_inside_tree():
+		_duck_bus_db = target_db
+		_set_music_duck_db(target_db)
+		return
+
+	_kill_tween(_duck_tween)
+	_duck_tween = create_tween()
+	_duck_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	var start_db := _duck_bus_db
+	_duck_tween.tween_method(func(val: float) -> void:
+		_duck_bus_db = val
+		_set_music_duck_db(val)
+	, start_db, target_db, maxf(0.05, fade_s))
+
+
+func _set_music_duck_db(db: float) -> void:
+	var idx: int = AudioServer.get_bus_index("MusicDuck")
+	if idx != -1:
+		AudioServer.set_bus_volume_db(idx, db)
+
 
 func play_sfx(sfx_id: String) -> void:
 	last_played_sfx = sfx_id
@@ -172,10 +478,17 @@ func play_sfx(sfx_id: String) -> void:
 		return
 	var p: AudioStreamPlayer = sfx_players[_sfx_cursor % sfx_players.size()]
 	_sfx_cursor += 1
-	p.stream = _get_or_make_stream("sfx_" + sfx_id)
-	p.pitch_scale = randf_range(0.96, 1.04) if sfx_id == "footstep" else 1.0
+	p.stream = _get_sfx_stream(sfx_id)
+	if sfx_id in CINEMATIC_SFX_IDS:
+		p.bus = &"Cinematic"
+		p.volume_db = CINEMATIC_BASE_DB
+	else:
+		p.bus = &"SFX"
+		p.volume_db = SFX_BASE_DB
+	p.pitch_scale = 1.0 if sfx_id == "footstep" else randf_range(0.985, 1.015)
 	if DisplayServer.get_name() != "headless":
 		p.play()
+
 
 func save_settings(custom_path: String = "") -> Error:
 	var path: String = SETTINGS_PATH if custom_path == "" else custom_path
@@ -193,6 +506,7 @@ func save_settings(custom_path: String = "") -> Error:
 	file.close()
 	return OK
 
+
 func load_settings(custom_path: String = "") -> bool:
 	var path: String = SETTINGS_PATH if custom_path == "" else custom_path
 	if not FileAccess.file_exists(path):
@@ -208,205 +522,124 @@ func load_settings(custom_path: String = "") -> bool:
 	_apply_all_volumes()
 	return true
 
-func _get_or_make_stream(key: String) -> AudioStreamWAV:
-	if _cached_waves.has(key):
-		return _cached_waves[key]
+
+func _preload_core_sfx() -> void:
+	for sid in ["footstep", "dialogue_open", "item_pickup", "save_game"]:
+		_get_sfx_stream(sid)
+
+
+func _get_music_stream(region_or_key: String) -> AudioStream:
+	var cache_key := "mus_" + region_or_key
+	if _stream_cache.has(cache_key):
+		return _stream_cache[cache_key]
+	var path: String = REGION_MUSIC_PATHS.get(region_or_key, REGION_MUSIC_PATHS["bellhaven"])
+	if ResourceLoader.exists(path):
+		var res := ResourceLoader.load(path)
+		if res is AudioStream:
+			if res is AudioStreamOggVorbis:
+				res.loop = true
+			_stream_cache[cache_key] = res
+			return res
+	var fb := _make_gentle_fallback_wav(true)
+	_stream_cache[cache_key] = fb
+	return fb
+
+
+func _get_ambience_stream(region_id: String) -> AudioStream:
+	var cache_key := "amb_" + region_id
+	if _stream_cache.has(cache_key):
+		return _stream_cache[cache_key]
+	var path: String = REGION_AMBIENCE_PATHS.get(region_id, REGION_AMBIENCE_PATHS["bellhaven"])
+	if ResourceLoader.exists(path):
+		var res := ResourceLoader.load(path)
+		if res is AudioStream:
+			if res is AudioStreamOggVorbis:
+				res.loop = true
+			_stream_cache[cache_key] = res
+			return res
+	var fb := _make_gentle_fallback_wav(false)
+	_stream_cache[cache_key] = fb
+	return fb
+
+
+func _get_sfx_stream(sfx_id: String) -> AudioStream:
+	var cache_key := "sfx_" + sfx_id
+	if _stream_cache.has(cache_key):
+		return _stream_cache[cache_key]
+
+	if sfx_id == "footstep":
+		var rnd := AudioStreamRandomizer.new()
+		rnd.random_pitch = 1.06
+		rnd.random_volume_offset_db = 1.5
+		for v in range(3):
+			var p_step := "res://assets/audio/sfx/sfx_footstep_%d.wav" % v
+			if ResourceLoader.exists(p_step):
+				var s := ResourceLoader.load(p_step)
+				if s is AudioStream:
+					rnd.add_stream(-1, s)
+		if rnd.streams_count > 0:
+			_stream_cache[cache_key] = rnd
+			return rnd
+
+	var path := "res://assets/audio/sfx/sfx_%s.wav" % sfx_id
+	if ResourceLoader.exists(path):
+		var res := ResourceLoader.load(path)
+		if res is AudioStream:
+			_stream_cache[cache_key] = res
+			return res
+
+	var fb := _make_gentle_fallback_wav(false)
+	_stream_cache[cache_key] = fb
+	return fb
+
+
+func _make_gentle_fallback_wav(is_loop: bool) -> AudioStreamWAV:
 	var wav := AudioStreamWAV.new()
 	wav.format = AudioStreamWAV.FORMAT_16_BITS
 	wav.mix_rate = SAMPLE_RATE
 	wav.stereo = false
-
-	var samples := PackedByteArray()
-	var dur: float = 0.25
-	var loop_mode := AudioStreamWAV.LOOP_DISABLED
-
-	if key.begins_with("amb_") or key.begins_with("mus_"):
-		dur = 1.6
-		loop_mode = AudioStreamWAV.LOOP_FORWARD
-		samples = _synth_pad_or_ambience(key, dur)
-	else:
-		samples = _synth_sfx(key)
-		dur = float(samples.size()) / float(SAMPLE_RATE * 2)
-
-	wav.data = samples
-	wav.loop_mode = loop_mode
+	var count := int(0.5 * SAMPLE_RATE) if is_loop else int(0.1 * SAMPLE_RATE)
+	var buf := PackedByteArray()
+	buf.resize(count * 2)
+	wav.data = buf
+	wav.loop_mode = AudioStreamWAV.LOOP_FORWARD if is_loop else AudioStreamWAV.LOOP_DISABLED
 	wav.loop_begin = 0
-	wav.loop_end = int(samples.size() / 2)
-	_cached_waves[key] = wav
+	wav.loop_end = count
 	return wav
 
-func _synth_pad_or_ambience(key: String, dur: float) -> PackedByteArray:
-	var count: int = int(dur * SAMPLE_RATE)
-	var buf := PackedByteArray()
-	buf.resize(count * 2)
-	var seed_val: float = 0.0
-	var base_freq: float = 196.0
-	var fifth_freq: float = 293.66
-	var is_noise_bed: bool = key.begins_with("amb_")
-	match key:
-		"mus_bellhaven", "amb_bellhaven":
-			base_freq = 220.0
-			fifth_freq = 329.63
-		"mus_briarwood", "amb_briarwood":
-			base_freq = 174.61
-			fifth_freq = 261.63
-		"mus_floodmill", "amb_floodmill":
-			base_freq = 146.83
-			fifth_freq = 220.0
-		"mus_ironwatch", "amb_ironwatch":
-			base_freq = 130.81
-			fifth_freq = 196.0
-		"mus_dawnspire", "amb_dawnspire":
-			base_freq = 164.81
-			fifth_freq = 246.94
-		"mus_great_bell", "amb_great_bell":
-			base_freq = 123.47
-			fifth_freq = 185.00
-		"mus_epilogue_dawn", "amb_epilogue_dawn":
-			base_freq = 261.63
-			fifth_freq = 392.00
-	for i in range(count):
-		var t: float = float(i) / float(SAMPLE_RATE)
-		var sample_f: float = 0.0
-		if is_noise_bed:
-			# Soft wind/water harmonic wash locked cleanly across loop seam
-			seed_val = sin(float(i) * 12.9898) * 43758.5453
-			var white: float = (seed_val - floor(seed_val)) * 2.0 - 1.0
-			var swell: float = 0.55 + 0.45 * sin(TAU * t / dur)
-			sample_f = (white * 0.045 * swell) + sin(TAU * base_freq * 0.5 * t) * 0.03
-		else:
-			var pad: float = sin(TAU * base_freq * t) * 0.06 + sin(TAU * fifth_freq * t) * 0.04
-			sample_f = pad * (0.85 + 0.15 * sin(TAU * t / dur))
-		var pcm: int = clampi(int(sample_f * 32767.0), -32767, 32767)
-		buf[i * 2] = pcm & 0xFF
-		buf[i * 2 + 1] = (pcm >> 8) & 0xFF
-	return buf
 
-func _synth_sfx(key: String) -> PackedByteArray:
-	var f1: float = 523.25
-	var f2: float = 659.25
-	var dur: float = 0.22
-	var amp: float = 0.16
-	match key:
-		"sfx_footstep":
-			f1 = 120.0
-			f2 = 90.0
-			dur = 0.07
-			amp = 0.08
-		"sfx_dialogue_open":
-			f1 = 392.0
-			f2 = 523.25
-			dur = 0.12
-			amp = 0.12
-		"sfx_item_pickup":
-			f1 = 587.33
-			f2 = 880.0
-			dur = 0.24
-			amp = 0.16
-		"sfx_puzzle_solve":
-			f1 = 523.25
-			f2 = 783.99
-			dur = 0.36
-			amp = 0.18
-		"sfx_save_game":
-			f1 = 440.0
-			f2 = 659.25
-			dur = 0.28
-			amp = 0.15
-		"sfx_beacon_activate":
-			f1 = 293.66
-			f2 = 587.33
-			dur = 0.48
-			amp = 0.20
-		"sfx_chapter_complete":
-			f1 = 392.0
-			f2 = 783.99
-			dur = 0.55
-			amp = 0.22
-		"sfx_bell_toll":
-			f1 = 196.0
-			f2 = 392.0
-			dur = 0.65
-			amp = 0.22
-		"sfx_mountain_wind":
-			f1 = 210.0
-			f2 = 155.0
-			dur = 0.34
-			amp = 0.11
-		"sfx_distant_thunder":
-			f1 = 98.0
-			f2 = 72.0
-			dur = 0.52
-			amp = 0.16
-		"sfx_stone_movement":
-			f1 = 138.0
-			f2 = 116.0
-			dur = 0.26
-			amp = 0.14
-		"sfx_bridge_mechanism":
-			f1 = 246.94
-			f2 = 329.63
-			dur = 0.38
-			amp = 0.16
-		"sfx_observatory_activate":
-			f1 = 392.0
-			f2 = 659.25
-			dur = 0.44
-			amp = 0.18
-		"sfx_celestial_align":
-			f1 = 440.0
-			f2 = 880.0
-			dur = 0.42
-			amp = 0.18
-		"sfx_sanctuary_awaken":
-			f1 = 293.66
-			f2 = 587.33
-			dur = 0.56
-			amp = 0.20
-		"sfx_great_bell_resonance":
-			f1 = 146.83
-			f2 = 293.66
-			dur = 0.68
-			amp = 0.22
-		"sfx_memory_fragment":
-			f1 = 523.25
-			f2 = 783.99
-			dur = 0.42
-			amp = 0.17
-		"sfx_conduit_align":
-			f1 = 349.23
-			f2 = 698.46
-			dur = 0.44
-			amp = 0.19
-		"sfx_ritual_stabilize":
-			f1 = 392.00
-			f2 = 587.33
-			dur = 0.56
-			amp = 0.21
-		"sfx_binding_sever":
-			f1 = 196.00
-			f2 = 587.33
-			dur = 0.72
-			amp = 0.23
-		"sfx_storm_recede":
-			f1 = 130.81
-			f2 = 261.63
-			dur = 0.58
-			amp = 0.15
-		"sfx_dawn_chord":
-			f1 = 440.00
-			f2 = 659.25
-			dur = 0.64
-			amp = 0.20
-	var count: int = int(dur * SAMPLE_RATE)
-	var buf := PackedByteArray()
-	buf.resize(count * 2)
-	for i in range(count):
-		var t: float = float(i) / float(SAMPLE_RATE)
-		var env: float = minf(1.0, t / 0.015) * pow(1.0 - t / dur, 1.5)
-		var freq: float = f1 if t < dur * 0.45 else f2
-		var tone: float = (sin(TAU * freq * t) * 0.72 + sin(TAU * freq * 1.5 * t) * 0.28) * env * amp
-		var pcm: int = clampi(int(tone * 32767.0), -32767, 32767)
-		buf[i * 2] = pcm & 0xFF
-		buf[i * 2 + 1] = (pcm >> 8) & 0xFF
-	return buf
+func verify_all_assets_loadable() -> Dictionary:
+	var missing: Array[String] = []
+	var loaded_count: int = 0
+	for k in REGION_MUSIC_PATHS.keys():
+		var p: String = REGION_MUSIC_PATHS[k]
+		if ResourceLoader.exists(p) and ResourceLoader.load(p) is AudioStream:
+			loaded_count += 1
+		else:
+			missing.append(p)
+	for k in REGION_AMBIENCE_PATHS.keys():
+		var p: String = REGION_AMBIENCE_PATHS[k]
+		if ResourceLoader.exists(p) and ResourceLoader.load(p) is AudioStream:
+			loaded_count += 1
+		else:
+			missing.append(p)
+	for v in range(3):
+		var ps := "res://assets/audio/sfx/sfx_footstep_%d.wav" % v
+		if ResourceLoader.exists(ps) and ResourceLoader.load(ps) is AudioStream:
+			loaded_count += 1
+		else:
+			missing.append(ps)
+	var all_sfx := [
+		"dialogue_open", "item_pickup", "puzzle_solve", "save_game",
+		"beacon_activate", "chapter_complete", "bell_toll", "mountain_wind",
+		"distant_thunder", "stone_movement", "bridge_mechanism", "observatory_activate",
+		"celestial_align", "sanctuary_awaken", "great_bell_resonance", "memory_fragment",
+		"conduit_align", "ritual_stabilize", "binding_sever", "storm_recede", "dawn_chord",
+	]
+	for sid in all_sfx:
+		var ps := "res://assets/audio/sfx/sfx_%s.wav" % sid
+		if ResourceLoader.exists(ps) and ResourceLoader.load(ps) is AudioStream:
+			loaded_count += 1
+		else:
+			missing.append(ps)
+	return {"loaded": loaded_count, "missing": missing}

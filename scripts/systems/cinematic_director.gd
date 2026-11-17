@@ -142,8 +142,12 @@ func start_story_cinematic(cinematic_id: String, focus_pos: Vector2, tint: Color
 	skip_label.visible = true
 	_trigger_flash(tint, 0.24)
 	_apply_camera_focus(focus_pos, Vector2(1.10, 1.10))
-	if sfx_id != "" and is_inside_tree():
-		AudioManagerScript.play_global_sfx(get_tree(), sfx_id)
+	if is_inside_tree():
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_cinematic_context"):
+			audio_mgr.set_cinematic_context(cinematic_id, true)
+		if sfx_id != "":
+			AudioManagerScript.play_global_sfx(get_tree(), sfx_id)
 	cinematic_started.emit(cinematic_id)
 
 func play_sequence(cinematic_id: String, focus_pos: Vector2, duration: float = 1.2, tint: Color = Color(0.55, 0.88, 1.0), complete_cb: Callable = Callable(), sfx_id: String = "") -> void:
@@ -163,8 +167,12 @@ func play_sequence(cinematic_id: String, focus_pos: Vector2, duration: float = 1
 	_lock_player()
 	_trigger_flash(tint, 0.26)
 	_apply_camera_focus(focus_pos, Vector2(1.12, 1.12))
-	if sfx_id != "" and is_inside_tree():
-		AudioManagerScript.play_global_sfx(get_tree(), sfx_id)
+	if is_inside_tree():
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_cinematic_context"):
+			audio_mgr.set_cinematic_context(cinematic_id, true)
+		if sfx_id != "":
+			AudioManagerScript.play_global_sfx(get_tree(), sfx_id)
 	cinematic_started.emit(cinematic_id)
 
 func finish_story_cinematic(was_skipped: bool = false) -> void:
@@ -182,6 +190,10 @@ func finish_story_cinematic(was_skipped: bool = false) -> void:
 	_flash_alpha = 0.0
 	flash_rect.color.a = 0.0
 	_clear_camera_focus()
+	if is_inside_tree():
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("set_cinematic_context"):
+			audio_mgr.set_cinematic_context(ended_id, false)
 	cinematic_finished.emit(ended_id, was_skipped)
 
 func skip_cinematic() -> void:

@@ -328,6 +328,10 @@ func _update_region_audio() -> void:
 		AudioManagerScript.play_global_region(get_tree(), "epilogue_dawn")
 	else:
 		AudioManagerScript.play_global_region(get_tree(), "great_bell")
+	if is_inside_tree() and quest_manager != null:
+		var audio_mgr := AudioManagerScript.ensure(get_tree())
+		if audio_mgr != null and audio_mgr.has_method("sync_quest_music_state"):
+			audio_mgr.sync_quest_music_state(quest_manager)
 
 func _sync_world_from_quest() -> void:
 	if quest_manager == null:

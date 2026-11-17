@@ -19,7 +19,7 @@ const OPTIONS := [
 	"QUIT TO DESKTOP",
 ]
 const AUDIO_BUSES := ["Master", "Music", "SFX", "Ambient"]
-const AUDIO_LABELS := ["MASTER", "MUSIC", "SFX", "AMBIENT"]
+const AUDIO_LABELS := ["MASTER", "MUSIC", "SFX", "AMBIENCE"]
 
 var selected_index: int = 0
 var has_save: bool = false
@@ -159,6 +159,9 @@ func open_menu(save_available: bool, status_text: String = "") -> void:
 	_refresh_buttons()
 	_refresh_audio_labels()
 	visible = true
+	var audio_mgr := AudioManagerScript.ensure(get_tree()) if is_inside_tree() else null
+	if audio_mgr != null and audio_mgr.has_method("set_menu_ducking"):
+		audio_mgr.set_menu_ducking(true)
 
 func adjust_audio_bus(bus_name: String, delta_steps: int) -> float:
 	var audio_mgr := AudioManagerScript.ensure(get_tree())
@@ -188,6 +191,9 @@ func close_menu() -> void:
 	if not visible:
 		return
 	visible = false
+	var audio_mgr := AudioManagerScript.ensure(get_tree()) if is_inside_tree() else null
+	if audio_mgr != null and audio_mgr.has_method("set_menu_ducking"):
+		audio_mgr.set_menu_ducking(false)
 	menu_closed_signal.emit()
 
 func set_feedback(text: String, is_error: bool = false) -> void:
