@@ -143,7 +143,7 @@ func _ready() -> void:
 	title_menu = TitleMenuScript.new()
 	title_menu.name = "TitleMenu"
 	add_child(title_menu)
-	title_menu.new_game_requested.connect(_on_title_menu_new_game)
+	title_menu.new_game_requested.connect(start_new_game)
 	title_menu.continue_requested.connect(continue_game)
 	title_menu.save_requested.connect(manual_save)
 	title_menu.inventory_requested.connect(_on_menu_inventory_requested)
@@ -1514,12 +1514,9 @@ func _on_ending_credits_action(action: String) -> void:
 				quest_manager.save_to_file(save_path)
 			open_title_menu("Chronicle complete. Choose Bellhaven Visit, Continue, or New Game.")
 		"new_game":
-			start_new_game(true)
+			start_new_game()
 
-func _on_title_menu_new_game() -> void:
-	start_new_game(true)
-
-func start_new_game(play_cinematic: bool = false) -> void:
+func start_new_game() -> void:
 	QuestManagerScript.reset_session_state()
 	if ending_credits != null:
 		ending_credits.hide()
@@ -1529,9 +1526,6 @@ func start_new_game(play_cinematic: bool = false) -> void:
 		var audio_mgr := AudioManagerScript.ensure(get_tree())
 		if audio_mgr != null and audio_mgr.has_method("set_menu_ducking"):
 			audio_mgr.set_menu_ducking(false)
-		if play_cinematic and audio_mgr != null:
-			if audio_mgr.has_method("stop_all_audio"):
-				audio_mgr.stop_all_audio()
 	if terminal != null:
 		terminal.set_dialogue_open(false)
 	QuestManagerScript.pending_load_path = ""
@@ -1544,9 +1538,6 @@ func start_new_game(play_cinematic: bool = false) -> void:
 	QuestManagerScript.carry_storm_resolved = false
 	QuestManagerScript.carry_optional_discoveries.clear()
 	QuestManagerScript.pending_chapter5_snapshot = {}
-	if play_cinematic and is_inside_tree():
-		get_tree().change_scene_to_file("res://scenes/intro_cinematic.tscn")
-		return
 	var parent := get_parent()
 	if parent != null and parent.has_method("reset_new_game"):
 		parent.reset_new_game()
