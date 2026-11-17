@@ -55,14 +55,12 @@ func _draw() -> void:
 		elif actor.get_script() == preload("res://scripts/world/prop.gd"):
 			var point: Vector2 = actor.position
 			poly([point+Vector2(-15,-3),point+Vector2(0,-10),point+Vector2(32,5),point+Vector2(16,12)],Color(0.02,0.03,0.06,0.28))
-	# Wild village meadow shrubs and gentle swaying night-bloom flowers
+	# Wild village meadow shrubs & flowers placed neatly beside cottages/lawns (clear of cobblestone paths)
 	var sway_x: int = 0
-	for point: Vector2 in [Vector2(-75,70),Vector2(-90,85),Vector2(-110,100),Vector2(110,135),Vector2(130,145),Vector2(145,155)]:
+	for point: Vector2 in [Vector2(-180,92),Vector2(-194,72),Vector2(-148,8),Vector2(182,26),Vector2(166,-24),Vector2(216,48)]:
 		draw_rect(Rect2(point,Vector2(18,6)),Color("1f382d"))
 		draw_rect(Rect2(point+Vector2(2 + sway_x,-4),Vector2(14,7)),Color("375740"))
 		draw_rect(Rect2(point+Vector2(4 + sway_x,-4),Vector2(2,2)),Color("e0ba67"))
-	var edge := PackedVector2Array([Vector2(0,-320),Vector2(672,16),Vector2(0,352),Vector2(-672,16),Vector2(0,-320)])
-	draw_polyline(edge,Color("5c564e"),3)
 
 func poly(points: Array, color: Color) -> void:
 	draw_colored_polygon(PackedVector2Array(points),color)

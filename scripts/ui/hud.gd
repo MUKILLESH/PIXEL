@@ -507,8 +507,15 @@ func _handle_briarwood_interaction(source: StaticBody2D) -> void:
 		"waystone_entrance":
 			if obj_id == "enter_briarwood":
 				show_dialogue(title, quest_manager.get_story_lines("forest_entry"), source, func(): quest_manager.complete_objective("enter_briarwood"))
+			elif source.get("ready_to_travel") == true and get_parent().has_method("travel_to_bellhaven"):
+				show_dialogue(title, ["Following the moss-lined stone path back south toward Bellhaven Square..."], source, func(): get_parent().travel_to_bellhaven())
 			else:
-				show_dialogue(title, ["Bellhaven lies south behind the mist. The First Ancient Beacon awaits north of the stream."], source)
+				show_dialogue(title, ["Bellhaven lies south behind the mist. Interact again to return to Bellhaven Square, or head north toward the stream and beacon."], source, func():
+					if get_parent().has_method("travel_to_bellhaven"):
+						source.set("ready_to_travel", true)
+						if source.has_method("refresh_prompt"):
+							source.refresh_prompt("[E] RETURN TO BELLHAVEN")
+				)
 		"direction_sign":
 			show_dialogue(title, [source.message], source)
 		"worksite_ledger":
@@ -598,8 +605,15 @@ func _handle_floodmill_interaction(source: StaticBody2D) -> void:
 		"entrance_arch":
 			if obj_id == "enter_floodmill":
 				show_dialogue(title, quest_manager.get_story_lines("floodmill_entry"), source, func(): quest_manager.complete_objective("enter_floodmill"))
+			elif source.get("ready_to_travel") == true and get_parent().has_method("travel_to_briarwood"):
+				show_dialogue(title, ["Climbing the damp stone steps back uphill toward Briarwood Forest..."], source, func(): get_parent().travel_to_briarwood())
 			else:
-				show_dialogue(title, ["Briarwood Forest climbs uphill behind the mist. Ahead lie Floodmill's drowned streets and the Old Watermill."], source)
+				show_dialogue(title, ["Briarwood Forest climbs uphill behind the mist. Interact again to return to Briarwood, or explore Floodmill's drowned streets."], source, func():
+					if get_parent().has_method("travel_to_briarwood"):
+						source.set("ready_to_travel", true)
+						if source.has_method("refresh_prompt"):
+							source.refresh_prompt("[E] RETURN TO BRIARWOOD")
+				)
 		"village_plaque":
 			if obj_id in ["enter_floodmill", "speak_lyra_arrival"]:
 				show_dialogue(title, ["A chiseled census monolith rises from the flooded cobbles. Speak with Lyra at the entrance path first."], source)
@@ -1503,6 +1517,7 @@ func _on_ending_credits_action(action: String) -> void:
 			start_new_game()
 
 func start_new_game() -> void:
+	QuestManagerScript.reset_session_state()
 	if ending_credits != null:
 		ending_credits.hide()
 	if title_menu != null:

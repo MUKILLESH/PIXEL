@@ -17,6 +17,8 @@ static var pending_load_path: String = ""
 static var pending_entry_pose: bool = false
 static var pending_entry_position: Vector2 = Vector2.ZERO
 static var pending_entry_facing: int = 2
+static var pending_session_restore: bool = false
+static var session_state: Dictionary = {}
 static var carry_prologue_completed: bool = false
 static var carry_chapter1_completed: bool = false
 static var carry_chapter2_completed: bool = false
@@ -25,6 +27,24 @@ static var carry_chapter4_completed: bool = false
 static var carry_storm_resolved: bool = false
 static var carry_optional_discoveries: Dictionary = {}
 static var pending_chapter5_snapshot: Dictionary = {}
+
+const CUMULATIVE_BOOL_FLAGS := [
+	"letter_found", "puzzle_solved", "briarwood_discovered", "prologue_completed", "briarwood_unlocked",
+	"bridge_repaired", "mirror_puzzle_solved", "beacon_activated", "elena_echo_heard", "chapter1_completed", "floodmill_unlocked",
+	"watermill_repaired", "sluice_solved", "ledger_reconstructed", "villagers_truth_discovered", "second_beacon_activated", "chapter2_elena_echo_heard", "chapter2_completed", "ironwatch_unlocked",
+	"warden_records_found", "barracks_explored", "barracks_keepsake_found", "crest_puzzle_solved", "shadow_passage_cleared", "warden_confronted", "elena_research_found", "third_beacon_activated", "dawnspire_unlocked", "chapter3_completed",
+	"cliffs_navigated", "skybridge_diagram_read", "skybridge_mechanism_discovered", "skybridge_repaired", "pilgrim_refuge_discovered", "elena_journal_read", "observatory_reached", "observatory_solved", "sanctuary_entered", "beacons_synchronized", "sanctuary_revelation_witnessed", "great_bell_gate_unlocked", "chapter4_completed",
+	"chapter5_active", "chapter5_completed", "great_bell_chamber_entered", "lyra_antechamber_spoken", "forgotten_hall_investigated", "warden_record_revealed", "elena_final_message_heard", "memory_binding_examined", "protective_network_stabilized", "binding_severed", "last_bell_cinematic_seen", "storm_resolved", "dawn_terrace_returned", "epilogue_completed", "elena_journal_placed", "credits_viewed",
+]
+
+const CUMULATIVE_DICT_FIELDS := [
+	"completed_objectives", "talked_npcs", "materials_collected", "inscriptions_read",
+	"optional_discoveries", "mill_parts_collected", "archive_clues_found",
+	"crest_clues_found", "skybridge_parts_collected", "celestial_clues_found",
+	"memory_fragments_recovered", "beacon_conduits_activated",
+]
+
+var chapter_progress: Dictionary = {}
 
 @export var quest_data_path: String = QUEST_DATA_PATH
 
@@ -249,8 +269,96 @@ func reload_quest(path: String) -> void:
 	saved_player_position = Vector2.ZERO
 	saved_player_facing = 2
 	has_saved_player_pose = false
+	chapter_progress.clear()
 	load_quest_data(path)
 	objective_changed.emit(get_current_objective_id(), get_current_objective_text())
+
+static func reset_session_state() -> void:
+	session_state.clear()
+	pending_session_restore = false
+	pending_load_path = ""
+	pending_entry_pose = false
+	pending_entry_position = Vector2.ZERO
+	pending_entry_facing = 2
+	carry_prologue_completed = false
+	carry_chapter1_completed = false
+	carry_chapter2_completed = false
+	carry_chapter3_completed = false
+	carry_chapter4_completed = false
+	carry_storm_resolved = false
+	carry_optional_discoveries.clear()
+	pending_chapter5_snapshot.clear()
+
+static func commit_state_to_session(qm: Node) -> void:
+	if qm == null or not qm.has_method("capture_state"):
+		return
+	var snap: Dictionary = qm.capture_state()
+	if session_state.is_empty():
+		session_state = snap.duplicate(true)
+	else:
+		for bk: String in CUMULATIVE_BOOL_FLAGS:
+			session_state[bk] = bool(session_state.get(bk, false)) or bool(snap.get(bk, false))
+		for dk: String in CUMULATIVE_DICT_FIELDS:
+			var merged: Dictionary = (session_state.get(dk, {}) as Dictionary).duplicate()
+			var incoming: Variant = snap.get(dk, {})
+			if incoming is Dictionary:
+				for item_k in incoming.keys():
+					merged[item_k] = incoming[item_k]
+			session_state[dk] = merged
+		var cp_merged: Dictionary = (session_state.get("chapter_progress", {}) as Dictionary).duplicate()
+		var cp_inc: Variant = snap.get("chapter_progress", {})
+		if cp_inc is Dictionary:
+			for cpk in cp_inc.keys():
+				cp_merged[cpk] = maxi(int(cp_merged.get(cpk, 0)), int(cp_inc[cpk]))
+		var qid_now: String = String(snap.get("quest_id", ""))
+		if qid_now != "":
+			cp_merged[qid_now] = maxi(int(cp_merged.get(qid_now, 0)), int(snap.get("current_index", 0)))
+		session_state["chapter_progress"] = cp_merged
+		# Preserve active checkpoints and puzzle ring arrays when progressed/solved
+		if bool(snap.get("sluice_solved", false)) or not bool(session_state.get("sluice_solved", false)):
+			session_state["sluice_gate_states"] = (snap.get("sluice_gate_states", [0, 0, 0]) as Array).duplicate()
+		if bool(snap.get("crest_puzzle_solved", false)) or not bool(session_state.get("crest_puzzle_solved", false)):
+			session_state["crest_pillar_states"] = (snap.get("crest_pillar_states", [0, 0, 0]) as Array).duplicate()
+		if bool(snap.get("observatory_solved", false)) or not bool(session_state.get("observatory_solved", false)):
+			session_state["celestial_ring_states"] = (snap.get("celestial_ring_states", [0, 0, 0]) as Array).duplicate()
+		if String(snap.get("quest_id", "")) == "chapter3_keepers_lie":
+			session_state["stealth_checkpoint_id"] = snap.get("stealth_checkpoint_id", session_state.get("stealth_checkpoint_id", "checkpoint_0"))
+			session_state["stealth_checkpoint_pos_x"] = snap.get("stealth_checkpoint_pos_x", session_state.get("stealth_checkpoint_pos_x", -150.0))
+			session_state["stealth_checkpoint_pos_y"] = snap.get("stealth_checkpoint_pos_y", session_state.get("stealth_checkpoint_pos_y", -32.0))
+			session_state["stealth_detections_count"] = maxi(int(session_state.get("stealth_detections_count", 0)), int(snap.get("stealth_detections_count", 0)))
+		if String(snap.get("quest_id", "")) == "chapter4_road_to_dawnspire":
+			session_state["cliff_checkpoint_id"] = snap.get("cliff_checkpoint_id", session_state.get("cliff_checkpoint_id", "cliff_cp_0"))
+			session_state["cliff_checkpoint_pos_x"] = snap.get("cliff_checkpoint_pos_x", session_state.get("cliff_checkpoint_pos_x", 30.0))
+			session_state["cliff_checkpoint_pos_y"] = snap.get("cliff_checkpoint_pos_y", session_state.get("cliff_checkpoint_pos_y", 184.0))
+			session_state["cliff_resets_count"] = maxi(int(session_state.get("cliff_resets_count", 0)), int(snap.get("cliff_resets_count", 0)))
+		session_state["version"] = SAVE_VERSION
+	qm.set("chapter_progress", (session_state.get("chapter_progress", {}) as Dictionary).duplicate())
+
+static func begin_region_travel(tree: SceneTree, current_qm: Node, target_scene: String, entry_pos: Vector2, entry_facing: int, use_entry_pose: bool = true) -> void:
+	if current_qm != null:
+		commit_state_to_session(current_qm)
+	pending_session_restore = true
+	pending_entry_pose = use_entry_pose
+	pending_entry_position = entry_pos
+	pending_entry_facing = entry_facing
+	if tree != null:
+		tree.change_scene_to_file(target_scene)
+
+static func restore_into_region_quest(qm: Node, region_quest_path: String, region_quest_id: String, region_done_prop: String) -> bool:
+	if qm == null or not pending_session_restore or session_state.is_empty():
+		return false
+	pending_session_restore = false
+	var restored: Dictionary = session_state.duplicate(true)
+	restored["quest_data_path"] = region_quest_path
+	restored["quest_id"] = region_quest_id
+	var cp_map: Dictionary = (restored.get("chapter_progress", {}) as Dictionary).duplicate()
+	restored["current_index"] = int(cp_map.get(region_quest_id, 0))
+	restored["has_player_pose"] = false
+	qm.apply_state(restored, false)
+	if bool(qm.get(region_done_prop)):
+		qm.current_index = qm.objectives.size()
+		qm.objective_changed.emit("completed", qm.get_current_objective_text())
+	return true
 
 func start_chapter5() -> bool:
 	if not chapter4_completed and not carry_chapter4_completed:
@@ -324,6 +432,9 @@ func get_current_objective_id() -> String:
 	return "completed"
 
 func get_current_objective_text() -> String:
+	if chapter5_completed or (storm_resolved and epilogue_completed):
+		return "Chapter 5 Complete - Ashvale Remembered."
+
 	if quest_id == "chapter5_the_last_bell":
 		if chapter5_completed or current_index >= objectives.size():
 			return "Chapter 5 Complete - Ashvale Remembered."
@@ -386,19 +497,20 @@ func is_objective_completed(id: String) -> bool:
 	return bool(completed_objectives.get(id, false))
 
 func is_quest_completed(id: String = "prologue_thirteenth_toll") -> bool:
-	if id != quest_id:
-		return false
-	if quest_id == "chapter5_the_last_bell":
-		return chapter5_completed
-	if quest_id == "chapter4_road_to_dawnspire":
-		return chapter4_completed
-	if quest_id == "chapter3_keepers_lie":
-		return chapter3_completed
-	if quest_id == "chapter2_drowned_village":
-		return chapter2_completed
-	if quest_id == "chapter1_whispers_of_briarwood":
-		return chapter1_completed
-	return prologue_completed
+	match id:
+		"chapter5_the_last_bell":
+			return chapter5_completed
+		"chapter4_road_to_dawnspire":
+			return chapter4_completed
+		"chapter3_keepers_lie":
+			return chapter3_completed
+		"chapter2_drowned_village":
+			return chapter2_completed
+		"chapter1_whispers_of_briarwood":
+			return chapter1_completed
+		"prologue_thirteenth_toll":
+			return prologue_completed
+	return false
 
 func can_open_mothers_letter() -> bool:
 	return is_objective_completed("speak_npcs")
@@ -1011,10 +1123,12 @@ func capture_state() -> Dictionary:
 			saved_player_facing = int(p_node.get("facing"))
 			has_saved_player_pose = true
 	saved_region_scene = region_scene
+	chapter_progress[quest_id] = maxi(int(chapter_progress.get(quest_id, 0)), current_index)
 	return {
 		"version": SAVE_VERSION,
 		"quest_id": quest_id,
 		"quest_data_path": quest_data_path,
+		"chapter_progress": chapter_progress.duplicate(),
 		"region_scene": region_scene,
 		"has_player_pose": has_saved_player_pose,
 		"player_x": saved_player_position.x,
@@ -1104,7 +1218,7 @@ func capture_state() -> Dictionary:
 		"credits_viewed": credits_viewed,
 	}
 
-func apply_state(state: Dictionary) -> bool:
+func apply_state(state: Dictionary, sync_session: bool = true) -> bool:
 	if not (state is Dictionary) or not state.has("version"):
 		return false
 	if typeof(state["version"]) not in [TYPE_INT, TYPE_FLOAT]:
@@ -1122,6 +1236,9 @@ func apply_state(state: Dictionary) -> bool:
 	if path != quest_data_path:
 		load_quest_data(path)
 	current_index = clampi(int(state.get("current_index", 0)), 0, objectives.size())
+	var raw_cp: Variant = state.get("chapter_progress", {})
+	chapter_progress = raw_cp.duplicate() if raw_cp is Dictionary else {}
+	chapter_progress[quest_id] = maxi(int(chapter_progress.get(quest_id, 0)), current_index)
 	completed_objectives = (state.get("completed_objectives", {}) as Dictionary).duplicate()
 	talked_npcs = (state.get("talked_npcs", {}) as Dictionary).duplicate()
 	letter_found = bool(state.get("letter_found", false))
@@ -1245,10 +1362,22 @@ func apply_state(state: Dictionary) -> bool:
 	elena_journal_placed = bool(state.get("elena_journal_placed", false))
 	credits_viewed = bool(state.get("credits_viewed", false))
 
-	saved_region_scene = String(state.get("region_scene", ""))
-	has_saved_player_pose = bool(state.get("has_player_pose", false))
-	saved_player_position = Vector2(float(state.get("player_x", 0.0)), float(state.get("player_y", 0.0)))
-	saved_player_facing = int(state.get("player_facing", 2))
+	var restored_region: String = String(state.get("region_scene", ""))
+	var restored_has_pose: bool = bool(state.get("has_player_pose", false))
+	var restored_pos := Vector2(float(state.get("player_x", 0.0)), float(state.get("player_y", 0.0)))
+	var restored_facing: int = int(state.get("player_facing", 2))
+	saved_region_scene = restored_region
+	has_saved_player_pose = restored_has_pose
+	saved_player_position = restored_pos
+	saved_player_facing = restored_facing
+	if sync_session and is_inside_tree():
+		session_state.clear()
+		commit_state_to_session(self)
+		# Restore saved pose fields loaded from state so apply_saved_state reads the file's pose, not pre-load player coordinates
+		saved_region_scene = restored_region
+		has_saved_player_pose = restored_has_pose
+		saved_player_position = restored_pos
+		saved_player_facing = restored_facing
 	objective_changed.emit(get_current_objective_id(), get_current_objective_text())
 	return true
 

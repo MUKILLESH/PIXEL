@@ -128,17 +128,24 @@ func _ready() -> void:
 		"[E] INSPECT FLOODMILL GATE", Vector2(168, -196), 9, ""
 	)
 
-	# World perimeter diamond boundary
-	var corners := PackedVector2Array([Vector2(0, -400), Vector2(780, 0), Vector2(0, 400), Vector2(-780, 0)])
-	for i in range(4):
-		var edge := StaticBody2D.new()
+	# Authoritative forest perimeter walls keeping exploration strictly inside authored woodland clearing
+	var outer := StaticBody2D.new()
+	outer.name = "ForestPerimeter"
+	outer.collision_layer = 1
+	outer.collision_mask = 2
+	for sp: Dictionary in [
+		{"pos": Vector2(2, -269), "size": Vector2(620, 18)},
+		{"pos": Vector2(2, 257), "size": Vector2(620, 18)},
+		{"pos": Vector2(-299, -6), "size": Vector2(18, 540)},
+		{"pos": Vector2(304, -6), "size": Vector2(18, 540)},
+	]:
 		var col := CollisionShape2D.new()
-		var seg := SegmentShape2D.new()
-		seg.a = corners[i]
-		seg.b = corners[(i + 1) % 4]
-		col.shape = seg
-		edge.add_child(col)
-		$Boundary.add_child(edge)
+		var rect := RectangleShape2D.new()
+		rect.size = sp["size"]
+		col.shape = rect
+		col.position = sp["pos"]
+		outer.add_child(col)
+	$Boundary.add_child(outer)
 
 	# Chapter 1 QuestManager & HUD setup
 	quest_manager = QuestManagerScript.new()
@@ -153,7 +160,10 @@ func _ready() -> void:
 	$HUD/Subtitle.text = "BRIARWOOD FOREST"
 	$HUD/Clock.text = "CHAPTER 1"
 	$Actors/Player/Camera2D.framing = Vector2(0, -48)
+	$Actors/Player/Camera2D.set_camera_limits(-370, -295, 375, 285)
 	$Actors/Player/Camera2D.snap_to_target()
+	if QuestManagerScript.pending_load_path == "":
+		QuestManagerScript.restore_into_region_quest(quest_manager, "res://data/chapter1_quest.json", "chapter1_whispers_of_briarwood", "chapter1_completed")
 	if QuestManagerScript.carry_prologue_completed:
 		quest_manager.prologue_completed = true
 		quest_manager.briarwood_unlocked = true
@@ -197,15 +207,15 @@ func _build_stream_barriers() -> void:
 	river.collision_mask = 2
 	var west_shape := CollisionShape2D.new()
 	var w_rect := RectangleShape2D.new()
-	w_rect.size = Vector2(340, 28)
+	w_rect.size = Vector2(788, 34)
 	west_shape.shape = w_rect
-	west_shape.position = Vector2(-294, -20)
+	west_shape.position = Vector2(-506, -21)
 	river.add_child(west_shape)
 	var east_shape := CollisionShape2D.new()
 	var e_rect := RectangleShape2D.new()
-	e_rect.size = Vector2(520, 28)
+	e_rect.size = Vector2(968, 34)
 	east_shape.shape = e_rect
-	east_shape.position = Vector2(204, -20)
+	east_shape.position = Vector2(416, -21)
 	river.add_child(east_shape)
 	add_child(river)
 
@@ -216,9 +226,9 @@ func _build_stream_barriers() -> void:
 	bridge_blocker_shape = CollisionShape2D.new()
 	bridge_blocker_shape.name = "Shape"
 	var b_rect := RectangleShape2D.new()
-	b_rect.size = Vector2(68, 28)
+	b_rect.size = Vector2(48, 34)
 	bridge_blocker_shape.shape = b_rect
-	bridge_blocker_shape.position = Vector2(-90, -20)
+	bridge_blocker_shape.position = Vector2(-90, -21)
 	blocker.add_child(bridge_blocker_shape)
 	add_child(blocker)
 
@@ -274,6 +284,12 @@ func _sync_world_from_quest() -> void:
 		first_beacon.queue_redraw()
 	$Landscape.beacon_activated = beacon_ok
 
+	if waystone_entrance != null:
+		waystone_entrance.inspected = quest_manager.is_objective_completed("enter_briarwood")
+		waystone_entrance.ready_to_travel = false
+		waystone_entrance.refresh_prompt("[E] BRIARWOOD WAYSTONE (TO BELLHAVEN)" if waystone_entrance.inspected else "[E] INSPECT TRAIL WAYSTONE")
+		waystone_entrance.queue_redraw()
+
 	if floodmill_gate != null:
 		floodmill_gate.unlocked = quest_manager.floodmill_unlocked
 		floodmill_gate.ready_to_travel = false
@@ -309,18 +325,14 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 
 func travel_to_bellhaven() -> void:
 	if is_inside_tree():
-		QuestManagerScript.pending_entry_pose = true
-		QuestManagerScript.pending_entry_position = Vector2(-170, 168)
-		QuestManagerScript.pending_entry_facing = 0
-		get_tree().change_scene_to_file("res://scenes/sjt_exterior.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/sjt_exterior.tscn", Vector2(-170, 168), 0, true)
 
 func travel_to_floodmill() -> void:
 	if quest_manager != null and quest_manager.floodmill_unlocked and is_inside_tree():
 		QuestManagerScript.carry_prologue_completed = true
 		QuestManagerScript.carry_chapter1_completed = true
 		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
-		QuestManagerScript.pending_entry_pose = false
-		get_tree().change_scene_to_file("res://scenes/floodmill_village.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/floodmill_village.tscn", Vector2(-180, 204), 0, true)
 
 func _add_visual_dressing() -> void:
 	# Dense boundary groves, never new physical obstacles. The original map remains authoritative.

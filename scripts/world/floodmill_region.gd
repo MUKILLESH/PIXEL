@@ -159,17 +159,24 @@ func _ready() -> void:
 		"[E] INSPECT IRONWATCH GATE", Vector2(186, -196), 9, ""
 	)
 
-	# World perimeter diamond boundary
-	var corners := PackedVector2Array([Vector2(0, -400), Vector2(780, 0), Vector2(0, 400), Vector2(-780, 0)])
-	for i in range(4):
-		var edge := StaticBody2D.new()
+	# Authoritative wetlands perimeter keeping exploration strictly inside Floodmill village & ruins
+	var outer := StaticBody2D.new()
+	outer.name = "FloodmillPerimeter"
+	outer.collision_layer = 1
+	outer.collision_mask = 2
+	for sp: Dictionary in [
+		{"pos": Vector2(3, -261), "size": Vector2(610, 18)},
+		{"pos": Vector2(3, 261), "size": Vector2(610, 18)},
+		{"pos": Vector2(-294, 0), "size": Vector2(18, 540)},
+		{"pos": Vector2(301, 0), "size": Vector2(18, 540)},
+	]:
 		var col := CollisionShape2D.new()
-		var seg := SegmentShape2D.new()
-		seg.a = corners[i]
-		seg.b = corners[(i + 1) % 4]
-		col.shape = seg
-		edge.add_child(col)
-		$Boundary.add_child(edge)
+		var rect := RectangleShape2D.new()
+		rect.size = sp["size"]
+		col.shape = rect
+		col.position = sp["pos"]
+		outer.add_child(col)
+	$Boundary.add_child(outer)
 
 	# Chapter 2 QuestManager & HUD setup
 	quest_manager = QuestManagerScript.new()
@@ -185,7 +192,11 @@ func _ready() -> void:
 	$HUD/Clock.text = "CHAPTER 2"
 	$Actors/Player.facing = 0
 	$Actors/Player/Camera2D.framing = Vector2(0, -48)
+	$Actors/Player/Camera2D.set_camera_limits(-365, -295, 365, 290)
 	$Actors/Player/Camera2D.snap_to_target()
+
+	if QuestManagerScript.pending_load_path == "":
+		QuestManagerScript.restore_into_region_quest(quest_manager, "res://data/chapter2_quest.json", "chapter2_drowned_village", "chapter2_completed")
 
 	if QuestManagerScript.carry_prologue_completed:
 		quest_manager.prologue_completed = true
@@ -245,16 +256,23 @@ func _build_canal_barriers() -> void:
 	canal.collision_mask = 2
 	var west_shape := CollisionShape2D.new()
 	var w_rect := RectangleShape2D.new()
-	w_rect.size = Vector2(422, 26)
+	w_rect.size = Vector2(812, 34)
 	west_shape.shape = w_rect
-	west_shape.position = Vector2(-309, -32)
+	west_shape.position = Vector2(-494, -32)
 	canal.add_child(west_shape)
 	var east_shape := CollisionShape2D.new()
 	var e_rect := RectangleShape2D.new()
-	e_rect.size = Vector2(520, 26)
+	e_rect.size = Vector2(940, 34)
 	east_shape.shape = e_rect
-	east_shape.position = Vector2(230, -32)
+	east_shape.position = Vector2(430, -32)
 	canal.add_child(east_shape)
+	var millpond_shape := CollisionShape2D.new()
+	millpond_shape.name = "MillpondShape"
+	var mp_rect := RectangleShape2D.new()
+	mp_rect.size = Vector2(72, 146)
+	millpond_shape.shape = mp_rect
+	millpond_shape.position = Vector2(246, 51)
+	canal.add_child(millpond_shape)
 	add_child(canal)
 
 	var blocker := StaticBody2D.new()
@@ -264,7 +282,7 @@ func _build_canal_barriers() -> void:
 	archive_blocker_shape = CollisionShape2D.new()
 	archive_blocker_shape.name = "Shape"
 	var b_rect := RectangleShape2D.new()
-	b_rect.size = Vector2(68, 26)
+	b_rect.size = Vector2(56, 34)
 	archive_blocker_shape.shape = b_rect
 	archive_blocker_shape.position = Vector2(-64, -32)
 	blocker.add_child(archive_blocker_shape)
@@ -350,6 +368,12 @@ func _sync_world_from_quest() -> void:
 		second_beacon.queue_redraw()
 	$Landscape.second_beacon_activated = beacon_ok
 
+	if entrance_arch != null:
+		entrance_arch.inspected = quest_manager.is_objective_completed("enter_floodmill")
+		entrance_arch.ready_to_travel = false
+		entrance_arch.refresh_prompt("[E] FLOODMILL ARCH (TO BRIARWOOD)" if entrance_arch.inspected else "[E] SURVEY DROWNED VILLAGE")
+		entrance_arch.queue_redraw()
+
 	if ironwatch_gate != null:
 		ironwatch_gate.unlocked = quest_manager.ironwatch_unlocked
 		ironwatch_gate.ready_to_travel = false
@@ -388,10 +412,7 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 
 func travel_to_briarwood() -> void:
 	if is_inside_tree():
-		QuestManagerScript.pending_entry_pose = true
-		QuestManagerScript.pending_entry_position = Vector2(146, -188)
-		QuestManagerScript.pending_entry_facing = 4
-		get_tree().change_scene_to_file("res://scenes/briarwood_forest.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/briarwood_forest.tscn", Vector2(146, -188), 4, true)
 
 func travel_to_ironwatch() -> void:
 	if quest_manager != null and quest_manager.ironwatch_unlocked and is_inside_tree():
@@ -399,8 +420,7 @@ func travel_to_ironwatch() -> void:
 		QuestManagerScript.carry_chapter1_completed = true
 		QuestManagerScript.carry_chapter2_completed = true
 		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
-		QuestManagerScript.pending_entry_pose = false
-		get_tree().change_scene_to_file("res://scenes/ironwatch_keep.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/ironwatch_keep.tscn", Vector2(140, 200), 0, true)
 
 
 func _add_visual_dressing() -> void:

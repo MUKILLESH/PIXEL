@@ -229,7 +229,11 @@ func _ready() -> void:
 	$HUD/Clock.text = "CHAPTER 4"
 	$Actors/Player.facing = 0
 	$Actors/Player/Camera2D.framing = Vector2(0, -48)
+	$Actors/Player/Camera2D.set_camera_limits(-375, -295, 375, 280)
 	$Actors/Player/Camera2D.snap_to_target()
+
+	if QuestManagerScript.pending_load_path == "":
+		QuestManagerScript.restore_into_region_quest(quest_manager, QuestManagerScript.CHAPTER4_DATA_PATH, "chapter4_road_to_dawnspire", "chapter4_completed")
 
 	if QuestManagerScript.carry_prologue_completed:
 		quest_manager.prologue_completed = true
@@ -407,6 +411,9 @@ func _build_boundaries() -> void:
 		# Summit ridge wall flanking the x=-4..52 Sanctuary stairway opening
 		{"pos": Vector2(-164, -150), "size": Vector2(320, 16)},
 		{"pos": Vector2(188, -150), "size": Vector2(272, 16)},
+		# Upper Summit Plateau cliff side walls (visually spans x=-132..166 above y=-150)
+		{"pos": Vector2(-140, -201), "size": Vector2(16, 104)},
+		{"pos": Vector2(174, -201), "size": Vector2(16, 104)},
 	]
 	for sp in specs:
 		var col := CollisionShape2D.new()
@@ -630,15 +637,9 @@ func travel_to_great_bell() -> bool:
 	QuestManagerScript.carry_chapter3_completed = true
 	QuestManagerScript.carry_chapter4_completed = true
 	QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
-	QuestManagerScript.pending_entry_pose = true
-	QuestManagerScript.pending_entry_position = Vector2(-216, 206)
-	QuestManagerScript.pending_entry_facing = 0
-	get_tree().change_scene_to_file("res://scenes/great_bell_sanctum.tscn")
+	QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/great_bell_sanctum.tscn", Vector2(-216, 206), 0, true)
 	return true
 
 func travel_to_ironwatch() -> void:
 	if is_inside_tree():
-		QuestManagerScript.pending_entry_pose = true
-		QuestManagerScript.pending_entry_position = Vector2(152, -134)
-		QuestManagerScript.pending_entry_facing = 2
-		get_tree().change_scene_to_file("res://scenes/ironwatch_keep.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/ironwatch_keep.tscn", Vector2(152, -134), 2, true)

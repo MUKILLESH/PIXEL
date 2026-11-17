@@ -19,8 +19,8 @@ var sunrise_modulate: CanvasModulate
 func _ready() -> void:
 	var ground: TileMapLayer = $Ground
 	ground.tile_set = preload("res://assets/tiles/bellhaven/meadow.tres")
-	for x in range(-28, 29):
-		for y in range(-28, 29):
+	for x in range(-44, 45):
+		for y in range(-44, 45):
 			ground.set_cell(Vector2i(x, y), 0, Vector2i(posmod((x*374761+y*668265) ^ ((x+29)*(y+31)*127),6), 0))
 	for point: Vector2 in [Vector2(-240,-30),Vector2(-230,100),Vector2(-140,125),Vector2(220,-50),Vector2(245,80),Vector2(175,215),Vector2(-170,235),Vector2(-310,35),Vector2(280,5),Vector2(-160,-170),Vector2(85,-190),Vector2(300,170)]:
 		var tree := StaticBody2D.new()
@@ -30,7 +30,7 @@ func _ready() -> void:
 	var furnishings: Array = [
 		[0,Vector2(-80,155)],[0,Vector2(205,180)],[0,Vector2(-235,55)],
 		[1,Vector2(-190,100)],[1,Vector2(105,110)],[1,Vector2(230,100)],[1,Vector2(-260,10)],
-		[2,Vector2(85,125)],[2,Vector2(-90,90)],[2,Vector2(195,160)],
+		[2,Vector2(116,214)],[2,Vector2(-148,34)],[2,Vector2(252,168)],
 		[3,Vector2(230,190)],[3,Vector2(-105,155)]
 	]
 	for entry: Array in furnishings:
@@ -81,16 +81,23 @@ func _ready() -> void:
 	briarwood_gate.position = Vector2(-198, 178)
 	$Actors.add_child(briarwood_gate)
 
-	var corners := PackedVector2Array([Vector2(0,-320),Vector2(672,16),Vector2(0,352),Vector2(-672,16)])
-	for i in range(4):
-		var edge := StaticBody2D.new()
-		var collision := CollisionShape2D.new()
-		var segment := SegmentShape2D.new()
-		segment.a = corners[i]
-		segment.b = corners[(i + 1) % 4]
-		collision.shape = segment
-		edge.add_child(collision)
-		$Boundary.add_child(edge)
+	var outer := StaticBody2D.new()
+	outer.name = "VillagePerimeter"
+	outer.collision_layer = 1
+	outer.collision_mask = 2
+	for sp: Dictionary in [
+		{"pos": Vector2(5, -238), "size": Vector2(720, 18)},
+		{"pos": Vector2(5, 264), "size": Vector2(720, 18)},
+		{"pos": Vector2(-344, 13), "size": Vector2(18, 520)},
+		{"pos": Vector2(354, 13), "size": Vector2(18, 520)},
+	]:
+		var col := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = sp["size"]
+		col.shape = rect
+		col.position = sp["pos"]
+		outer.add_child(col)
+	$Boundary.add_child(outer)
 
 	sunrise_modulate = CanvasModulate.new()
 	sunrise_modulate.name = "SunriseModulate"
@@ -102,10 +109,16 @@ func _ready() -> void:
 	add_child(quest_manager)
 	quest_manager.objective_completed.connect(_on_objective_completed)
 
-	if not QuestManagerScript.pending_chapter5_snapshot.is_empty():
-		var snap: Dictionary = QuestManagerScript.pending_chapter5_snapshot
-		QuestManagerScript.pending_chapter5_snapshot = {}
-		quest_manager.apply_state(snap)
+	if QuestManagerScript.pending_load_path == "":
+		if not QuestManagerScript.pending_chapter5_snapshot.is_empty():
+			var snap: Dictionary = QuestManagerScript.pending_chapter5_snapshot
+			QuestManagerScript.pending_chapter5_snapshot = {}
+			quest_manager.apply_state(snap)
+			if quest_manager.prologue_completed or quest_manager.storm_resolved or quest_manager.chapter5_completed:
+				quest_manager.load_quest_data(QuestManagerScript.QUEST_DATA_PATH)
+				quest_manager.current_index = quest_manager.objectives.size()
+		else:
+			QuestManagerScript.restore_into_region_quest(quest_manager, QuestManagerScript.QUEST_DATA_PATH, "prologue_thirteenth_toll", "prologue_completed")
 	if QuestManagerScript.carry_storm_resolved:
 		quest_manager.storm_resolved = true
 		QuestManagerScript.carry_storm_resolved = false
@@ -115,6 +128,7 @@ func _ready() -> void:
 	$HUD.bind_quest_manager(quest_manager)
 	$HUD/Subtitle.text = "BELLHAVEN VILLAGE"
 	$Actors/Player/Camera2D.framing = Vector2(0, -96)
+	$Actors/Player/Camera2D.set_camera_limits(-380, -265, 385, 275)
 	$Actors/Player/Camera2D.snap_to_target()
 	if QuestManagerScript.pending_load_path != "":
 		var load_p: String = QuestManagerScript.pending_load_path
@@ -255,10 +269,14 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 			$Actors/Player.facing = quest_manager.saved_player_facing
 			$Actors/Player/Camera2D.snap_to_target()
 		_sync_world_from_quest()
+		if is_inside_tree():
+			var is_dawn: bool = (quest_manager.storm_resolved or quest_manager.chapter5_completed)
+			AudioManagerScript.play_global_region(get_tree(), "epilogue_dawn" if is_dawn else "bellhaven")
 		return true
 	return false
 
 func reset_new_game() -> void:
+	QuestManagerScript.reset_session_state()
 	if quest_manager != null:
 		quest_manager.reload_quest("res://data/prologue_quest.json")
 	$Actors/Player.position = Vector2(10, 44)
@@ -271,14 +289,10 @@ func reset_new_game() -> void:
 func travel_to_briarwood() -> void:
 	if quest_manager != null and quest_manager.briarwood_unlocked and is_inside_tree():
 		QuestManagerScript.carry_prologue_completed = true
-		QuestManagerScript.pending_entry_pose = false
-		get_tree().change_scene_to_file("res://scenes/briarwood_forest.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/briarwood_forest.tscn", Vector2(0, 218), 6, true)
 
 func travel_to_great_bell_terrace() -> void:
 	if quest_manager != null and (quest_manager.storm_resolved or quest_manager.chapter5_completed) and is_inside_tree():
 		QuestManagerScript.carry_chapter4_completed = true
 		QuestManagerScript.pending_chapter5_snapshot = quest_manager.capture_state()
-		QuestManagerScript.pending_entry_pose = true
-		QuestManagerScript.pending_entry_position = Vector2(270, -84)
-		QuestManagerScript.pending_entry_facing = 0
-		get_tree().change_scene_to_file("res://scenes/great_bell_sanctum.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/great_bell_sanctum.tscn", Vector2(270, -84), 0, true)

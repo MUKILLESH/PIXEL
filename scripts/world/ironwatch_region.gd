@@ -195,7 +195,11 @@ func _ready() -> void:
 	$HUD/Clock.text = "CHAPTER 3"
 	$Actors/Player.facing = 0
 	$Actors/Player/Camera2D.framing = Vector2(0, -48)
+	$Actors/Player/Camera2D.set_camera_limits(-360, -270, 360, 265)
 	$Actors/Player/Camera2D.snap_to_target()
+
+	if QuestManagerScript.pending_load_path == "":
+		QuestManagerScript.restore_into_region_quest(quest_manager, QuestManagerScript.CHAPTER3_DATA_PATH, "chapter3_keepers_lie", "chapter3_completed")
 
 	if QuestManagerScript.carry_prologue_completed:
 		quest_manager.prologue_completed = true
@@ -328,8 +332,8 @@ func _build_boundaries() -> void:
 		{"pos": Vector2(324, 0), "size": Vector2(18, 490)},
 		# Southern Vault retaining wall blocking direct central jump to Beacon Vault
 		{"pos": Vector2(110, -76), "size": Vector2(440, 18)},
-		# Shadowed Passage east wall (with north exit doorway at y = -195..-140)
-		{"pos": Vector2(-112, -104), "size": Vector2(14, 68)},
+		# Shadowed Passage east wall (sealed down to crest portcullis; north exit doorway at y = -195..-140)
+		{"pos": Vector2(-112, -83), "size": Vector2(14, 110)},
 		# Shadowed Passage west & north walls
 		{"pos": Vector2(-214, -110), "size": Vector2(18, 176)},
 		{"pos": Vector2(-160, -196), "size": Vector2(116, 16)},
@@ -523,10 +527,7 @@ func apply_saved_state(path: String = "user://ashvale_save.json") -> bool:
 
 func travel_to_floodmill() -> void:
 	if is_inside_tree():
-		QuestManagerScript.pending_entry_pose = true
-		QuestManagerScript.pending_entry_position = Vector2(170, -172)
-		QuestManagerScript.pending_entry_facing = 4
-		get_tree().change_scene_to_file("res://scenes/floodmill_village.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/floodmill_village.tscn", Vector2(170, -172), 4, true)
 
 func travel_to_dawnspire() -> void:
 	if quest_manager != null:
@@ -536,10 +537,7 @@ func travel_to_dawnspire() -> void:
 		QuestManagerScript.carry_chapter3_completed = quest_manager.chapter3_completed
 		QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
 	if is_inside_tree():
-		QuestManagerScript.pending_entry_pose = true
-		QuestManagerScript.pending_entry_position = Vector2(-190, 212)
-		QuestManagerScript.pending_entry_facing = 0
-		get_tree().change_scene_to_file("res://scenes/dawnspire_mountain.tscn")
+		QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/dawnspire_mountain.tscn", Vector2(-190, 212), 0, true)
 
 func _add_visual_dressing() -> void:
 	var specs: Array = []

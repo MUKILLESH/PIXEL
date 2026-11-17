@@ -166,13 +166,19 @@ func _ready() -> void:
 	$HUD/Clock.text = "FINAL CHAPTER"
 	$Actors/Player.facing = 0
 	$Actors/Player/Camera2D.framing = Vector2(0, -40)
+	$Actors/Player/Camera2D.set_camera_limits(-355, -275, 480, 275)
 	$Actors/Player/Camera2D.snap_to_target()
 
-	_apply_carry_flags()
-	if not QuestManagerScript.pending_chapter5_snapshot.is_empty():
-		var snap: Dictionary = QuestManagerScript.pending_chapter5_snapshot
+	if QuestManagerScript.pending_load_path == "":
+		if not QuestManagerScript.pending_chapter5_snapshot.is_empty():
+			var snap: Dictionary = QuestManagerScript.pending_chapter5_snapshot
+			QuestManagerScript.pending_chapter5_snapshot = {}
+			quest_manager.apply_state(snap, false)
+		else:
+			QuestManagerScript.restore_into_region_quest(quest_manager, QuestManagerScript.CHAPTER5_DATA_PATH, "chapter5_the_last_bell", "chapter5_completed")
+	else:
 		QuestManagerScript.pending_chapter5_snapshot = {}
-		quest_manager.apply_state(snap)
+	_apply_carry_flags()
 
 	if QuestManagerScript.pending_load_path != "":
 		var load_p: String = QuestManagerScript.pending_load_path
@@ -461,10 +467,7 @@ func travel_to_dawnspire() -> void:
 	QuestManagerScript.carry_chapter3_completed = true
 	QuestManagerScript.carry_chapter4_completed = quest_manager.chapter4_completed
 	QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
-	QuestManagerScript.pending_entry_pose = true
-	QuestManagerScript.pending_entry_position = Vector2(96, -172)
-	QuestManagerScript.pending_entry_facing = 2
-	get_tree().change_scene_to_file("res://scenes/dawnspire_mountain.tscn")
+	QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/dawnspire_mountain.tscn", Vector2(96, -172), 2, true)
 
 func travel_to_bellhaven_sunrise() -> void:
 	if not is_inside_tree() or quest_manager == null or not (quest_manager.storm_resolved or quest_manager.chapter5_completed):
@@ -473,7 +476,4 @@ func travel_to_bellhaven_sunrise() -> void:
 	QuestManagerScript.carry_chapter4_completed = true
 	QuestManagerScript.carry_optional_discoveries = quest_manager.optional_discoveries.duplicate()
 	QuestManagerScript.pending_chapter5_snapshot = quest_manager.capture_state()
-	QuestManagerScript.pending_entry_pose = true
-	QuestManagerScript.pending_entry_position = Vector2(-10, 114)
-	QuestManagerScript.pending_entry_facing = 6
-	get_tree().change_scene_to_file("res://scenes/sjt_exterior.tscn")
+	QuestManagerScript.begin_region_travel(get_tree(), quest_manager, "res://scenes/sjt_exterior.tscn", Vector2(-10, 114), 6, true)
